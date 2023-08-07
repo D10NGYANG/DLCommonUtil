@@ -1,9 +1,0 @@
-builtins_platform=JS
-unique_name=com.github.D10NGYANG\:DLCommonUtil
-compiler_version=1.9.0
-depends=org.jetbrains.kotlin\:kotlin-dom-api-compat kotlin
-serializedKlibFingerprint=2dm48kohcohyh.1i395655pwbva
-serializedIrFileFingerprints=km92oqz6ip8q.2hqhai12e8k8 1pjbha8yr50uq.1ez9ymp98ayc1 1lx95dtzbrtqs.hmtvnp7qgm1 hzq1xarlntzp.3exvs3k0swgqo 3nzzz53qk4q8c.1dfq0smqd8x18 1pgvvyzt9sqkf.7q5pgh50lul5 ytbtsyejnjdy.3q3falxidkt4o ua0brjway9ev.3em0hhkpugzcr 1qjcvut2thwfi.2ab34wlzp8g8w 3igwwv59dcb9d.30sr0zui1wp7r lj0rc57mdhf7.3i2d9uoud02cn 2vy2b2f2rleq.c7xy4zg7lvo8
-jsOutputName=dl-common-util
-abi_version=1.8.0
-metadata_version=1.4.1

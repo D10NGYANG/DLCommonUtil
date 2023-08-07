@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="Test" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-08-15T06:27:48" hostname="yangdilongdeMac-mini.local" time="0.002">
-  <properties/>
-  <testcase name="test[js, browser, ChromeHeadless104.0.5112.79, MacOS10.15.7]" classname="Test" time="0.002"/>
-  <system-out><![CDATA[[log] 0.009999999999999787
-[log] 0.01
-]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="Test" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-08-15T07:20:30" hostname="yangdilongdeMac-mini.local" time="0.002">
-  <properties/>
-  <testcase name="test[iosX64]" classname="Test" time="0.002"/>
-  <system-out><![CDATA[0.009999999999999787
-1.001
-]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

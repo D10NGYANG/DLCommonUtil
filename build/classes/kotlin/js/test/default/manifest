@@ -1,9 +1,0 @@
-builtins_platform=JS
-unique_name=com.github.D10NGYANG\:DLCommonUtil_test
-compiler_version=1.9.0
-depends=com.github.D10NGYANG\:DLCommonUtil org.jetbrains.kotlin\:kotlin-dom-api-compat kotlin-test kotlin
-serializedKlibFingerprint=3hiwvh3na8tie.nd6yxwqrg6r2
-serializedIrFileFingerprints=x3p73zujaxsi.2abi63eqnvh3m 3mqwb07g0g3qv.3hyiw7c1z8e7s 1jnxkahl9meug.1xerfbzrurv6k
-jsOutputName=dl-common-util-test
-abi_version=1.8.0
-metadata_version=1.4.1

@@ -17,7 +17,7 @@ enum class ChecksumType {
  * 检验校验和
  * - 最后一位为校验和
  * @receiver [ByteArray]
- * @param type [ChecksumType] 计算方式
+ * @param type [ChecksumType] 计算方式，默认异或娇艳；
  * @return [Boolean] true:检验成功; false:检验失败;
  */
 fun ByteArray.assertChecksum(type: ChecksumType = ChecksumType.XOR) : Boolean {
@@ -38,7 +38,7 @@ fun ByteArray.getChecksum(type: ChecksumType = ChecksumType.XOR, start: Int = 0,
     var num = (0).toByte()
     for (i in start until end) {
         num = when(type) {
-            ChecksumType.AND -> (num and this[i])
+            ChecksumType.AND -> ((num + this[i]).toByte())
             ChecksumType.OR -> (num or this[i])
             ChecksumType.XOR -> (num xor this[i])
         }
@@ -51,8 +51,4 @@ fun ByteArray.getChecksum(type: ChecksumType = ChecksumType.XOR, start: Int = 0,
  * @param type [ChecksumType] 计算方式
  * @return [ByteArray] 增加较验和后的Byte数组
  */
-fun ByteArray.addChecksum(type: ChecksumType = ChecksumType.XOR): ByteArray {
-    val list = this.toMutableList()
-    list.add(this.getChecksum(type))
-    return list.toByteArray()
-}
+fun ByteArray.addChecksum(type: ChecksumType = ChecksumType.XOR) = plus(this.getChecksum(type))
