@@ -1,8 +1,6 @@
 package com.d10ng.common
 
-import kotlinx.cinterop.addressOf
-import kotlinx.cinterop.convert
-import kotlinx.cinterop.usePinned
+import kotlinx.cinterop.*
 import platform.CoreFoundation.CFStringConvertEncodingToNSStringEncoding
 import platform.CoreFoundation.kCFStringEncodingGB_18030_2000
 import platform.Foundation.NSString
@@ -15,6 +13,7 @@ import platform.posix.memcpy
  * @receiver [String]
  * @return [ByteArray]
  */
+@OptIn(ExperimentalForeignApi::class)
 actual fun String.encodeGBK(): ByteArray {
     val gbkEncoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000.convert())
     val str = this as NSString
@@ -32,6 +31,7 @@ actual fun String.encodeGBK(): ByteArray {
  * @receiver [ByteArray]
  * @return [String]
  */
+@OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
 actual fun ByteArray.decodeGBK(): String {
     val gbkEncoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000.convert())
     return this.usePinned {
