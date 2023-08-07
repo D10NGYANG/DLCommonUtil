@@ -102,3 +102,30 @@ fun String.fillLength(
         else result.toString().substring(0, length)
     } else result.toString()
 }
+
+/**
+ * 以字节单位获得字符串的长度
+ * 汉字 - 占两个Byte长度
+ * 英文数字 - 占一个Byte长度
+ * @return [Int] 长度
+ */
+fun String.getByteLength(): Int {
+    var length = 0
+    val chars = this.toCharArray()
+    for (i in chars.iterator()) {
+        val ascii = i.code
+        if (ascii in 0..255) length++
+        else length += 2
+    }
+    return length
+}
+
+/**
+ * 获取字符串的第一个字并转换成大写的
+ * @receiver [String]
+ * @return [String]
+ */
+fun String.getFirstUpperCase(): String {
+    return if (this.isEmpty()) ""
+    else this.substring(0, 1).uppercase()
+}
