@@ -1,0 +1,17 @@
+
+------------------------------------------------------------
+: Project Dependency Updates (report to plain text file)
+------------------------------------------------------------
+
+The following dependencies are using the latest milestone version:
+ - com.github.ben-manes.versions:com.github.ben-manes.versions.gradle.plugin:0.47.0
+ - dev.petuska.npm.publish:dev.petuska.npm.publish.gradle.plugin:3.4.1
+ - org.jetbrains.kotlin:kotlin-build-tools-impl:1.9.0
+ - org.jetbrains.kotlin:kotlin-compiler-embeddable:1.9.0
+ - org.jetbrains.kotlin:kotlin-klib-commonizer-embeddable:1.9.0
+ - org.jetbrains.kotlin:kotlin-test:1.9.0
+ - org.jetbrains.kotlin:kotlin-test-js-runner:1.9.0
+ - org.jetbrains.kotlin.multiplatform:org.jetbrains.kotlin.multiplatform.gradle.plugin:1.9.0
+
+Gradle release-candidate updates:
+ - Gradle: [8.2.1 -> 8.3-rc-3]

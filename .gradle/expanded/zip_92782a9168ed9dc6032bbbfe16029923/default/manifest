@@ -1,0 +1,9 @@
+unique_name=kotlin-test
+depends=kotlin
+metadata_version=1.4.1
+serializedKlibFingerprint=2qqsv4j0mi0oy.3d9njnbhs35hd
+builtins_platform=JS
+compiler_version=1.9.0-dev-6976
+serializedIrFileFingerprints=1uytms110y4sm.1n6twj84wis3b 2uava5jq3juz9.eaaebr2qiipf 10uowzu1an6zl.273cw8uob5o75 1pwfrxvba0e3n.ntz27aw74j6 ea7excundt7a.3bcleigt3f0ku gp6udrzmjkzb.20e7ji7pf8skj 1q5qxalhl0830.l7g8yrw4vct6 2vvjy4g50ez6m.1jwghw18xoe1o 1b3fksnqw5gbm.37gf08nmfgc7c 69ahivyshd1l.3ol9c9qdktml qynmikna9xw9.3dvirevk28qju 1gb2k95vk264l.1mly14ovsd7f7 gx3q1aq8744v.3mff51wlpfvwr 3131rfiv7vi4p.3t7mjkr82hqw8 1yfzt8gd2z832.1zmjaiavp3926 2hmajo2j6yvhy.2k1vd3jlcwvcw
+abi_version=1.8.0
+jsOutputName=kotlin-kotlin-test-kotlin-test-js-ir

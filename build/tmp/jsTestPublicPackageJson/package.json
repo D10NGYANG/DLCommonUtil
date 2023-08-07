@@ -1,0 +1,18 @@
+{
+  "name": "dl-common-util-test",
+  "version": "0.0.1",
+  "main": "dl-common-util-test.js",
+  "types": "dl-common-util-test.d.ts",
+  "devDependencies": {
+    "mocha": "10.2.0",
+    "source-map-support": "0.5.21",
+    "typescript": "5.0.4"
+  },
+  "dependencies": {
+    "big.js": "6.2.1",
+    "format-util": "^1.0.5"
+  },
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "bundledDependencies": []
+}

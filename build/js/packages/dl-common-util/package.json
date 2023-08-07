@@ -1,0 +1,16 @@
+{
+  "name": "dl-common-util",
+  "version": "0.0.1",
+  "main": "kotlin/dl-common-util.js",
+  "devDependencies": {
+    "typescript": "5.0.4",
+    "source-map-support": "0.5.21"
+  },
+  "dependencies": {
+    "big.js": "6.2.1",
+    "format-util": "^1.0.5"
+  },
+  "peerDependencies": {},
+  "optionalDependencies": {},
+  "bundledDependencies": []
+}
