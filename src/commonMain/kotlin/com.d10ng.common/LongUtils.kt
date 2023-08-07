@@ -6,22 +6,10 @@ package com.d10ng.common
  * @return [ByteArray]
  */
 fun Long.toByteArray(): ByteArray {
-    val ba = byteArrayOf(
-        ushr(56).toByte(),
-        ushr(48).toByte(),
-        ushr(40).toByte(),
-        ushr(32).toByte(),
-        ushr(24).toByte(),
-        ushr(16).toByte(),
-        ushr(8).toByte(),
-        (this and 0xFF).toByte()
-    )
-    var startIndex = 0
-    for (i in ba.indices) {
-        if (ba[i] != (0x00).toByte()) {
-            startIndex = i
-            break
-        }
+    var hex = toString(16)
+    // 如果hex的长度为单数，则需要在前面补0
+    if (hex.length % 2 != 0) {
+        hex = "0$hex"
     }
-    return ba.copyOfRange(startIndex, 8)
+    return hex.toByteArrayFromHex()
 }

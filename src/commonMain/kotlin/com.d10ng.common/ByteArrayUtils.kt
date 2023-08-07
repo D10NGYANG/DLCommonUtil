@@ -1,32 +1,19 @@
 package com.d10ng.common
 
 /**
- * 将两个字节的 byte 数组合并成无符号整型
+ * 将 byte 数组合并成无符号整型
  * @receiver [ByteArray]
  * @return [Int]
  */
-fun ByteArray.toInt(): Int {
-    val ba = fillLength(2)
-    return ba[0].toUByte().toInt() shl 8 or ba[1].toUByte().toInt()
-}
+fun ByteArray.toUnsignedInt() = toHexString().toInt(16)
 
 /**
- * 将8个字节的 Byte 合并成无符号 Long
+ * 将 Byte 数组合并成无符号长整型
  * - Long 的最大值为 0x7FFFFFFFFFFFFFFF
  * @receiver [ByteArray]
  * @return [Long]
  */
-fun ByteArray.toLong(): Long {
-    val ba = fillLength(8)
-    return (ba[0].toUByte().toLong() shl 56) or
-            (ba[1].toUByte().toLong() shl 48) or
-            (ba[2].toUByte().toLong() shl 40) or
-            (ba[3].toUByte().toLong() shl 32) or
-            (ba[4].toUByte().toLong() shl 24) or
-            (ba[5].toUByte().toLong() shl 16) or
-            (ba[6].toUByte().toLong() shl 8) or
-            (ba[7].toUByte().toLong())
-}
+fun ByteArray.toUnsignedLong() = toHexString().toLong(16)
 
 /**
  * 将 ByteArray 转为 8*N 二进制字符串 "00110011"

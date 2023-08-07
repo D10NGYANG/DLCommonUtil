@@ -2,8 +2,8 @@ package com.d10ng.common
 
 /**
  * 将 8位 二进制字符串 "00110011" 转为 Byte
- * @receiver [String]
- * @return [Byte]
+ * @receiver [String] 二进制字符串，可以包含空格，如 "0011 0011"或"00110011"
+ * @return [Byte] 转换后的 Byte，如果转换失败则返回 0x00
  */
 fun String.toByteFromBin(): Byte {
     val value = replace(" ", "")
@@ -16,8 +16,8 @@ fun String.toByteFromBin(): Byte {
 
 /**
  * 将 8*N 二进制字符串 "00110011" 转为 ByteArray
- * @receiver [String]
- * @return [Byte]
+ * @receiver [String] 二进制字符串，可以包含空格，如 "0011 0011"或"00110011"
+ * @return [ByteArray] 转换后的 ByteArray，如果转换失败则返回 byteArrayOf()
  */
 fun String.toByteArrayFromBin(): ByteArray {
     val value = replace(" ", "")
@@ -37,8 +37,8 @@ fun String.toByteArrayFromBin(): ByteArray {
 
 /**
  * 将 2位 16进制字符串 "fc" 转为 Byte
- * @receiver [String]
- * @return [Byte]
+ * @receiver [String] 16进制字符串，如 "fc"
+ * @return [Byte] 转换后的 Byte，如果转换失败则返回 0x00
  */
 fun String.toByteFromHex(): Byte {
     val value = replace(" ", "")
@@ -51,8 +51,8 @@ fun String.toByteFromHex(): Byte {
 
 /**
  * 将 2*N 16进制字符串 "fcfc" 转为 ByteArray
- * @receiver [String]
- * @return [Byte]
+ * @receiver [String] 16进制字符串，可以包含空格，如 "fc fc"或"fcfc"
+ * @return [ByteArray] 转换后的 ByteArray，如果转换失败则返回 byteArrayOf()
  */
 fun String.toByteArrayFromHex(): ByteArray {
     val value = replace(" ", "")
