@@ -45,11 +45,7 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
-        val jsMain by getting {
-            dependencies {
-                implementation(npm("big.js", "6.2.1"))
-            }
-        }
+        val jsMain by getting
     }
 }
 
