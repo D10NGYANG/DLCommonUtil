@@ -27,7 +27,7 @@ fun ByteArray.toBinString(space: Boolean = false): String {
         builder.append(byte.toBinString())
         if (space) builder.append(" ")
     }
-    return builder.toString()
+    return builder.toString().trim()
 }
 
 /**
@@ -43,7 +43,7 @@ fun ByteArray.toHexString(space: Boolean = false, uppercase: Boolean = false): S
         builder.append(byte.toHexString())
         if (space) builder.append(" ")
     }
-    val result = builder.toString()
+    val result = builder.toString().trim()
     return if (uppercase) result.uppercase() else result.lowercase()
 }
 
