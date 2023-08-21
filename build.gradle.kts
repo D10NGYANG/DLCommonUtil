@@ -45,7 +45,18 @@ kotlin {
                 implementation(kotlin("test"))
             }
         }
-        val jsMain by getting
+        val jvmMain by getting {
+            dependencies {
+                // 拼音处理
+                api("io.github.biezhi:TinyPinyin:2.0.3.RELEASE")
+            }
+        }
+        val jsMain by getting {
+            dependencies {
+                // 拼音处理
+                api(npm("pinyin-pro", "3.16.3"))
+            }
+        }
     }
 }
 
