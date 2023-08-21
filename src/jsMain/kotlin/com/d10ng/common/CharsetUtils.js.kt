@@ -5,7 +5,7 @@ package com.d10ng.common
  * @receiver [String]
  * @return [ByteArray]
  */
-actual fun String.encodeGBK(): ByteArray {
+actual fun String.encodeGBKDo(): ByteArray {
     return GBKHelper.getStringGBKByteArray(this)
 }
 
@@ -14,6 +14,6 @@ actual fun String.encodeGBK(): ByteArray {
  * @receiver [ByteArray]
  * @return [String]
  */
-actual fun ByteArray.decodeGBK(): String {
+actual fun ByteArray.decodeGBKDo(): String {
     return GBKHelper.parseGBKByteArray2String(this)
 }

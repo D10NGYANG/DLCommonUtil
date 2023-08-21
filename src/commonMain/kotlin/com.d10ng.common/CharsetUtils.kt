@@ -1,24 +1,44 @@
 package com.d10ng.common
 
+import kotlin.js.JsExport
+import kotlin.js.JsName
+
 /**
  * 将字符串转换成字节数组，编码格式为GBK
  * @receiver [String]
  * @return [ByteArray]
  */
-expect fun String.encodeGBK(): ByteArray
+@JsExport
+fun String.encodeGBK(): ByteArray = encodeGBKDo()
+
+/**
+ * 将字符串转换成字节数组，编码格式为GBK
+ * @receiver [String]
+ * @return [ByteArray]
+ */
+expect fun String.encodeGBKDo(): ByteArray
 
 /**
  * 将字节数组转换成字符串，编码格式为GBK
  * @receiver [ByteArray]
  * @return [String]
  */
-expect fun ByteArray.decodeGBK(): String
+@JsExport
+fun ByteArray.decodeGBK(): String = decodeGBKDo()
+
+/**
+ * 将字节数组转换成字符串，编码格式为GBK
+ * @receiver [ByteArray]
+ * @return [String]
+ */
+expect fun ByteArray.decodeGBKDo(): String
 
 /**
  * 将字符串转换成字节数组，编码格式为UTF8
  * @receiver [String]
  * @return [ByteArray]
  */
+@JsExport
 fun String.encodeUTF8(): ByteArray = encodeToByteArray()
 
 /**
@@ -26,6 +46,7 @@ fun String.encodeUTF8(): ByteArray = encodeToByteArray()
  * @receiver [ByteArray]
  * @return [String]
  */
+@JsExport
 fun ByteArray.decodeUTF8(): String = decodeToString()
 
 /**
@@ -33,6 +54,7 @@ fun ByteArray.decodeUTF8(): String = decodeToString()
  * @receiver [String]
  * @return [ByteArray]
  */
+@JsExport
 fun String.encodeUnicode(): ByteArray {
     val hex = encodeUnicodeString(false)
     return hex.toByteArrayFromHex()
@@ -44,6 +66,7 @@ fun String.encodeUnicode(): ByteArray {
  * @param isNeedU [Boolean] 是否需要带"\\u"，默认true
  * @return [String]
  */
+@JsExport
 fun String.encodeUnicodeString(isNeedU: Boolean): String {
     val builder = StringBuilder()
     for (c in this.iterator()) {
@@ -59,7 +82,8 @@ fun String.encodeUnicodeString(isNeedU: Boolean): String {
  * @receiver [String]
  * @return [String]
  */
-fun ByteArray.decodeUnicode(): String = toHexString().decodeUnicode()
+@JsExport
+fun ByteArray.decodeUnicodeByByteArray(): String = toHexString().decodeUnicode()
 
 /**
  * 将Unicode格式的16进制代码字符串转换成明文字符串，编码格式为Unicode
@@ -68,6 +92,7 @@ fun ByteArray.decodeUnicode(): String = toHexString().decodeUnicode()
  * @receiver [String]
  * @return [String]
  */
+@JsExport
 fun String.decodeUnicode(): String {
     val value = this.replace("\\u", "").replace(" ", "")
     val regex = "[A-Fa-f0-9]+".toRegex()
@@ -94,6 +119,7 @@ fun String.decodeUnicode(): String {
  * @receiver [String]
  * @return [ByteArray]
  */
+@JsExport
 fun String.encodeASCII(): ByteArray = encodeASCIIString().toByteArrayFromHex()
 
 /**
@@ -102,6 +128,7 @@ fun String.encodeASCII(): ByteArray = encodeASCIIString().toByteArrayFromHex()
  * @receiver [String]
  * @return [String]
  */
+@JsExport
 fun String.encodeASCIIString(): String {
     val regex = "[\\u0020-\\u007e]+".toRegex()
     val isMatch = regex.matches(this)
@@ -119,6 +146,7 @@ fun String.encodeASCIIString(): String {
  * @receiver [String]
  * @return [String]
  */
+@JsExport
 fun String.decodeASCII(): String {
     val value = this.replace(" ", "")
     val regex = "[A-Fa-f0-9]+".toRegex()
@@ -141,4 +169,6 @@ fun String.decodeASCII(): String {
  * @receiver [ByteArray]
  * @return [String]
  */
+@JsExport
+@JsName("decodeASCIIByByteArray")
 fun ByteArray.decodeASCII(): String = toHexString().decodeASCII()

@@ -1,4 +1,7 @@
+@file:JsExport
 package com.d10ng.common
+
+import kotlin.js.JsExport
 
 /**
  * 获取整型数据的 高位 byte

@@ -1,5 +1,7 @@
 package com.d10ng.common
 
+import kotlin.js.JsExport
+
 // 数字正则表达式
 val numberRegex = "[0-9]+".toRegex()
 // 字母正则表达式
@@ -17,6 +19,17 @@ val chSymbolRegex = "[\u3000-\u301e\u3021-\u303f\u3040-\u309f\u30a0-\u30ff\uff00
 
 /**
  * 利用正则表达式保留字符串
+ * @receiver String
+ * @param regStr String
+ * @return String
+ */
+@JsExport
+fun String.keepByRegexStr(regStr: String): String {
+    return keep(regStr.toRegex())
+}
+
+/**
+ * 利用正则表达式保留字符串
  * @receiver [String]
  * @param reg [Regex]
  * @return [String]
@@ -27,6 +40,15 @@ fun String.keep(reg: Regex): String {
     ls.forEach { text.append(it) }
     return text.toString()
 }
+
+/**
+ * 利用正则表达式过滤字符串
+ * @receiver String
+ * @param regStr String
+ * @return String
+ */
+@JsExport
+fun String.filterByRegexStr(regStr: String) = filter(regStr.toRegex())
 
 /**
  * 利用正则表达式过滤字符串
@@ -42,6 +64,7 @@ fun String.filter(reg: Regex) = reg.replace(this, "")
  * @receiver [String]
  * @return [Boolean]
  */
+@JsExport
 fun String.isIdCard(): Boolean = "(^\\d{15}$)|(^\\d{17}([0-9]|X)$)".toRegex().matches(this)
 
 /**
@@ -50,6 +73,7 @@ fun String.isIdCard(): Boolean = "(^\\d{15}$)|(^\\d{17}([0-9]|X)$)".toRegex().ma
  * @receiver [String]
  * @return [Boolean]
  */
+@JsExport
 fun String.isMobileNumber(): Boolean = "^1[1-9]\\d{9}$".toRegex().matches(this)
 
 /**
@@ -58,6 +82,7 @@ fun String.isMobileNumber(): Boolean = "^1[1-9]\\d{9}$".toRegex().matches(this)
  * @receiver [String]
  * @return [Boolean]
  */
+@JsExport
 fun String.isEmail(): Boolean = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$".toRegex().matches(this)
 
 /**
@@ -66,6 +91,7 @@ fun String.isEmail(): Boolean = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9]
  * @receiver [String]
  * @return [Boolean]
  */
+@JsExport
 fun String.isOnlyChEnNum(): Boolean = chEnNumRegex.matches(this)
 
 /**
@@ -74,6 +100,7 @@ fun String.isOnlyChEnNum(): Boolean = chEnNumRegex.matches(this)
  * @receiver [String]
  * @return [Boolean]
  */
+@JsExport
 fun String.isOnlyEnNum(): Boolean = numEnRegex.matches(this)
 
 /**
@@ -82,6 +109,7 @@ fun String.isOnlyEnNum(): Boolean = numEnRegex.matches(this)
  * @receiver [String]
  * @return [Boolean]
  */
+@JsExport
 fun String.isOnlyChinese(): Boolean = chineseRegex.matches(this)
 
 /**
@@ -90,6 +118,7 @@ fun String.isOnlyChinese(): Boolean = chineseRegex.matches(this)
  * @receiver [String]
  * @return [Boolean]
  */
+@JsExport
 fun String.isOnlyLetter(): Boolean = letterRegex.matches(this)
 
 /**
@@ -98,6 +127,7 @@ fun String.isOnlyLetter(): Boolean = letterRegex.matches(this)
  * @receiver [String]
  * @return [Boolean]
  */
+@JsExport
 fun String.isOnlyNumber(): Boolean = numberRegex.matches(this)
 
 /**
@@ -106,6 +136,7 @@ fun String.isOnlyNumber(): Boolean = numberRegex.matches(this)
  * @receiver [String]
  * @return [Boolean]
  */
+@JsExport
 fun String.isOnlyCode(): Boolean = codeRegex.matches(this)
 
 /**
@@ -114,4 +145,5 @@ fun String.isOnlyCode(): Boolean = codeRegex.matches(this)
  * @receiver [String]
  * @return [Boolean]
  */
+@JsExport
 fun String.isOnlyChSymbol(): Boolean = chSymbolRegex.matches(this)

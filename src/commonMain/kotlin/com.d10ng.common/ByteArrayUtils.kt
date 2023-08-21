@@ -1,4 +1,8 @@
+@file:JsExport
 package com.d10ng.common
+
+import kotlin.js.JsExport
+import kotlin.js.JsName
 
 /**
  * 将 byte 数组合并成无符号整型
@@ -13,6 +17,7 @@ fun ByteArray.toUnsignedInt() = toHexString().toInt(16)
  * @receiver [ByteArray]
  * @return [Long]
  */
+@Suppress("NON_EXPORTABLE_TYPE")
 fun ByteArray.toUnsignedLong() = toHexString().toLong(16)
 
 /**
@@ -81,6 +86,7 @@ fun ByteArray.indexOf(bs: ByteArray): Int {
  *                           false：如果ByteArray本身已经比输入长度[length]长，那也不管；
  * @return [ByteArray]
  */
+@JsName("fillLengthByByteArray")
 fun ByteArray.fillLength(
     length: Int,
     filler: Byte = 0x00,

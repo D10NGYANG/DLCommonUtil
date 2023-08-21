@@ -1,4 +1,7 @@
+@file:JsExport
 package com.d10ng.common
+
+import kotlin.js.JsExport
 
 /**
  * 将 8位 二进制字符串 "00110011" 转为 Byte
@@ -83,6 +86,7 @@ fun String.toByteArrayFromHex(): ByteArray {
  *                           false：如果字符串本身已经比输入长度[length]长，那也不管；
  * @return [String]
  */
+@Suppress("NON_EXPORTABLE_TYPE")
 fun String.fillLength(
     length: Int,
     filler: Char = '0',

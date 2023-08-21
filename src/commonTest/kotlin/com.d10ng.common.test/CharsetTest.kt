@@ -21,13 +21,4 @@ class CharsetTest {
             assertEquals(hex, item.value)
         }
     }
-
-    @Test
-    fun test() {
-        //println((0xfc).toByte().toHexString())
-        //println((0xff).toByte().toHexString())
-//        val hex = "你好123".encodeGBK()
-//        println(hex.toHexString(false, true))
-//        println(hex.decodeGBK())
-    }
 }

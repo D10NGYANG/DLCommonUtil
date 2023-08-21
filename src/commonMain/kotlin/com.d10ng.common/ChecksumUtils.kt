@@ -1,8 +1,9 @@
+@file:JsExport
 package com.d10ng.common
 
-import kotlin.experimental.and
 import kotlin.experimental.or
 import kotlin.experimental.xor
+import kotlin.js.JsExport
 
 /**
  * 检验和类型

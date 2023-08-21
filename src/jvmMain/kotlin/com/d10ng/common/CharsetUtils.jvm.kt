@@ -7,11 +7,15 @@ import java.nio.charset.Charset
  * @receiver [String]
  * @return [ByteArray]
  */
-actual fun String.encodeGBK(): ByteArray = toByteArray(Charset.forName("GBK"))
+actual fun String.encodeGBKDo(): ByteArray {
+    return toByteArray(Charset.forName("GBK"))
+}
 
 /**
  * 将字节数组转换成字符串，编码格式为GBK
  * @receiver [ByteArray]
  * @return [String]
  */
-actual fun ByteArray.decodeGBK(): String = toString(Charset.forName("GBK"))
+actual fun ByteArray.decodeGBKDo(): String {
+    return toString(Charset.forName("GBK"))
+}

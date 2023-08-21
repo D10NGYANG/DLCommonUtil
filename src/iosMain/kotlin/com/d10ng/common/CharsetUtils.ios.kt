@@ -14,7 +14,7 @@ import platform.posix.memcpy
  * @return [ByteArray]
  */
 @OptIn(ExperimentalForeignApi::class)
-actual fun String.encodeGBK(): ByteArray {
+actual fun String.encodeGBKDo(): ByteArray {
     val gbkEncoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000.convert())
     val str = this as NSString
     val nsData = str.dataUsingEncoding(gbkEncoding)
@@ -32,7 +32,7 @@ actual fun String.encodeGBK(): ByteArray {
  * @return [String]
  */
 @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
-actual fun ByteArray.decodeGBK(): String {
+actual fun ByteArray.decodeGBKDo(): String {
     val gbkEncoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000.convert())
     return this.usePinned {
         NSString.create(bytes = it.addressOf(0), length = this.size.convert(), encoding = gbkEncoding) as String

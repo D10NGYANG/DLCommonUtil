@@ -1,4 +1,7 @@
+@file:JsExport
 package com.d10ng.common
+
+import kotlin.js.JsExport
 
 /**
  * 将 Double/Float 类型的字符串最大保留指定位数的小数
