@@ -38,16 +38,22 @@ class ByteArrayTest {
 
     @Test
     fun testIndexOf() {
-        val byteArray = byteArrayOf(0x01, 0x23, 0x45, 0x67, 0x89.toByte())
-        val searchArray = byteArrayOf(0x45, 0x67)
-        val index = byteArray.indexOf(searchArray)
-        assertEquals(2, index)
+        val byteArray = "01234567890123456789".toByteArrayFromHex()
+        assertEquals(2, byteArray.indexOf("4567".toByteArrayFromHex()))
+        assertEquals(-1, byteArray.indexOf("0000".toByteArrayFromHex()))
     }
 
     @Test
-    fun testFillLength() {
-        val byteArray = byteArrayOf(0x01, 0x23)
-        val filledArray = byteArray.fillLength(4, 0xFF.toByte(), isInStart = true, isForced = true)
-        assertEquals(listOf(0xFF.toByte(), 0xFF.toByte(), 0x01, 0x23.toByte()), filledArray.toList())
+    fun testPadStart() {
+        val byteArray = "01234567890123456789".toByteArrayFromHex()
+        val paddedArray = byteArray.padStart(20, 0xFF.toByte())
+        assertEquals("FFFFFFFFFFFFFFFFFFFF01234567890123456789", paddedArray.toHexString(false, uppercase = true))
+    }
+
+    @Test
+    fun testPadEnd() {
+        val byteArray = "01234567890123456789".toByteArrayFromHex()
+        val paddedArray = byteArray.padEnd(20, 0xFF.toByte())
+        assertEquals("01234567890123456789FFFFFFFFFFFFFFFFFFFF", paddedArray.toHexString(false, uppercase = true))
     }
 }

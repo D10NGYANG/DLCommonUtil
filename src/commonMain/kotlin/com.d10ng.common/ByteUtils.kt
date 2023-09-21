@@ -10,8 +10,8 @@ import kotlin.js.JsName
  * @return [String] 二进制字符串
  */
 @JsName("toBinStringByByte")
-fun Byte.toBinString(): String =
-    this.toUByte().toString(2).fillLength(8)
+fun Byte.toBinString() =
+    this.toUByte().toString(2).padStart(8, '0')
 
 /**
  * 将 Byte 转为 2位 16进制字符串 "fc"
@@ -21,7 +21,7 @@ fun Byte.toBinString(): String =
  */
 @JsName("toHexStringByByte")
 fun Byte.toHexString(uppercase: Boolean = false): String {
-    val result = toUByte().toString(16).fillLength(2)
+    val result = toUByte().toString(16).padStart(2, '0')
     return if (uppercase) result.uppercase() else result.lowercase()
 }
 
@@ -31,4 +31,4 @@ fun Byte.toHexString(uppercase: Boolean = false): String {
  * @return Int 无符号整数，如255
  */
 @JsName("toUnsignedIntByByte")
-fun Byte.toUnsignedInt(): Int = this.toUByte().toInt()
+fun Byte.toUnsignedInt() = toUByte().toInt()

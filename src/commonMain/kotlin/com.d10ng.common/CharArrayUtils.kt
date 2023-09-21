@@ -11,9 +11,9 @@ import kotlin.js.JsName
  */
 @JsName("toByteArrayByCharArray")
 fun CharArray.toByteArray(): ByteArray {
-    val byteList = mutableListOf<Byte>()
-    for (char in this) {
-        byteList.add(char.code.toByte())
+    val bytes = ByteArray(this.size)
+    forEachIndexed { index, c ->
+        bytes[index] = c.code.toByte()
     }
-    return byteList.toByteArray()
+    return bytes
 }
