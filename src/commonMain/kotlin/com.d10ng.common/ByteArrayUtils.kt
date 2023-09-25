@@ -128,34 +128,7 @@ fun ByteArray.padEnd(length: Int, padByte: Byte = 0x00): ByteArray {
  * @return [ByteArray] 新的字节数组
  */
 fun ByteArray.getBitRange(start: Int, offset: Int): ByteArray {
-    if (offset <= 0) return byteArrayOf()
-    // 右移位数
-    val right = 8 - (start + offset) % 8
-    // 左侧清空位数
-    val left = 8 - offset % 8
-    // 最终生成字节数组长度
-    val size = (offset - 1) / 8 + 1
-    // 字节数组
-    val result = ByteArray(size)
-    // 开始的字节位置
-    val startByteIdx = start / 8
-    // 结束字节位置
-    val endByteIdx = (start + offset + 8) / 8
     // 缓存区
     val buf = PlatformBuffer.wrap(this)
-    // 原始字节数据长度
-    val originSize = endByteIdx - startByteIdx
-    var idx = originSize - 1
-    // 循环将最后一个字节的数据写入到结果数组中
-    while (size - (originSize - idx) >= 0) {
-        // 读取缓存区的第idx位置的字节，向右移动right位
-        var temp = buf[idx + startByteIdx].toUnsignedInt() shr right
-        // 如果idx不为0，读取缓存区的第idx-1位置的字节，向左移动8-right位
-        if (idx > 0) temp = temp or (buf[idx + startByteIdx - 1].toUnsignedInt() shl (8 - right))
-        result[size - (originSize - idx)] = temp.toByte()
-        idx --
-    }
-    // 清空第一个字节的左侧bit数据
-    result[0] = (result[0].toUnsignedInt() shl left shr left).toByte()
-    return result
+    return buf.getBitRange(start, offset)
 }
