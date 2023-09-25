@@ -13,7 +13,7 @@ fun String.toByteFromBin(): Byte {
     val regex = "[01]+".toRegex()
     val isMatch = regex.matches(value)
     if (!isMatch) return 0x00
-    val str = value.fillLength(8)
+    val str = value.padStart(8, '0')
     return str.toInt(2).toByte()
 }
 
@@ -29,7 +29,7 @@ fun String.toByteArrayFromBin(): ByteArray {
     if (!isMatch) return byteArrayOf()
     var str = value
     if (value.length % 8 != 0) {
-        str = value.fillLength((value.length / 8 + 1) * 8)
+        str = value.padStart((value.length / 8 + 1) * 8, '0')
     }
     val list = mutableListOf<Byte>()
     for (i in str.indices step 8) {
@@ -48,7 +48,7 @@ fun String.toByteFromHex(): Byte {
     val regex = "[A-Fa-f0-9]+".toRegex()
     val isMatch = regex.matches(value)
     if (!isMatch) return 0x00
-    val str = value.fillLength(8)
+    val str = value.padStart(8, '0')
     return str.toInt(16).toByte()
 }
 
@@ -64,47 +64,13 @@ fun String.toByteArrayFromHex(): ByteArray {
     if (!isMatch) return byteArrayOf()
     var str = value
     if (value.length % 2 != 0) {
-        str = value.fillLength((value.length / 2 + 1) * 2)
+        str = value.padStart((value.length / 2 + 1) * 2, '0')
     }
     val list = mutableListOf<Byte>()
     for (i in str.indices step 2) {
         list.add(str.substring(i, i + 2).toByteFromHex())
     }
     return list.toByteArray()
-}
-
-/**
- * 字符串填充到指定长度
- * @receiver [String]
- * @param length [Int] 需要填充到的长度
- * @param filler [Char] 填充物
- * @param isInStart [Boolean] 是否从开头处填充，
- *                            true：开头；
- *                            false：结尾
- * @param isForced [Boolean] 是否强制性要只保留指定长度字符串，
- *                           true：如果字符串本身已经比输入长度[length]长，也要只截取其中的部分；
- *                           false：如果字符串本身已经比输入长度[length]长，那也不管；
- * @return [String]
- */
-@Suppress("NON_EXPORTABLE_TYPE")
-fun String.fillLength(
-    length: Int,
-    filler: Char = '0',
-    isInStart: Boolean = true,
-    isForced: Boolean = true
-): String {
-    val result = StringBuilder()
-    if (!isInStart) result.append(this)
-    if (this.length < length) {
-        for (i in 0 until length - this.length) {
-            result.append(filler)
-        }
-    }
-    if (isInStart) result.append(this)
-    return if (isForced) {
-        if (isInStart) result.toString().substring(result.length - length)
-        else result.toString().substring(0, length)
-    } else result.toString()
 }
 
 /**

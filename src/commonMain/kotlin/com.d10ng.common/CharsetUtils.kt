@@ -72,7 +72,7 @@ fun String.encodeUnicodeString(isNeedU: Boolean): String {
     for (c in this.iterator()) {
         val item = c.code.toString(16)
         if (isNeedU) builder.append("\\u")
-        builder.append(item.fillLength(4))
+        builder.append(item.padStart(4, '0'))
     }
     return builder.toString()
 }
@@ -101,7 +101,7 @@ fun String.decodeUnicode(): String {
     val builder = StringBuilder()
     var str = value
     if (value.length % 4 != 0) {
-        str = value.fillLength((value.length / 4 + 1) * 4, '0', false)
+        str = value.padEnd((value.length / 4 + 1) * 4, '0')
     }
     for (i in str.indices step 4) {
         val end = i + 4
@@ -136,7 +136,7 @@ fun String.encodeASCIIString(): String {
     val builder = StringBuilder()
     for (c in this.iterator()) {
         val item = c.code.toString(16)
-        builder.append(item.fillLength(2))
+        builder.append(item.padStart(2, '0'))
     }
     return builder.toString()
 }
@@ -155,7 +155,7 @@ fun String.decodeASCII(): String {
     val builder = StringBuilder()
     var str = value
     if (value.length % 2 != 0) {
-        str = value.fillLength((value.length / 2 + 1) * 2, '0', false)
+        str = value.padEnd((value.length / 2 + 1) * 2, '0')
     }
     for (i in str.indices step 2) {
         val temp = str.substring(i, i + 2)
