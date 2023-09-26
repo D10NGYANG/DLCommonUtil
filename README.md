@@ -3,4 +3,18 @@
 
 *最新版本：`0.0.2`*
 
+> 说明文档未完善，敬请期待
+
+## ① 安装
+
+## ② 使用
+### 1. 基础类型
+- [Byte](doc/Byte.md)
+- [ByteArray](doc/ByteArray.md)
+- [Double](doc/Double.md)
+- [Float](doc/Float.md)
+- [Int](doc/Int.md)
+- [Long](doc/Long.md)
+- [String](doc/String.md)
+
 

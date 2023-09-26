@@ -1,5 +1,6 @@
 package com.d10ng.common
 
+import com.d10ng.common.base.toUnsignedInt
 import com.ditchoom.buffer.PlatformBuffer
 import kotlin.math.ceil
 

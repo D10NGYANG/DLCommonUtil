@@ -20,15 +20,11 @@ fun Int.takeLowByte(): Byte =
     (this and 0xff).toByte()
 
 /**
- * 将 整型 转 2个字节以内的 ByteArray
+ * 将 整型 转为4个字节的 ByteArray
  * @receiver [Int]
  * @return [ByteArray]
  */
 fun Int.toByteArray(): ByteArray {
-    var hex = toString(16)
-    // 如果hex的长度为单数，则需要在前面补0
-    if (hex.length % 2 != 0) {
-        hex = "0$hex"
-    }
+    val hex = toString(16).padStart(8, '0')
     return hex.toByteArrayFromHex()
 }

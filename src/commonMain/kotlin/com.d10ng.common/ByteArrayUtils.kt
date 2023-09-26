@@ -1,6 +1,9 @@
 @file:JsExport
 package com.d10ng.common
 
+import com.d10ng.common.base.toBinString
+import com.d10ng.common.base.toHexString
+import com.d10ng.common.base.toUnsignedInt
 import kotlin.js.JsExport
 import com.ditchoom.buffer.PlatformBuffer
 import com.ditchoom.buffer.allocate
