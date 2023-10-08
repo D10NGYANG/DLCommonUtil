@@ -8,9 +8,9 @@ import kotlin.js.JsExport
  * > 该方法不会对字符串进行四舍五入，只是简单的截取；
  * > 如果字符串中没有小数点，则直接返回原字符串；
  * > 如果字符串中小数位数小于指定位数，则直接返回原字符串；
- * @receiver String
- * @param maxDecimalCount Int
- * @return String
+ * @receiver [String]
+ * @param maxDecimalCount [Int]
+ * @return [String]
  */
 internal fun String.keep(maxDecimalCount: Int): String {
     if (maxDecimalCount < 0) throw IllegalArgumentException("maxDecimalCount must be greater than or equal to 0")

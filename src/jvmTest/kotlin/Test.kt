@@ -1,4 +1,6 @@
 import com.d10ng.common.*
+import com.d10ng.common.base.toHexString
+import com.d10ng.common.base.toUnsignedInt
 import kotlin.test.Test
 
 class Test {

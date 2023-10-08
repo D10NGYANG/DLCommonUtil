@@ -1,13 +1,44 @@
 @file:JsExport
-package com.d10ng.common
+package com.d10ng.common.base
 
-import com.d10ng.common.base.toBinString
-import com.d10ng.common.base.toHexString
-import com.d10ng.common.base.toUnsignedInt
+import com.d10ng.common.getBitRange
 import kotlin.js.JsExport
 import com.ditchoom.buffer.PlatformBuffer
 import com.ditchoom.buffer.allocate
 import com.ditchoom.buffer.wrap
+import kotlin.js.JsName
+
+/**
+ * 将 ByteArray 转为 8*N 二进制字符串 "00110011"
+ * @receiver [ByteArray]
+ * @param space [Boolean] 每个byte中间是否需要空格
+ * @return [String]
+ */
+fun ByteArray.toBinString(space: Boolean = false): String {
+    val builder = StringBuilder()
+    for (byte in this) {
+        builder.append(byte.toBinString())
+        if (space) builder.append(" ")
+    }
+    return builder.toString().trim()
+}
+
+/**
+ * 将 ByteArray 转为 2*N 16进制字符串 "fcfc"
+ * @receiver [ByteArray]
+ * @param space [Boolean] 是否需要空格
+ * @param uppercase [Boolean] 是否需要大写
+ * @return [String]
+ */
+fun ByteArray.toHexString(space: Boolean = false, uppercase: Boolean = true): String {
+    val builder = StringBuilder()
+    for (byte in this) {
+        builder.append(byte.toHexString())
+        if (space) builder.append(" ")
+    }
+    val result = builder.toString().trim()
+    return if (uppercase) result.uppercase() else result.lowercase()
+}
 
 /**
  * 将 byte 数组合并成无符号整型
@@ -33,45 +64,17 @@ fun ByteArray.toUnsignedLong(): Long {
 }
 
 /**
- * 将 ByteArray 转为 8*N 二进制字符串 "00110011"
- * @receiver [ByteArray]
- * @param space [Boolean] 每个byte中间是否需要空格
- * @return [String]
- */
-fun ByteArray.toBinString(space: Boolean = false): String {
-    val builder = StringBuilder()
-    for (byte in this) {
-        builder.append(byte.toBinString())
-        if (space) builder.append(" ")
-    }
-    return builder.toString().trim()
-}
-
-/**
- * 将 ByteArray 转为 2*N 16进制字符串 "fcfc"
- * @receiver [ByteArray]
- * @param space [Boolean] 是否需要空格
- * @param uppercase [Boolean] 是否需要大写
- * @return [String]
- */
-fun ByteArray.toHexString(space: Boolean = false, uppercase: Boolean = false): String {
-    val builder = StringBuilder()
-    for (byte in this) {
-        builder.append(byte.toHexString())
-        if (space) builder.append(" ")
-    }
-    val result = builder.toString().trim()
-    return if (uppercase) result.uppercase() else result.lowercase()
-}
-
-/**
  * 从ByteArray中查找特定ByteArray的位置
- * # 如果没有找到就返回-1
+ * > 如果没有找到就返回-1
  * @receiver [ByteArray] 输入ByteArray
  * @param bs [ByteArray] 检索ByteArray
  * @return [Int] 首个位置index
  */
+@JsName("indexOfByByteArray")
 fun ByteArray.indexOf(bs: ByteArray): Int {
+    if (bs.isEmpty()) return -1
+    if (bs.size > size) return -1
+    if (bs.size == 1) return indexOf(bs[0])
     val buffer = PlatformBuffer.wrap(this)
     while (buffer.hasRemaining()) {
         if (buffer.remaining() < bs.size) return -1
@@ -93,6 +96,7 @@ fun ByteArray.indexOf(bs: ByteArray): Int {
  * @param padByte [Byte] 填充物
  * @return [ByteArray] 填充后的ByteArray
  */
+@JsName("padStartByByteArray")
 fun ByteArray.padStart(length: Int, padByte: Byte = 0x00): ByteArray {
     if (size >= length) return this.copyOfRange(size - length, size)
     val buf = PlatformBuffer.allocate(length)
@@ -112,6 +116,7 @@ fun ByteArray.padStart(length: Int, padByte: Byte = 0x00): ByteArray {
  * @param padByte [Byte] 填充物
  * @return [ByteArray] 填充后的ByteArray
  */
+@JsName("padEndByByteArray")
 fun ByteArray.padEnd(length: Int, padByte: Byte = 0x00): ByteArray {
     if (size >= length) return this.copyOfRange(0, length)
     val buf = PlatformBuffer.allocate(length)
@@ -130,6 +135,7 @@ fun ByteArray.padEnd(length: Int, padByte: Byte = 0x00): ByteArray {
  * @param offset [Int] 比特位长度
  * @return [ByteArray] 新的字节数组
  */
+@JsName("getBitRangeByByteArray")
 fun ByteArray.getBitRange(start: Int, offset: Int): ByteArray {
     // 缓存区
     val buf = PlatformBuffer.wrap(this)

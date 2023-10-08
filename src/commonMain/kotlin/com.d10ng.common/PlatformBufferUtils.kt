@@ -13,6 +13,8 @@ import kotlin.math.ceil
  */
 fun PlatformBuffer.getBitRange(start: Int, offset: Int): ByteArray {
     if (offset <= 0) return byteArrayOf()
+    if (start < 0) throw IllegalArgumentException("start must be greater than 0")
+    if (start + offset > capacity * 8) throw IllegalArgumentException("start + offset must be less than capacity * 8")
     // 右移位数
     val right = (8 - (start + offset) % 8) % 8
     // 左侧清空位数
