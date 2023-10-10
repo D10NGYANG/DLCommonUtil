@@ -42,6 +42,7 @@ fun ByteArray.toHexString(space: Boolean = false, uppercase: Boolean = true): St
 
 /**
  * 将 byte 数组合并成无符号整型
+ * > Int 的最大值为 0x7FFFFFFF，超过这个值会返回-1
  * @receiver [ByteArray]
  * @return [Int]
  */
@@ -55,6 +56,7 @@ fun ByteArray.toUnsignedInt() = toUnsignedLong().toInt()
  */
 @Suppress("NON_EXPORTABLE_TYPE")
 fun ByteArray.toUnsignedLong(): Long {
+    if (isEmpty()) return 0L
     val buffer = PlatformBuffer.wrap(this)
     var temp = buffer[0].toUnsignedInt().toLong()
     for (i in 1 until buffer.capacity) {
