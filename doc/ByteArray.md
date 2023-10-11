@@ -23,27 +23,27 @@ const binaryString = DLCommon.byteArrayToBinString([0x33, 0x33]);
 ```
 
 ## ② 转换为十六进制字符串
-> 将 ByteArray 转为 2*N 16进制字符串 "3333"。
+> 将 ByteArray 转为 2*N 16进制字符串 "FC13"。
 > - @param space [Boolean] 每个byte中间是否需要空格，默认为false
 > - @param uppercase [Boolean] 是否需要大写，默认为true
 
 》kotlin:
 ```kotlin
-// 默认不需要空格，大写，"3333"
-val hexString = byteArrayOf(0x33, 0x33).toHexString()
-// 设置为true表示需要空格，大写，"33 33"
-val hexString = byteArrayOf(0x33, 0x33).toHexString(true)
-// 设置为false表示不需要空格，小写，"3333"
-val hexString = byteArrayOf(0x33, 0x33).toHexString(false, false)
+// 默认不需要空格，大写，"FC13"
+val hexString = byteArrayOf(0xfc.toByte(), 0x13).toHexString()
+// 设置为true表示需要空格，大写，"FC 13"
+val hexString = byteArrayOf(0xfc.toByte(), 0x13).toHexString(true)
+// 设置为false表示不需要空格，小写，"fc13"
+val hexString = byteArrayOf(0xfc.toByte(), 0x13).toHexString(false, false)
 ```
 》java:
 ```java
-String hexString = ByteArrayUtilsKt.toHexString(new byte[]{0x33, 0x33}, false, true);
+String hexString = ByteArrayUtilsKt.toHexString(new byte[]{0xfc, 0x13}, false, true);
 ```
 》js:
 ```js
 const DLCommon = require('dl-common-util').com.d10ng.common.base;
-const hexString = DLCommon.byteArrayToHexString([0x33, 0x33]);
+const hexString = DLCommon.byteArrayToHexString([0xfc, 0x13]);
 ```
 
 ## ③ 转换为无符号整数
@@ -145,22 +145,22 @@ const bytes = DLCommon.byteArrayPadEnd([0x01, 0x8B, 0x0E, 0x7D, 0x65, 0xC8], 10)
 ```
 
 ## ⑧ 获取指定范围的比特位组成新的字节数组
-> 从 ByteArray 中获取指定范围的 bit 组成新的 ByteArray。如从 0x33 中获取 0..3 位，返回 0x03。
+> 从 ByteArray 中获取指定范围的 bit 组成新的 ByteArray。如从 0x53 中获取 3..6 位，返回 0x09。
 > - @param start [Int] 开始比特位置
-> - @param end [Int] 结束比特位置
+> - @param offset [Int] 比特位长度
 
 》kotlin:
 ```kotlin
-// 从 0x33 中获取 0..3 位，返回 0x03
-val bytes = byteArrayOf(0x33.toByte()).getBitRange(0, 3)
+// 从 0x53 中获取 3..6 位，返回 0x09
+val bytes = byteArrayOf(0x53.toByte()).getBitRange(3, 4)
 ```
 》java:
 ```java
-// 从 0x33 中获取 0..3 位，返回 0x03
-byte[] bytes = ByteArrayUtilsKt.getBitRange(new byte[]{(byte) 0x33}, 0, 3);
+// 从 0x53 中获取 3..6 位，返回 0x09
+byte[] bytes = ByteArrayUtilsKt.getBitRange(new byte[]{(byte) 0x53}, 3, 4);
 ```
 》js:
 ```js
 const DLCommon = require('dl-common-util').com.d10ng.common.base;
-const bytes = DLCommon.byteArrayGetBitRange([0x33], 0, 3);
+const bytes = DLCommon.byteArrayGetBitRange([0x53], 3, 4);
 ```
