@@ -1,6 +1,5 @@
 package com.d10ng.common.base
 
-import com.d10ng.common.toByteArrayFromHex
 import kotlin.math.ceil
 
 /**

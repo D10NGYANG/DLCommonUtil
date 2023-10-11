@@ -1,5 +1,6 @@
 import com.d10ng.common.*
 import com.d10ng.common.base.toByteArray
+import com.d10ng.common.base.toByteArrayFromHex
 import com.d10ng.common.base.toHexString
 import com.d10ng.common.base.toUnsignedInt
 import kotlin.test.Test

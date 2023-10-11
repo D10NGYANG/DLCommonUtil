@@ -1,6 +1,5 @@
 package com.d10ng.common.test
 
-import com.d10ng.common.*
 import com.d10ng.common.base.*
 import kotlin.test.Test
 import kotlin.test.assertEquals

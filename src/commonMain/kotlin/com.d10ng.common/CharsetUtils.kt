@@ -1,5 +1,6 @@
 package com.d10ng.common
 
+import com.d10ng.common.base.toByteArrayFromHex
 import com.d10ng.common.base.toHexString
 import kotlin.js.JsExport
 import kotlin.js.JsName
