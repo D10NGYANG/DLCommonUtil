@@ -9,17 +9,17 @@ import kotlin.js.JsName
  * @receiver [Byte] 字节
  * @return [String] 二进制字符串
  */
-@JsName("toBinStringByByte")
+@JsName("byteToBinString")
 fun Byte.toBinString() =
     this.toUByte().toString(2).padStart(8, '0')
 
 /**
  * 将 Byte 转为 2位 16进制字符串 "FC"
  * @receiver [Byte] 字节
- * @param uppercase [Boolean] 是否需要大写
+ * @param uppercase [Boolean] 是否需要大写，默认true需要
  * @return [String] 16进制字符串
  */
-@JsName("toHexStringByByte")
+@JsName("byteToHexString")
 fun Byte.toHexString(uppercase: Boolean = true): String {
     val result = toUByte().toString(16).padStart(2, '0')
     return if (uppercase) result.uppercase() else result.lowercase()
@@ -30,7 +30,7 @@ fun Byte.toHexString(uppercase: Boolean = true): String {
  * @receiver [Byte] 字节，如0xFF
  * @return [Int] 无符号整数，如255
  */
-@JsName("toUnsignedIntByByte")
+@JsName("byteToUnsignedInt")
 fun Byte.toUnsignedInt() = toUByte().toInt()
 
 /**
@@ -39,6 +39,7 @@ fun Byte.toUnsignedInt() = toUByte().toInt()
  * @param bitIndex [Int] 0..7
  * @return [Int] 0/1
  */
+@JsName("byteGetBit")
 fun Byte.getBit(bitIndex: Int): Int {
     if (bitIndex !in 0..7) throw IndexOutOfBoundsException("bitIndex must be in 0..7")
     return (this.toUnsignedInt() shr bitIndex) and 0x01
