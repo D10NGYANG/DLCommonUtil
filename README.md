@@ -13,6 +13,7 @@
 - [ByteArray](doc/ByteArray.md)
 - [Double](doc/Double.md)
 - [Float](doc/Float.md)
+- [Number(JS)](doc/Number.md)
 - [Int](doc/Int.md)
 - [Long](doc/Long.md)
 - [String](doc/String.md)

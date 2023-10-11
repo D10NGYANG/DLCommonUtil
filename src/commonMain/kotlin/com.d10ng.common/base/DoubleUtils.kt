@@ -1,8 +1,4 @@
-@file:JsExport
 package com.d10ng.common.base
-
-import kotlin.js.JsExport
-import kotlin.js.JsName
 
 /**
  * 将 Double 类型转字符串并最大保留指定位数的小数
@@ -13,5 +9,4 @@ import kotlin.js.JsName
  * @param maxDecimalCount [Int] 最大保留小数位数，不能小于0
  * @return [String] 字符串，如 "1.23"
  */
-@JsName("toStringByDouble")
 fun Double.toString(maxDecimalCount: Int) = toString().keep(maxDecimalCount)
