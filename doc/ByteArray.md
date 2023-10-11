@@ -19,7 +19,7 @@ String binaryString = ByteArrayUtilsKt.toBinString(new byte[]{0x33, 0x33}, false
 》js:
 ```js
 const DLCommon = require('dl-common-util').com.d10ng.common.base;
-const binaryString = DLCommon.toBinString([0x33, 0x33]);
+const binaryString = DLCommon.byteArrayToBinString([0x33, 0x33]);
 ```
 
 ## ② 转换为十六进制字符串
@@ -43,7 +43,7 @@ String hexString = ByteArrayUtilsKt.toHexString(new byte[]{0x33, 0x33}, false, t
 》js:
 ```js
 const DLCommon = require('dl-common-util').com.d10ng.common.base;
-const hexString = DLCommon.toHexString([0x33, 0x33]);
+const hexString = DLCommon.byteArrayToHexString([0x33, 0x33]);
 ```
 
 ## ③ 转换为无符号整数
@@ -60,7 +60,7 @@ int unsignedInt = ByteArrayUtilsKt.toUnsignedInt(new byte[]{(byte) 0xF1, (byte) 
 》js:
 ```js
 const DLCommon = require('dl-common-util').com.d10ng.common.base;
-const unsignedInt = DLCommon.toUnsignedInt([0xF1, 0xFF]);
+const unsignedInt = DLCommon.byteArrayToUnsignedInt([0xF1, 0xFF]);
 ```
 
 ## ④ 转换为无符号长整数
@@ -77,7 +77,7 @@ long unsignedLong = ByteArrayUtilsKt.toUnsignedLong(new byte[]{(byte) 0x01, (byt
 》js:
 ```js
 const DLCommon = require('dl-common-util').com.d10ng.common.base;
-const unsignedLong = DLCommon.toUnsignedLong([0x01, 0x8B, 0x0E, 0x7D, 0x65, 0xC8]);
+const unsignedLong = DLCommon.byteArrayToUnsignedLong([0x01, 0x8B, 0x0E, 0x7D, 0x65, 0xC8]);
 ```
 
 ## ⑤ 查找指定字节数组所在位置
@@ -95,7 +95,7 @@ int index = ByteArrayUtilsKt.indexOf(new byte[]{(byte) 0x01, (byte) 0x8B, (byte)
 》js:
 ```js
 const DLCommon = require('dl-common-util').com.d10ng.common.base;
-const index = DLCommon.indexOfByByteArray([0x01, 0x8B, 0x0E, 0x7D, 0x65, 0xC8], [0x0E, 0x7D]);
+const index = DLCommon.indexOfByteArray([0x01, 0x8B, 0x0E, 0x7D, 0x65, 0xC8], [0x0E, 0x7D]);
 ```
 
 ## ⑥ 从前端开始填充bytearray
@@ -118,7 +118,7 @@ byte[] bytes = ByteArrayUtilsKt.padStart(new byte[]{(byte) 0x01, (byte) 0x8B, (b
 》js:
 ```js
 const DLCommon = require('dl-common-util').com.d10ng.common.base;
-const bytes = DLCommon.padStartByByteArray([0x01, 0x8B, 0x0E, 0x7D, 0x65, 0xC8], 10);
+const bytes = DLCommon.byteArrayPadStart([0x01, 0x8B, 0x0E, 0x7D, 0x65, 0xC8], 10);
 ```
 
 ## ⑦ 从后端开始填充bytearray
@@ -141,7 +141,7 @@ byte[] bytes = ByteArrayUtilsKt.padEnd(new byte[]{(byte) 0x01, (byte) 0x8B, (byt
 》js:
 ```js
 const DLCommon = require('dl-common-util').com.d10ng.common.base;
-const bytes = DLCommon.padEndByByteArray([0x01, 0x8B, 0x0E, 0x7D, 0x65, 0xC8], 10);
+const bytes = DLCommon.byteArrayPadEnd([0x01, 0x8B, 0x0E, 0x7D, 0x65, 0xC8], 10);
 ```
 
 ## ⑧ 获取指定范围的比特位组成新的字节数组
@@ -162,5 +162,5 @@ byte[] bytes = ByteArrayUtilsKt.getBitRange(new byte[]{(byte) 0x33}, 0, 3);
 》js:
 ```js
 const DLCommon = require('dl-common-util').com.d10ng.common.base;
-const bytes = DLCommon.getBitRangeByByteArray([0x33], 0, 3);
+const bytes = DLCommon.byteArrayGetBitRange([0x33], 0, 3);
 ```

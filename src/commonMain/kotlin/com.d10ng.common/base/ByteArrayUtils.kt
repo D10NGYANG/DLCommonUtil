@@ -14,6 +14,7 @@ import kotlin.js.JsName
  * @param space [Boolean] 每个byte中间是否需要空格
  * @return [String]
  */
+@JsName("byteArrayToBinString")
 fun ByteArray.toBinString(space: Boolean = false): String {
     val builder = StringBuilder()
     for (byte in this) {
@@ -26,10 +27,11 @@ fun ByteArray.toBinString(space: Boolean = false): String {
 /**
  * 将 ByteArray 转为 2*N 16进制字符串 "fcfc"
  * @receiver [ByteArray]
- * @param space [Boolean] 是否需要空格
- * @param uppercase [Boolean] 是否需要大写
+ * @param space [Boolean] 是否需要空格，默认false不需要
+ * @param uppercase [Boolean] 是否需要大写，默认true需要
  * @return [String]
  */
+@JsName("byteArrayToHexString")
 fun ByteArray.toHexString(space: Boolean = false, uppercase: Boolean = true): String {
     val builder = StringBuilder()
     for (byte in this) {
@@ -41,20 +43,22 @@ fun ByteArray.toHexString(space: Boolean = false, uppercase: Boolean = true): St
 }
 
 /**
- * 将 byte 数组合并成无符号整型
+ * 将 Byte 数组合并成无符号整型
  * > Int 的最大值为 0x7FFFFFFF，超过这个值会返回-1
  * @receiver [ByteArray]
  * @return [Int]
  */
+@JsName("byteArrayToUnsignedInt")
 fun ByteArray.toUnsignedInt() = toUnsignedLong().toInt()
 
 /**
  * 将 Byte 数组合并成无符号长整型
- * > Long 的最大值为 0x7FFFFFFFFFFFFFFF
+ * > Long 的最大值为 0x7FFFFFFFFFFFFFFF，超过这个值会返回-1
  * @receiver [ByteArray]
  * @return [Long]
  */
 @Suppress("NON_EXPORTABLE_TYPE")
+@JsName("byteArrayToUnsignedLong")
 fun ByteArray.toUnsignedLong(): Long {
     if (isEmpty()) return 0L
     val buffer = PlatformBuffer.wrap(this)
@@ -72,7 +76,7 @@ fun ByteArray.toUnsignedLong(): Long {
  * @param bs [ByteArray] 检索ByteArray
  * @return [Int] 首个位置index
  */
-@JsName("indexOfByByteArray")
+@JsName("indexOfByteArray")
 fun ByteArray.indexOf(bs: ByteArray): Int {
     if (bs.isEmpty()) return -1
     if (bs.size > size) return -1
@@ -98,7 +102,7 @@ fun ByteArray.indexOf(bs: ByteArray): Int {
  * @param padByte [Byte] 填充物
  * @return [ByteArray] 填充后的ByteArray
  */
-@JsName("padStartByByteArray")
+@JsName("byteArrayPadStart")
 fun ByteArray.padStart(length: Int, padByte: Byte = 0x00): ByteArray {
     if (size >= length) return this.copyOfRange(size - length, size)
     val buf = PlatformBuffer.allocate(length)
@@ -118,7 +122,7 @@ fun ByteArray.padStart(length: Int, padByte: Byte = 0x00): ByteArray {
  * @param padByte [Byte] 填充物
  * @return [ByteArray] 填充后的ByteArray
  */
-@JsName("padEndByByteArray")
+@JsName("byteArrayPadEnd")
 fun ByteArray.padEnd(length: Int, padByte: Byte = 0x00): ByteArray {
     if (size >= length) return this.copyOfRange(0, length)
     val buf = PlatformBuffer.allocate(length)
@@ -137,7 +141,7 @@ fun ByteArray.padEnd(length: Int, padByte: Byte = 0x00): ByteArray {
  * @param offset [Int] 比特位长度
  * @return [ByteArray] 新的字节数组
  */
-@JsName("getBitRangeByByteArray")
+@JsName("byteArrayGetBitRange")
 fun ByteArray.getBitRange(start: Int, offset: Int): ByteArray {
     // 缓存区
     val buf = PlatformBuffer.wrap(this)
