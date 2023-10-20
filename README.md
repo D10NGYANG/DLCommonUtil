@@ -19,4 +19,7 @@
 - [Number(JS)](doc/Number.md)
 - [String](doc/String.md)
 
+### 2. 计算工具
+- [Checksum](doc/Checksum.md)
+
 

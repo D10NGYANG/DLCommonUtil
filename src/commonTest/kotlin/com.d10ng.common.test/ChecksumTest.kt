@@ -1,9 +1,9 @@
 package com.d10ng.common.test
 
-import com.d10ng.common.ChecksumType
-import com.d10ng.common.addChecksum
-import com.d10ng.common.assertChecksum
-import com.d10ng.common.getChecksum
+import com.d10ng.common.calculate.ChecksumType
+import com.d10ng.common.calculate.addChecksum
+import com.d10ng.common.calculate.assertChecksum
+import com.d10ng.common.calculate.getChecksum
 import kotlin.test.*
 
 class ChecksumTest {
