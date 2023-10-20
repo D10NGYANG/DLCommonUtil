@@ -41,11 +41,12 @@ fun String.toByteArrayFromBin(): ByteArray {
  * @receiver [String] 16进制字符串，如 "fc"
  * @return [Byte] 转换后的 Byte，如果转换失败则返回 0x00
  */
+@OptIn(ExperimentalStdlibApi::class)
 @JsName("hexStringToByte")
 fun String.toByteFromHex(): Byte {
     val value = this.keepByRegexStr("[A-Fa-f0-9]+")
     val str = value.padStart(2, '0')
-    return str.toInt(16).toByte()
+    return str.hexToByte()
 }
 
 /**
@@ -53,17 +54,14 @@ fun String.toByteFromHex(): Byte {
  * @receiver [String] 16进制字符串，可以包含空格，如 "fc fc"或"fcfc"
  * @return [ByteArray] 转换后的 ByteArray，如果转换失败则返回 byteArrayOf()
  */
+@OptIn(ExperimentalStdlibApi::class)
 @JsName("hexStringToByteArray")
 fun String.toByteArrayFromHex(): ByteArray {
     var value = this.keepByRegexStr("[A-Fa-f0-9]+")
     if (value.isEmpty()) return byteArrayOf()
     val length = ceil(value.length / 2.0).toInt()
     value = value.padStart(length * 2, '0')
-    val result = ByteArray(length)
-    for (i in 0 until length) {
-        result[i] = value.substring(i * 2, i * 2 + 2).toByteFromHex()
-    }
-    return result
+    return value.hexToByteArray()
 }
 
 /**

@@ -1,9 +1,8 @@
-package com.d10ng.common
+package com.d10ng.common.transform
 
 import com.d10ng.common.base.toByteArrayFromHex
 import com.d10ng.common.base.toHexString
 import kotlin.js.JsExport
-import kotlin.js.JsName
 
 /**
  * 将字符串转换成字节数组，编码格式为GBK
@@ -85,7 +84,7 @@ fun String.encodeUnicodeString(isNeedU: Boolean): String {
  * @return [String]
  */
 @JsExport
-fun ByteArray.decodeUnicodeByByteArray(): String = toHexString().decodeUnicode()
+fun ByteArray.decodeUnicode(): String = toHexString().decodeUnicodeString()
 
 /**
  * 将Unicode格式的16进制代码字符串转换成明文字符串，编码格式为Unicode
@@ -95,7 +94,7 @@ fun ByteArray.decodeUnicodeByByteArray(): String = toHexString().decodeUnicode()
  * @return [String]
  */
 @JsExport
-fun String.decodeUnicode(): String {
+fun String.decodeUnicodeString(): String {
     val value = this.replace("\\u", "").replace(" ", "")
     val regex = "[A-Fa-f0-9]+".toRegex()
     val isMatch = regex.matches(value)
@@ -149,7 +148,7 @@ fun String.encodeASCIIString(): String {
  * @return [String]
  */
 @JsExport
-fun String.decodeASCII(): String {
+fun String.decodeASCIIString(): String {
     val value = this.replace(" ", "")
     val regex = "[A-Fa-f0-9]+".toRegex()
     val isMatch = regex.matches(value)
@@ -172,5 +171,4 @@ fun String.decodeASCII(): String {
  * @return [String]
  */
 @JsExport
-@JsName("decodeASCIIByByteArray")
-fun ByteArray.decodeASCII(): String = toHexString().decodeASCII()
+fun ByteArray.decodeASCII(): String = toHexString().decodeASCIIString()

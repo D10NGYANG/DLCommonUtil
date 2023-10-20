@@ -3,6 +3,7 @@ import com.d10ng.common.base.toByteArray
 import com.d10ng.common.base.toByteArrayFromHex
 import com.d10ng.common.base.toHexString
 import com.d10ng.common.base.toUnsignedInt
+import com.d10ng.common.transform.*
 import kotlin.test.Test
 
 class Test {
@@ -20,7 +21,7 @@ class Test {
                 val gbkCode = byteArrayOf(i.toByte(), j.toByte())
                 val gbkText = gbkCode.decodeGBK()
                 val uniCode = gbkText.encodeUnicode()
-                val uniText = uniCode.decodeUnicodeByByteArray()
+                val uniText = uniCode.decodeUnicode()
                 l.add(CodePoint(toHex(gbkCode), gbkText, toHex(uniCode), uniText))
             }
         }
@@ -58,8 +59,8 @@ class Test {
             val asciiCode = byteArrayOf(i.toByte())
             val asciiText = asciiCode.decodeASCII()
             val uniCode = asciiText.encodeUnicode()
-            val uniText = uniCode.decodeUnicodeByByteArray()
-            val gbkCode = (uniCode.toUnsignedInt() + 0xFEE0).toByteArray().decodeUnicodeByByteArray().encodeGBK()
+            val uniText = uniCode.decodeUnicode()
+            val gbkCode = (uniCode.toUnsignedInt() + 0xFEE0).toByteArray().decodeUnicode().encodeGBK()
             val gbkText = gbkCode.decodeGBK()
             println("ASCII编码(${asciiCode.toHexString(false, uppercase = true)}) 内容(${asciiText}) | Unicode编码(${uniCode.toHexString(false, uppercase = true)}) 内容(${uniText}) | GBK编码(${gbkCode.toHexString(false, uppercase = true)}) 内容(${gbkText})")
         }
@@ -77,7 +78,7 @@ class Test {
             val asciiCode = byteArrayOf(i.toByte())
             val asciiText = asciiCode.decodeASCII()
             val uniCode = asciiText.encodeUnicode()
-            val uniText = uniCode.decodeUnicodeByByteArray()
+            val uniText = uniCode.decodeUnicode()
             val gbkCode = asciiText.encodeGBK()
             val gbkText = gbkCode.decodeGBK()
             if (gbkCode.size == 2) {
@@ -96,7 +97,7 @@ class Test {
                 val gbkCode = byteArrayOf(i.toByte(), j.toByte())
                 val gbkText = gbkCode.decodeGBK()
                 val uniCode = gbkText.encodeUnicode()
-                val uniText = uniCode.decodeUnicodeByByteArray()
+                val uniText = uniCode.decodeUnicode()
                 val less = gbkCode.toUnsignedInt() - uniCode.toUnsignedInt()
                 println("GBK编码(${gbkCode.toHexString(false, uppercase = true)}) 内容(${gbkText}) | Unicode编码(${uniCode.toHexString(false, uppercase = true)}) 内容(${uniText}) | 差值(${less})")
             }

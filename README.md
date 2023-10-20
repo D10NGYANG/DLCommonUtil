@@ -24,3 +24,4 @@
 
 ### 3. 转换工具
 - [Pinyin](doc/Pinyin.md)
+- [Charset](doc/Charset.md)

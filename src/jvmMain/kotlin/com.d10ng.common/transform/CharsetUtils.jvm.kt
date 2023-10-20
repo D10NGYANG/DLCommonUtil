@@ -1,4 +1,6 @@
-package com.d10ng.common
+package com.d10ng.common.transform
+
+import java.nio.charset.Charset
 
 /**
  * 将字符串转换成字节数组，编码格式为GBK
@@ -6,7 +8,7 @@ package com.d10ng.common
  * @return [ByteArray]
  */
 actual fun String.encodeGBKDo(): ByteArray {
-    return GBKHelper.getStringGBKByteArray(this)
+    return toByteArray(Charset.forName("GBK"))
 }
 
 /**
@@ -15,5 +17,5 @@ actual fun String.encodeGBKDo(): ByteArray {
  * @return [String]
  */
 actual fun ByteArray.decodeGBKDo(): String {
-    return GBKHelper.parseGBKByteArray2String(this)
+    return toString(Charset.forName("GBK"))
 }
