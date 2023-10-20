@@ -1,6 +1,5 @@
-package com.d10ng.common
+package com.d10ng.common.base
 
-import com.d10ng.common.base.toUnsignedInt
 import com.ditchoom.buffer.PlatformBuffer
 import kotlin.math.ceil
 
@@ -8,25 +7,25 @@ import kotlin.math.ceil
  * 获取指定范围的比特位组成新的字节数组
  * @receiver [PlatformBuffer] 原始字节数组
  * @param start [Int] 开始比特位置
- * @param offset [Int] 比特位长度
+ * @param length [Int] 比特位长度
  * @return [ByteArray] 新的字节数组
  */
-fun PlatformBuffer.getBitRange(start: Int, offset: Int): ByteArray {
-    if (offset <= 0) return byteArrayOf()
+fun PlatformBuffer.getBitRange(start: Int, length: Int): ByteArray {
+    if (length <= 0) return byteArrayOf()
     if (start < 0) throw IllegalArgumentException("start must be greater than 0")
-    if (start + offset > capacity * 8) throw IllegalArgumentException("start + offset must be less than capacity * 8")
+    if (start + length > capacity * 8) throw IllegalArgumentException("start + offset must be less than capacity * 8")
     // 右移位数
-    val right = (8 - (start + offset) % 8) % 8
+    val right = (8 - (start + length) % 8) % 8
     // 左侧清空位数
-    val left = (8 - offset % 8) % 8
+    val left = (8 - length % 8) % 8
     // 最终生成字节数组长度
-    val resSize = ceil(offset / 8.0).toInt()
+    val resSize = ceil(length / 8.0).toInt()
     // 字节数组
     val result = ByteArray(resSize)
     // 开始的字节位置
     val startByteIdx = start / 8
     // 结束字节位置
-    val endByteIdx = ceil((start + offset) / 8.0).toInt()
+    val endByteIdx = ceil((start + length) / 8.0).toInt()
     // 缓存区
     val buf = this
     // 原始字节数据长度

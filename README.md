@@ -11,6 +11,7 @@
 ### 1. 基础类型
 - [Byte](doc/Byte.md)
 - [ByteArray](doc/ByteArray.md)
+- [ByteBuffer](doc/ByteBuffer.md)
 - [Double](doc/Double.md)
 - [Float](doc/Float.md)
 - [Int](doc/Int.md)

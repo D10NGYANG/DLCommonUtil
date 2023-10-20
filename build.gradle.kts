@@ -6,7 +6,7 @@ plugins {
     kotlin("multiplatform") version "1.9.10"
     id("maven-publish")
     id("dev.petuska.npm.publish") version "3.4.1"
-    id("com.github.ben-manes.versions") version "0.48.0"
+    id("com.github.ben-manes.versions") version "0.49.0"
 }
 
 group = "com.github.D10NGYANG"
@@ -42,7 +42,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 // ByteBuffer
-                implementation("com.ditchoom:buffer:1.3.6")
+                api("com.ditchoom:buffer:1.3.6")
             }
         }
         val commonTest by getting {

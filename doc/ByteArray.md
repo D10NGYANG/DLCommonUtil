@@ -147,7 +147,7 @@ const bytes = DLCommon.byteArrayPadEnd([0x01, 0x8B, 0x0E, 0x7D, 0x65, 0xC8], 10)
 ## ⑧ 获取指定范围的比特位组成新的字节数组
 > 从 ByteArray 中获取指定范围的 bit 组成新的 ByteArray。如从 0x53 中获取 3..6 位，返回 0x09。
 > - @param start [Int] 开始比特位置
-> - @param offset [Int] 比特位长度
+> - @param length [Int] 比特位长度
 
 》kotlin:
 ```kotlin

@@ -1,7 +1,6 @@
 @file:JsExport
 package com.d10ng.common.base
 
-import com.d10ng.common.getBitRange
 import kotlin.js.JsExport
 import com.ditchoom.buffer.PlatformBuffer
 import com.ditchoom.buffer.allocate
@@ -138,12 +137,12 @@ fun ByteArray.padEnd(length: Int, padByte: Byte = 0x00): ByteArray {
  * 获取指定范围的比特位组成新的字节数组
  * @receiver [ByteArray] 原始字节数组
  * @param start [Int] 开始比特位置
- * @param offset [Int] 比特位长度
+ * @param length [Int] 比特位长度
  * @return [ByteArray] 新的字节数组
  */
 @JsName("byteArrayGetBitRange")
-fun ByteArray.getBitRange(start: Int, offset: Int): ByteArray {
+fun ByteArray.getBitRange(start: Int, length: Int): ByteArray {
     // 缓存区
     val buf = PlatformBuffer.wrap(this)
-    return buf.getBitRange(start, offset)
+    return buf.getBitRange(start, length)
 }
