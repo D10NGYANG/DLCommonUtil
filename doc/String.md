@@ -14,8 +14,8 @@ byte byte = StringUtilsKt.toByteFromBin("00110011");
 ```
 》js:
 ```js
-const DLCommon = require('dl-common-util').com.d10ng.common.base;
-const byte = DLCommon.binStringToByte("00110011");
+const base = require('dl-common-util').com.d10ng.common.base;
+const byte = base.binStringToByte("00110011");
 ```
 
 ## ② 将二进制字符串转为ByteArray
@@ -31,8 +31,8 @@ byte[] byteArray = StringUtilsKt.toByteArrayFromBin("0011001100110011");
 ```
 》js:
 ```js
-const DLCommon = require('dl-common-util').com.d10ng.common.base;
-const byteArray = DLCommon.binStringToByteArray("0011001100110011");
+const base = require('dl-common-util').com.d10ng.common.base;
+const byteArray = base.binStringToByteArray("0011001100110011");
 ```
 
 ## ③ 将十六进制字符串转为Byte
@@ -48,8 +48,8 @@ byte byte = StringUtilsKt.toByteFromHex("fc");
 ```
 》js:
 ```js
-const DLCommon = require('dl-common-util').com.d10ng.common.base;
-const byte = DLCommon.hexStringToByte("fc");
+const base = require('dl-common-util').com.d10ng.common.base;
+const byte = base.hexStringToByte("fc");
 ```
 
 ## ④ 将十六进制字符串转为ByteArray
@@ -65,8 +65,8 @@ byte[] byteArray = StringUtilsKt.toByteArrayFromHex("fcfc");
 ```
 》js:
 ```js
-const DLCommon = require('dl-common-util').com.d10ng.common.base;
-const byteArray = DLCommon.hexStringToByteArray("fcfc");
+const base = require('dl-common-util').com.d10ng.common.base;
+const byteArray = base.hexStringToByteArray("fcfc");
 ```
 
 ## ⑤ 计算字符串的字节长度
@@ -82,8 +82,8 @@ int length = StringUtilsKt.getByteLength("我是中国人123ABC"); // 16
 ```
 》js:
 ```js
-const DLCommon = require('dl-common-util').com.d10ng.common.base;
-const length = DLCommon.getStringByteLength("我是中国人123ABC"); // 16
+const base = require('dl-common-util').com.d10ng.common.base;
+const length = base.getStringByteLength("我是中国人123ABC"); // 16
 ```
 
 ## ⑥ 获取字符串的第一个字并转换成大写的
@@ -98,6 +98,6 @@ String firstChar = StringUtilsKt.getFirstUpperCase("abc"); // "A"
 ```
 》js:
 ```js
-const DLCommon = require('dl-common-util').com.d10ng.common.base;
-const firstChar = DLCommon.getStringFirstUpperCase("abc"); // "A"
+const base = require('dl-common-util').com.d10ng.common.base;
+const firstChar = base.getStringFirstUpperCase("abc"); // "A"
 ```

@@ -1,7 +1,7 @@
 @file:JsExport
 package com.d10ng.common.base
 
-import com.d10ng.common.keepByRegexStr
+import com.d10ng.common.calculate.keepByRegexStr
 import kotlin.js.JsExport
 import kotlin.js.JsName
 import kotlin.math.ceil

@@ -15,8 +15,8 @@ String binaryString = ByteUtilsKt.toBinString((byte) 0b10111101);
 ```
 》js:
 ```js
-const DLCommon = require('dl-common-util').com.d10ng.common.base;
-const binaryString = DLCommon.byteToBinString(0b10111101);
+const base = require('dl-common-util').com.d10ng.common.base;
+const binaryString = base.byteToBinString(0b10111101);
 ```
 
 ## ② 转换为十六进制字符串
@@ -37,8 +37,8 @@ String hexString = ByteUtilsKt.toHexString((byte) 0xBD, true);
 ```
 》js:
 ```js
-const DLCommon = require('dl-common-util').com.d10ng.common.base;
-const hexString = DLCommon.byteToHexString(0xBD);
+const base = require('dl-common-util').com.d10ng.common.base;
+const hexString = base.byteToHexString(0xBD);
 ```
 
 ## ③ 转换为无符号整数
@@ -54,8 +54,8 @@ int unsignedInt = ByteUtilsKt.toUnsignedInt((byte) 0xFF);
 ```
 》js:
 ```js
-const DLCommon = require('dl-common-util').com.d10ng.common.base;
-const unsignedInt = DLCommon.byteToUnsignedInt(0xFF);
+const base = require('dl-common-util').com.d10ng.common.base;
+const unsignedInt = base.byteToUnsignedInt(0xFF);
 ```
 
 ## ④ 获取指定位置的比特值
@@ -72,6 +72,6 @@ int bit = ByteUtilsKt.getBit((byte) 0b10001101, 3); // 1
 ```
 》js:
 ```js
-const DLCommon = require('dl-common-util').com.d10ng.common.base;
-const bit = DLCommon.byteGetBit(0b10001101, 3); // 1
+const base = require('dl-common-util').com.d10ng.common.base;
+const bit = base.byteGetBit(0b10001101, 3); // 1
 ```

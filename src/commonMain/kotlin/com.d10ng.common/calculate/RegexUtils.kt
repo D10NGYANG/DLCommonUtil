@@ -1,4 +1,4 @@
-package com.d10ng.common
+package com.d10ng.common.calculate
 
 import kotlin.js.JsExport
 

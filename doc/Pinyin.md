@@ -17,8 +17,8 @@ String res = PinyinUtilsKt.toPinyin("你好", " "); // NI HAO
 ```
 》js:
 ```js
-const DLCommon = require('dl-common-util').com.d10ng.common.transform;
-const res = DLCommon.toPinyin('你好'); // NIHAO
+const transform = require('dl-common-util').com.d10ng.common.transform;
+const res = transform.toPinyin('你好'); // NIHAO
 // 指定分隔符
-const res = DLCommon.toPinyin('你好', ' '); // NI HAO
+const res = transform.toPinyin('你好', ' '); // NI HAO
 ```

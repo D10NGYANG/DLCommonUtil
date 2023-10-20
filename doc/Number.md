@@ -9,9 +9,9 @@
 
 》js:
 ```js
-const DLCommon = require('dl-common-util').com.d10ng.common.base;
+const base = require('dl-common-util').com.d10ng.common.base;
 // 保留2位小数，"3.14"
-const str = DLCommon.numberToString(3.1415926, 2);
+const str = base.numberToString(3.1415926, 2);
 ```
 
 ## ② 转换为字节数组
@@ -23,9 +23,9 @@ const str = DLCommon.numberToString(3.1415926, 2);
 
 》js:
 ```js
-const DLCommon = require('dl-common-util').com.d10ng.common.base;
+const base = require('dl-common-util').com.d10ng.common.base;
 // 默认为0，自动计算字节数，[0xF1, 0xFF]
-const byteArray = DLCommon.numberToByteArray(0xF1FF);
+const byteArray = base.numberToByteArray(0xF1FF);
 // 设置为3，[0x00, 0xF1, 0xFF]
-const byteArray = DLCommon.numberToByteArray(0xF1FF, 3);
+const byteArray = base.numberToByteArray(0xF1FF, 3);
 ```

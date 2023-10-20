@@ -22,10 +22,10 @@ boolean res = ChecksumUtilsKt.assertChecksum(new byte[]{0x01, 0x02, 0x03, 0x04, 
 ```
 》js:
 ```js
-const DLCommon = require('dl-common-util').com.d10ng.common.calculate;
-const res = DLCommon.assertChecksum([0x01, 0x02, 0x03, 0x04, 0x04]); // true
+const calculate = require('dl-common-util').com.d10ng.common.calculate;
+const res = calculate.assertChecksum([0x01, 0x02, 0x03, 0x04, 0x04]); // true
 // 使用指定的校验方式
-const res = DLCommon.assertChecksum([0x01, 0x02, 0x03, 0x04, 0x04], DLCommon.ChecksumType.XOR);
+const res = calculate.assertChecksum([0x01, 0x02, 0x03, 0x04, 0x04], calculate.ChecksumType.XOR);
 ```
 
 ## ② 计算校验和
@@ -48,12 +48,12 @@ byte res = ChecksumUtilsKt.getChecksum(new byte[]{0x01, 0x02, 0x03, 0x04}, Check
 ```
 》js:
 ```js
-const DLCommon = require('dl-common-util').com.d10ng.common.calculate;
-const res = DLCommon.getChecksum([0x01, 0x02, 0x03, 0x04]); // 0x04
+const calculate = require('dl-common-util').com.d10ng.common.calculate;
+const res = calculate.getChecksum([0x01, 0x02, 0x03, 0x04]); // 0x04
 // 使用指定的校验方式
-const res = DLCommon.getChecksum([0x01, 0x02, 0x03, 0x04], DLCommon.ChecksumType.XOR); // 0x04
+const res = calculate.getChecksum([0x01, 0x02, 0x03, 0x04], calculate.ChecksumType.XOR); // 0x04
 // 指定开始位置与长度
-const res = DLCommon.getChecksum([0x00, 0x01, 0x02, 0x03, 0x04], DLCommon.ChecksumType.XOR, 1, 4); // 0x04
+const res = calculate.getChecksum([0x00, 0x01, 0x02, 0x03, 0x04], calculate.ChecksumType.XOR, 1, 4); // 0x04
 ```
 
 ## ③ 添加校验和
@@ -72,8 +72,8 @@ byte[] res = ChecksumUtilsKt.addChecksum(new byte[]{0x01, 0x02, 0x03, 0x04}, Che
 ```
 》js:
 ```js
-const DLCommon = require('dl-common-util').com.d10ng.common.calculate;
-const res = DLCommon.addChecksum([0x01, 0x02, 0x03, 0x04]); // 0x01, 0x02, 0x03, 0x04, 0x04
+const calculate = require('dl-common-util').com.d10ng.common.calculate;
+const res = calculate.addChecksum([0x01, 0x02, 0x03, 0x04]); // 0x01, 0x02, 0x03, 0x04, 0x04
 // 使用指定的校验方式
-const res = DLCommon.addChecksum([0x01, 0x02, 0x03, 0x04], DLCommon.ChecksumType.XOR); // 0x01, 0x02, 0x03, 0x04, 0x04
+const res = calculate.addChecksum([0x01, 0x02, 0x03, 0x04], calculate.ChecksumType.XOR); // 0x01, 0x02, 0x03, 0x04, 0x04
 ```
