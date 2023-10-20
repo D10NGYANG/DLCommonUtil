@@ -22,4 +22,5 @@
 ### 2. 计算工具
 - [Checksum](doc/Checksum.md)
 
-
+### 3. 转换工具
+- [Pinyin](doc/Pinyin.md)
