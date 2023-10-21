@@ -196,3 +196,19 @@ boolean isOnlyChSymbol = RegexUtilsKt.isOnlyChSymbol("中文，。"); // true
 const regex = require('dl-common-util').com.d10ng.common.calculate;
 const isOnlyChSymbol = regex.isOnlyChSymbol("中文，。"); // true
 ```
+
+## ⑬ 判断字符串是否为颜色字符串
+
+》kotlin:
+```kotlin
+val isColor = "#FFFFFF".isColor() // true
+```
+》java:
+```java
+boolean isColor = RegexUtilsKt.isColor("#FFFFFF"); // true
+```
+》js:
+```js
+const regex = require('dl-common-util').com.d10ng.common.calculate;
+const isColor = regex.isColor("#FFFFFF"); // true
+```

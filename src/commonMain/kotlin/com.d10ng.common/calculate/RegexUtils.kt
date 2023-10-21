@@ -22,6 +22,8 @@ val idCardRegex = "^[1-9]\\d{5}(?:18|19|20)\\d{2}(?:0[1-9]|10|11|12)(?:0[1-9]|[1
 val mobileNumberRegex = "^1[1-9]\\d{9}$".toRegex()
 // 邮箱正则表达式
 val emailRegex = "^[A-Za-z0-9\\u4e00-\\u9fa5]+@[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(?:\\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+\$".toRegex()
+// 颜色字符串正则表达式
+val colorRegex = "^#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$".toRegex()
 
 /**
  * 利用正则表达式保留字符串
@@ -146,3 +148,12 @@ fun String.isOnlyCode() = codeRegex.matches(this)
  */
 @JsExport
 fun String.isOnlyChSymbol() = chSymbolRegex.matches(this)
+
+/**
+ * 判断字符串是否为颜色字符串
+ *
+ * @receiver [String]
+ * @return [Boolean]
+ */
+@JsExport
+fun String.isColor() = colorRegex.matches(this)
