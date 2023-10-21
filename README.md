@@ -9,21 +9,21 @@
 
 ## ② 使用
 ### 1. 基础类型
-- [Byte](doc/Byte.md)
-- [ByteArray](doc/ByteArray.md)
-- [ByteBuffer](doc/ByteBuffer.md)
-- [Double](doc/Double.md)
-- [Float](doc/Float.md)
-- [Int](doc/Int.md)
-- [Long](doc/Long.md)
-- [Number(JS)](doc/Number.md)
-- [String](doc/String.md)
+- [字节 Byte](doc/Byte.md)
+- [字节数组 ByteArray](doc/ByteArray.md)
+- [字节缓存区 ByteBuffer](doc/ByteBuffer.md)
+- [双精度浮点型 Double](doc/Double.md)
+- [单精度浮点型 Float](doc/Float.md)
+- [整型 Int](doc/Int.md)
+- [长整型 Long](doc/Long.md)
+- [数字 Number(JS)](doc/Number.md)
+- [字符串 String](doc/String.md)
 
 ### 2. 计算工具
-- [Checksum](doc/Checksum.md)
-- [Color](doc/Color.md)
-- [Regex](doc/Regex.md)
+- [校验和 Checksum](doc/Checksum.md)
+- [颜色 Color](doc/Color.md)
+- [正则 Regex](doc/Regex.md)
 
 ### 3. 转换工具
-- [Pinyin](doc/Pinyin.md)
-- [Charset](doc/Charset.md)
+- [拼音 Pinyin](doc/Pinyin.md)
+- [编码 Charset](doc/Charset.md)
