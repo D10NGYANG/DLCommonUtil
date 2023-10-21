@@ -21,6 +21,7 @@
 
 ### 2. 计算工具
 - [Checksum](doc/Checksum.md)
+- [Color](doc/Color.md)
 - [Regex](doc/Regex.md)
 
 ### 3. 转换工具
