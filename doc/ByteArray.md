@@ -2,8 +2,10 @@
 > 字节数组处理工具
 
 ## ① 转换为二进制字符串
-> 将 ByteArray 转为 8*N 二进制字符串 "00110011"。
-> - @param space [Boolean] 每个byte中间是否需要空格，默认为false
+> > 将 ByteArray 转为 8*N 二进制字符串 "00110011"。
+> - @receiver [ByteArray] 原始字节数组
+> - @param space [Boolean] 每个byte中间是否需要空格
+> - @return [String] 二进制字符串
 
 》kotlin:
 ```kotlin
@@ -18,14 +20,16 @@ String binaryString = ByteArrayUtilsKt.toBinString(new byte[]{0x33, 0x33}, false
 ```
 》js:
 ```js
-const base = require('dl-common-util').com.d10ng.common.base;
-const binaryString = base.byteArrayToBinString([0x33, 0x33]);
+const DLBase = require('dl-common-util').com.d10ng.common.base;
+const binaryString = DLBase.byteArrayToBinString([0x33, 0x33]);
 ```
 
 ## ② 转换为十六进制字符串
-> 将 ByteArray 转为 2*N 16进制字符串 "FC13"。
-> - @param space [Boolean] 每个byte中间是否需要空格，默认为false
-> - @param uppercase [Boolean] 是否需要大写，默认为true
+> > 将 ByteArray 转为 2*N 16进制字符串 "FC13"。
+> - @receiver [ByteArray] 原始字节数组
+> - @param space [Boolean] 是否需要空格，默认false不需要
+> - @param uppercase [Boolean] 是否需要大写，默认true需要
+> - @return [String] 16进制字符串
 
 》kotlin:
 ```kotlin
@@ -42,12 +46,15 @@ String hexString = ByteArrayUtilsKt.toHexString(new byte[]{0xfc, 0x13}, false, t
 ```
 》js:
 ```js
-const base = require('dl-common-util').com.d10ng.common.base;
-const hexString = base.byteArrayToHexString([0xfc, 0x13]);
+const DLBase = require('dl-common-util').com.d10ng.common.base;
+const hexString = DLBase.byteArrayToHexString([0xfc, 0x13]);
 ```
 
 ## ③ 转换为无符号整数
-> 将 ByteArray 0xF1FF 转为 无符号整数 61951。
+> > 将 ByteArray 0xF1FF 转为 无符号整数 61951。\
+> > Int 的最大值为 0x7FFFFFFF，超过这个值会返回-1。
+> - @receiver [ByteArray] 原始字节数组
+> - @return [Int] 合并后的整型
 
 》kotlin:
 ```kotlin
@@ -59,12 +66,15 @@ int unsignedInt = ByteArrayUtilsKt.toUnsignedInt(new byte[]{(byte) 0xF1, (byte) 
 ```
 》js:
 ```js
-const base = require('dl-common-util').com.d10ng.common.base;
-const unsignedInt = base.byteArrayToUnsignedInt([0xF1, 0xFF]);
+const DLBase = require('dl-common-util').com.d10ng.common.base;
+const unsignedInt = DLBase.byteArrayToUnsignedInt([0xF1, 0xFF]);
 ```
 
 ## ④ 转换为无符号长整数
-> 将 ByteArray 0x018B0E7D65C8 转为 无符号长整数 1696755181000。
+> > 将 ByteArray 0x018B0E7D65C8 转为 无符号长整数 1696755181000。 \
+> > Long 的最大值为 0x7FFFFFFFFFFFFFFF，超过这个值会返回-1
+> - @receiver [ByteArray] 原始字节数组
+> - @return [Long] 合并后的长整型
 
 》kotlin:
 ```kotlin
@@ -76,13 +86,15 @@ long unsignedLong = ByteArrayUtilsKt.toUnsignedLong(new byte[]{(byte) 0x01, (byt
 ```
 》js:
 ```js
-const base = require('dl-common-util').com.d10ng.common.base;
-const unsignedLong = base.byteArrayToUnsignedLong([0x01, 0x8B, 0x0E, 0x7D, 0x65, 0xC8]);
+const DLBase = require('dl-common-util').com.d10ng.common.base;
+const unsignedLong = DLBase.byteArrayToUnsignedLong([0x01, 0x8B, 0x0E, 0x7D, 0x65, 0xC8]);
 ```
 
 ## ⑤ 查找指定字节数组所在位置
-> 在 ByteArray 中查找指定字节数组所在位置，返回第一个匹配的位置，未找到返回-1。
+> > 在 ByteArray 中查找指定字节数组所在位置，返回第一个匹配的位置，未找到返回-1。
+> - @receiver [ByteArray] 输入ByteArray
 > - @param bs [ByteArray] 检索ByteArray
+> - @return [Int] 首个位置index
 
 》kotlin:
 ```kotlin
@@ -94,14 +106,16 @@ int index = ByteArrayUtilsKt.indexOf(new byte[]{(byte) 0x01, (byte) 0x8B, (byte)
 ```
 》js:
 ```js
-const base = require('dl-common-util').com.d10ng.common.base;
-const index = base.indexOfByteArray([0x01, 0x8B, 0x0E, 0x7D, 0x65, 0xC8], [0x0E, 0x7D]);
+const DLBase = require('dl-common-util').com.d10ng.common.base;
+const index = DLBase.indexOfByteArray([0x01, 0x8B, 0x0E, 0x7D, 0x65, 0xC8], [0x0E, 0x7D]);
 ```
 
 ## ⑥ 从前端开始填充bytearray
-> 使用指定Byte将ByteArray填充到指定长度，从前端开始填充。
+> > 使用指定Byte将ByteArray填充到指定长度，从前端开始填充。
+> - @receiver [ByteArray] 原始ByteArray
 > - @param length [Int] 需要填充到的长度
-> - @param padByte [Byte] 填充物，默认为0x00
+> - @param padByte [Byte] 填充物，默认0x00
+> - @return [ByteArray] 填充后的ByteArray
 
 》kotlin:
 ```kotlin
@@ -117,14 +131,16 @@ byte[] bytes = ByteArrayUtilsKt.padStart(new byte[]{(byte) 0x01, (byte) 0x8B, (b
 ```
 》js:
 ```js
-const base = require('dl-common-util').com.d10ng.common.base;
-const bytes = base.byteArrayPadStart([0x01, 0x8B, 0x0E, 0x7D, 0x65, 0xC8], 10);
+const DLBase = require('dl-common-util').com.d10ng.common.base;
+const bytes = DLBase.byteArrayPadStart([0x01, 0x8B, 0x0E, 0x7D, 0x65, 0xC8], 10);
 ```
 
 ## ⑦ 从后端开始填充bytearray
-> 使用指定Byte将ByteArray填充到指定长度，从后端开始填充。
+> > 使用指定Byte将ByteArray填充到指定长度，从后端开始填充。
+> - @receiver [ByteArray] 原始ByteArray
 > - @param length [Int] 需要填充到的长度
-> - @param padByte [Byte] 填充物，默认为0x00
+> - @param padByte [Byte] 填充物，默认0x00
+> - @return [ByteArray] 填充后的ByteArray
 
 》kotlin:
 ```kotlin
@@ -140,14 +156,16 @@ byte[] bytes = ByteArrayUtilsKt.padEnd(new byte[]{(byte) 0x01, (byte) 0x8B, (byt
 ```
 》js:
 ```js
-const base = require('dl-common-util').com.d10ng.common.base;
-const bytes = base.byteArrayPadEnd([0x01, 0x8B, 0x0E, 0x7D, 0x65, 0xC8], 10);
+const DLBase = require('dl-common-util').com.d10ng.common.base;
+const bytes = DLBase.byteArrayPadEnd([0x01, 0x8B, 0x0E, 0x7D, 0x65, 0xC8], 10);
 ```
 
 ## ⑧ 获取指定范围的比特位组成新的字节数组
-> 从 ByteArray 中获取指定范围的 bit 组成新的 ByteArray。如从 0x53 中获取 3..6 位，返回 0x09。
+> > 从 ByteArray 中获取指定范围的 bit 组成新的 ByteArray。如从 0x53 中获取 3..6 位，返回 0x09。
+> - @receiver [ByteArray] 原始字节数组
 > - @param start [Int] 开始比特位置
 > - @param length [Int] 比特位长度
+> - @return [ByteArray] 新的字节数组
 
 》kotlin:
 ```kotlin
@@ -161,6 +179,6 @@ byte[] bytes = ByteArrayUtilsKt.getBitRange(new byte[]{(byte) 0x53}, 3, 4);
 ```
 》js:
 ```js
-const base = require('dl-common-util').com.d10ng.common.base;
-const bytes = base.byteArrayGetBitRange([0x53], 3, 4);
+const DLBase = require('dl-common-util').com.d10ng.common.base;
+const bytes = DLBase.byteArrayGetBitRange([0x53], 3, 4);
 ```

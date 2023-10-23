@@ -19,7 +19,7 @@ fun isDarkColor(color: String): Boolean {
  * 获取颜色的下一个等级颜色，或深色或浅色
  * @param color [String] 颜色值，如#45216B
  * @param level [Double] -1.0～1.0，当为-1.0时，返回纯黑色，当为1.0时，返回纯白色
- * @return [String] #45216B
+ * @return [String] 颜色值，如#45216B
  */
 fun getNextLevelColor(color: String, level: Double): String {
     val target = if (level > 0) "#FFFFFF" else "#000000"

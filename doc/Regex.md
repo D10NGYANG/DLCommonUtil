@@ -2,8 +2,10 @@
 > 正则表达式工具
 
 ## ① 保留正则表达式匹配的内容
-> 利用正则表达式保留字符串。
+> > 利用正则表达式保留字符串。
+> - @receiver [String] 字符串
 > - @param regStr [String] 正则表达式字符串
+> - @return [String] 保留后的字符串
 
 》kotlin:
 ```kotlin
@@ -15,13 +17,15 @@ String str = RegexUtilsKt.keepByRegexStr("123ABC", "[0-9]+"); // 123
 ```
 》js:
 ```js
-const transform = require('dl-common-util').com.d10ng.common.calculate;
-const str = transform.keepByRegexStr("123ABC", "[0-9]+"); // 123
+const DLCalculate = require('dl-common-util').com.d10ng.common.calculate;
+const str = DLCalculate.keepByRegexStr("123ABC", "[0-9]+"); // 123
 ```
 
 ## ② 过滤正则表达式匹配的内容
-> 利用正则表达式过滤字符串。
+> > 利用正则表达式过滤字符串。
+> - @receiver [String] 字符串
 > - @param regStr [String] 正则表达式字符串
+> - @return [String] 过滤后的字符串
 
 》kotlin:
 ```kotlin
@@ -33,8 +37,8 @@ String str = RegexUtilsKt.filterByRegexStr("123ABC", "[0-9]+"); // ABC
 ```
 》js:
 ```js
-const transform = require('dl-common-util').com.d10ng.common.calculate;
-const str = transform.filterByRegexStr("123ABC", "[0-9]+"); // ABC
+const DLCalculate = require('dl-common-util').com.d10ng.common.calculate;
+const str = DLCalculate.filterByRegexStr("123ABC", "[0-9]+"); // ABC
 ```
 
 ## ③ 判断字符串是否符合身份证规则
@@ -49,8 +53,8 @@ boolean isIdCard = RegexUtilsKt.isIdCard("123456789012345678"); // false
 ```
 》js:
 ```js
-const regex = require('dl-common-util').com.d10ng.common.calculate;
-const isIdCard = regex.isIdCard("123456789012345678"); // false
+const DLRegex = require('dl-common-util').com.d10ng.common.calculate;
+const isIdCard = DLRegex.isIdCard("123456789012345678"); // false
 ```
 
 ## ④ 判断字符串是否符合手机号规则
@@ -65,8 +69,8 @@ boolean isMobileNumber = RegexUtilsKt.isMobileNumber("13106673302"); // true
 ```
 》js:
 ```js
-const regex = require('dl-common-util').com.d10ng.common.calculate;
-const isMobileNumber = regex.isMobileNumber("13106673302"); // true
+const DLRegex = require('dl-common-util').com.d10ng.common.calculate;
+const isMobileNumber = DLRegex.isMobileNumber("13106673302"); // true
 ```
 
 ## ⑤ 判断字符串是否符合邮箱规则
@@ -81,8 +85,8 @@ boolean isEmail = RegexUtilsKt.isEmail("1111@163.com"); // true
 ```
 》js:
 ```js
-const regex = require('dl-common-util').com.d10ng.common.calculate;
-const isEmail = regex.isEmail("1111@163.com"); // true
+const DLRegex = require('dl-common-util').com.d10ng.common.calculate;
+const isEmail = DLRegex.isEmail("1111@163.com"); // true
 ```
 
 ## ⑥ 判断字符串是否只有中英文数字，不包含特殊字符
@@ -97,8 +101,8 @@ boolean isOnlyChEnNum = RegexUtilsKt.isOnlyChEnNum("中文123ABC"); // true
 ```
 》js:
 ```js
-const regex = require('dl-common-util').com.d10ng.common.calculate;
-const isOnlyChEnNum = regex.isOnlyChEnNum("中文123ABC"); // true
+const DLRegex = require('dl-common-util').com.d10ng.common.calculate;
+const isOnlyChEnNum = DLRegex.isOnlyChEnNum("中文123ABC"); // true
 ```
 
 ## ⑦ 判断字符串是否只有英文数字，不包含特殊字符
@@ -113,8 +117,8 @@ boolean isOnlyEnNum = RegexUtilsKt.isOnlyEnNum("123ABC"); // true
 ```
 》js:
 ```js
-const regex = require('dl-common-util').com.d10ng.common.calculate;
-const isOnlyEnNum = regex.isOnlyEnNum("123ABC"); // true
+const DLRegex = require('dl-common-util').com.d10ng.common.calculate;
+const isOnlyEnNum = DLRegex.isOnlyEnNum("123ABC"); // true
 ```
 
 ## ⑧ 判断字符串是否只有汉字
@@ -129,8 +133,8 @@ boolean isOnlyChinese = RegexUtilsKt.isOnlyChinese("中文"); // true
 ```
 》js:
 ```js
-const regex = require('dl-common-util').com.d10ng.common.calculate;
-const isOnlyChinese = regex.isOnlyChinese("中文"); // true
+const DLRegex = require('dl-common-util').com.d10ng.common.calculate;
+const isOnlyChinese = DLRegex.isOnlyChinese("中文"); // true
 ```
 
 ## ⑨ 判断字符串是否只有字母
@@ -145,8 +149,8 @@ boolean isOnlyLetter = RegexUtilsKt.isOnlyLetter("ABC"); // true
 ```
 》js:
 ```js
-const regex = require('dl-common-util').com.d10ng.common.calculate;
-const isOnlyLetter = regex.isOnlyLetter("ABC"); // true
+const DLRegex = require('dl-common-util').com.d10ng.common.calculate;
+const isOnlyLetter = DLRegex.isOnlyLetter("ABC"); // true
 ```
 
 ## ⑩ 判断字符串是否只有数字
@@ -161,8 +165,8 @@ boolean isOnlyNumber = RegexUtilsKt.isOnlyNumber("123"); // true
 ```
 》js:
 ```js
-const regex = require('dl-common-util').com.d10ng.common.calculate;
-const isOnlyNumber = regex.isOnlyNumber("123"); // true
+const DLRegex = require('dl-common-util').com.d10ng.common.calculate;
+const isOnlyNumber = DLRegex.isOnlyNumber("123"); // true
 ```
 
 ## ⑪ 判断字符串是否只有代码
@@ -177,8 +181,8 @@ boolean isOnlyCode = RegexUtilsKt.isOnlyCode("123ABCabc"); // true
 ```
 》js:
 ```js
-const regex = require('dl-common-util').com.d10ng.common.calculate;
-const isOnlyCode = regex.isOnlyCode("123ABCabc"); // true
+const DLRegex = require('dl-common-util').com.d10ng.common.calculate;
+const isOnlyCode = DLRegex.isOnlyCode("123ABCabc"); // true
 ```
 
 ## ⑫ 判断字符串是否只有汉字和全角符号
@@ -193,8 +197,8 @@ boolean isOnlyChSymbol = RegexUtilsKt.isOnlyChSymbol("中文，。"); // true
 ```
 》js:
 ```js
-const regex = require('dl-common-util').com.d10ng.common.calculate;
-const isOnlyChSymbol = regex.isOnlyChSymbol("中文，。"); // true
+const DLRegex = require('dl-common-util').com.d10ng.common.calculate;
+const isOnlyChSymbol = DLRegex.isOnlyChSymbol("中文，。"); // true
 ```
 
 ## ⑬ 判断字符串是否为颜色字符串
@@ -209,6 +213,6 @@ boolean isColor = RegexUtilsKt.isColor("#FFFFFF"); // true
 ```
 》js:
 ```js
-const regex = require('dl-common-util').com.d10ng.common.calculate;
-const isColor = regex.isColor("#FFFFFF"); // true
+const DLRegex = require('dl-common-util').com.d10ng.common.calculate;
+const isColor = DLRegex.isColor("#FFFFFF"); // true
 ```

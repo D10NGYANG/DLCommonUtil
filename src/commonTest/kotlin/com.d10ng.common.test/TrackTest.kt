@@ -5,7 +5,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class CoordinateCalculateTest {
+class TrackTest {
 
     @Test
     fun testGetDistanceAndBearing() {

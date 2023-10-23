@@ -7,8 +7,10 @@
 - XOR：异或校验
 
 ## ① 校验校验和
-> 从字节数组中检验校验和，其中最后一位为校验和。
+> > 从字节数组中检验校验和，其中最后一位为校验和
+> - @receiver [ByteArray] 字节数组
 > - @param type [ChecksumType] 计算方式，默认异或校验；
+> - @return [Boolean] true:检验成功; false:检验失败;
 
 》kotlin:
 ```kotlin
@@ -22,17 +24,19 @@ boolean res = ChecksumUtilsKt.assertChecksum(new byte[]{0x01, 0x02, 0x03, 0x04, 
 ```
 》js:
 ```js
-const calculate = require('dl-common-util').com.d10ng.common.calculate;
-const res = calculate.assertChecksum([0x01, 0x02, 0x03, 0x04, 0x04]); // true
+const DLCalculate = require('dl-common-util').com.d10ng.common.calculate;
+const ChecksumType = DLCalculate.ChecksumType;
+const res = DLCalculate.assertChecksum([0x01, 0x02, 0x03, 0x04, 0x04]); // true
 // 使用指定的校验方式
-const res = calculate.assertChecksum([0x01, 0x02, 0x03, 0x04, 0x04], calculate.ChecksumType.XOR);
+const res = DLCalculate.assertChecksum([0x01, 0x02, 0x03, 0x04, 0x04], ChecksumType.XOR);
 ```
 
 ## ② 计算校验和
-> 计算字节数组的校验和，返回校验和字节。
+> > 计算字节数组的校验和，返回校验和字节。
 > - @param type [ChecksumType] 计算方式，默认异或校验；
 > - @param start [Int] 开始位置
 > - @param length [Int] 长度
+> - @return [Byte] 校验和
 
 》kotlin:
 ```kotlin
@@ -48,17 +52,19 @@ byte res = ChecksumUtilsKt.getChecksum(new byte[]{0x01, 0x02, 0x03, 0x04}, Check
 ```
 》js:
 ```js
-const calculate = require('dl-common-util').com.d10ng.common.calculate;
-const res = calculate.getChecksum([0x01, 0x02, 0x03, 0x04]); // 0x04
+const DLCalculate = require('dl-common-util').com.d10ng.common.calculate;
+const ChecksumType = DLCalculate.ChecksumType;
+const res = DLCalculate.getChecksum([0x01, 0x02, 0x03, 0x04]); // 0x04
 // 使用指定的校验方式
-const res = calculate.getChecksum([0x01, 0x02, 0x03, 0x04], calculate.ChecksumType.XOR); // 0x04
+const res = DLCalculate.getChecksum([0x01, 0x02, 0x03, 0x04], ChecksumType.XOR); // 0x04
 // 指定开始位置与长度
-const res = calculate.getChecksum([0x00, 0x01, 0x02, 0x03, 0x04], calculate.ChecksumType.XOR, 1, 4); // 0x04
+const res = DLCalculate.getChecksum([0x00, 0x01, 0x02, 0x03, 0x04], ChecksumType.XOR, 1, 4); // 0x04
 ```
 
 ## ③ 添加校验和
-> 在字节数组最后添加校验和。
+> > 在字节数组最后添加校验和。
 > - @param type [ChecksumType] 计算方式，默认异或校验；
+> - @return [ByteArray] 增加较验和后的字节数组
 
 》kotlin:
 ```kotlin
@@ -72,8 +78,9 @@ byte[] res = ChecksumUtilsKt.addChecksum(new byte[]{0x01, 0x02, 0x03, 0x04}, Che
 ```
 》js:
 ```js
-const calculate = require('dl-common-util').com.d10ng.common.calculate;
-const res = calculate.addChecksum([0x01, 0x02, 0x03, 0x04]); // 0x01, 0x02, 0x03, 0x04, 0x04
+const DLCalculate = require('dl-common-util').com.d10ng.common.calculate;
+const ChecksumType = DLCalculate.ChecksumType;
+const res = DLCalculate.addChecksum([0x01, 0x02, 0x03, 0x04]); // 0x01, 0x02, 0x03, 0x04, 0x04
 // 使用指定的校验方式
-const res = calculate.addChecksum([0x01, 0x02, 0x03, 0x04], calculate.ChecksumType.XOR); // 0x01, 0x02, 0x03, 0x04, 0x04
+const res = DLCalculate.addChecksum([0x01, 0x02, 0x03, 0x04], ChecksumType.XOR); // 0x01, 0x02, 0x03, 0x04, 0x04
 ```

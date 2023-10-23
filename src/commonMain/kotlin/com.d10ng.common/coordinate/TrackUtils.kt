@@ -74,7 +74,7 @@ fun getDistanceAndBearing(point1: Coordinate, point2: Coordinate): DistanceAndBe
  * 计算两点之间的距离，单位为米
  * @param point1 [Coordinate] 起点
  * @param point2 [Coordinate] 终点
- * @param highPrecision [Boolean] 是否使用高精度计算，高精度计算会使用Vincenty算法，低精度计算会使用Haversine算法
+ * @param highPrecision [Boolean] 是否使用高精度计算，默认为false，高精度计算会使用Vincenty算法，低精度计算会使用Haversine算法
  * @return [Double] 距离，单位为米
  */
 fun getDistanceOn2Points(point1: Coordinate, point2: Coordinate, highPrecision: Boolean = false): Double {
@@ -107,7 +107,7 @@ fun toDegrees(radian: Double) = radian * 180 / PI
  * @param point [Coordinate] 待判断坐标点
  * @param center [Coordinate] 圆圈中心点
  * @param radius [Double] 圆圈半径
- * @return [Boolean]
+ * @return [Boolean] 是否在圆内，true为在圆内，false为不在圆内
  */
 fun isPointInCircle(point: Coordinate, center: Coordinate, radius: Double) = getDistanceOn2Points(point, center) <= radius
 
@@ -115,7 +115,7 @@ fun isPointInCircle(point: Coordinate, center: Coordinate, radius: Double) = get
  * 计算两个坐标点之间的夹角，单位度
  * @param point1 [Coordinate] 起点
  * @param point2 [Coordinate] 终点
- * @param highPrecision [Boolean] 是否使用高精度计算，高精度计算会使用Vincenty算法，低精度计算会使用Haversine算法
+ * @param highPrecision [Boolean] 是否使用高精度计算，默认为false，高精度计算会使用Vincenty算法，低精度计算会使用Haversine算法
  * @return [Double] 夹角，单位度
  */
 fun getAngleOn2Points(point1: Coordinate, point2: Coordinate, highPrecision: Boolean = false): Double {
@@ -140,7 +140,7 @@ fun getAngleOn2Points(point1: Coordinate, point2: Coordinate, highPrecision: Boo
  * @param point1 [Coordinate] 起点
  * @param point2 [Coordinate] 终点
  * @param present [Float] 百分比 0.0～1.0
- * @return [Coordinate]
+ * @return [Coordinate] 中间坐标
  */
 fun getPointOn2Points(point1: Coordinate, point2: Coordinate, present: Float): Coordinate {
     if (present <= 0) return point1.copy()
@@ -152,8 +152,8 @@ fun getPointOn2Points(point1: Coordinate, point2: Coordinate, present: Float): C
 
 /**
  * 计算一段轨迹的总距离，单位为米
- * @param points [Array<Coordinate>]
- * @return [Double]
+ * @param points [Array<Coordinate>] 轨迹
+ * @return [Double] 总距离，单位为米
  */
 fun getTotalDistance(points: Array<Coordinate>): Double {
     var total = 0.0

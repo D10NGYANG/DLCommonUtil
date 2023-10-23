@@ -81,8 +81,8 @@ fun String.getByteLength(): Int {
 
 /**
  * 获取字符串的第一个字并转换成大写的
- * @receiver [String]
- * @return [String]
+ * @receiver [String] 字符串
+ * @return [String] 第一个字的大写
  */
 @JsName("getStringFirstUpperCase")
 fun String.getFirstUpperCase(): String {

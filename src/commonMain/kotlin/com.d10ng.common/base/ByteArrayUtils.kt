@@ -9,9 +9,9 @@ import kotlin.js.JsName
 
 /**
  * 将 ByteArray 转为 8*N 二进制字符串 "00110011"
- * @receiver [ByteArray]
+ * @receiver [ByteArray] 原始字节数组
  * @param space [Boolean] 每个byte中间是否需要空格
- * @return [String]
+ * @return [String] 二进制字符串
  */
 @JsName("byteArrayToBinString")
 fun ByteArray.toBinString(space: Boolean = false): String {
@@ -25,10 +25,10 @@ fun ByteArray.toBinString(space: Boolean = false): String {
 
 /**
  * 将 ByteArray 转为 2*N 16进制字符串 "fcfc"
- * @receiver [ByteArray]
+ * @receiver [ByteArray] 原始字节数组
  * @param space [Boolean] 是否需要空格，默认false不需要
  * @param uppercase [Boolean] 是否需要大写，默认true需要
- * @return [String]
+ * @return [String] 16进制字符串
  */
 @JsName("byteArrayToHexString")
 fun ByteArray.toHexString(space: Boolean = false, uppercase: Boolean = true): String {
@@ -44,8 +44,8 @@ fun ByteArray.toHexString(space: Boolean = false, uppercase: Boolean = true): St
 /**
  * 将 Byte 数组合并成无符号整型
  * > Int 的最大值为 0x7FFFFFFF，超过这个值会返回-1
- * @receiver [ByteArray]
- * @return [Int]
+ * @receiver [ByteArray] 原始字节数组
+ * @return [Int] 合并后的整型
  */
 @JsName("byteArrayToUnsignedInt")
 fun ByteArray.toUnsignedInt() = toUnsignedLong().toInt()
@@ -53,8 +53,8 @@ fun ByteArray.toUnsignedInt() = toUnsignedLong().toInt()
 /**
  * 将 Byte 数组合并成无符号长整型
  * > Long 的最大值为 0x7FFFFFFFFFFFFFFF，超过这个值会返回-1
- * @receiver [ByteArray]
- * @return [Long]
+ * @receiver [ByteArray] 原始字节数组
+ * @return [Long] 合并后的长整型
  */
 @Suppress("NON_EXPORTABLE_TYPE")
 @JsName("byteArrayToUnsignedLong")
@@ -98,7 +98,7 @@ fun ByteArray.indexOf(bs: ByteArray): Int {
  * 使用指定Byte将ByteArray填充到指定长度，从前端开始填充。
  * @receiver [ByteArray] 原始ByteArray
  * @param length [Int] 需要填充到的长度
- * @param padByte [Byte] 填充物
+ * @param padByte [Byte] 填充物，默认0x00
  * @return [ByteArray] 填充后的ByteArray
  */
 @JsName("byteArrayPadStart")
@@ -118,7 +118,7 @@ fun ByteArray.padStart(length: Int, padByte: Byte = 0x00): ByteArray {
  * 使用指定Byte将ByteArray填充到指定长度，从后端开始填充。
  * @receiver [ByteArray] 原始ByteArray
  * @param length [Int] 需要填充到的长度
- * @param padByte [Byte] 填充物
+ * @param padByte [Byte] 填充物，默认0x00
  * @return [ByteArray] 填充后的ByteArray
  */
 @JsName("byteArrayPadEnd")

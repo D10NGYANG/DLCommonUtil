@@ -27,9 +27,9 @@ val colorRegex = "^#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$".toRegex()
 
 /**
  * 利用正则表达式保留字符串
- * @receiver [String]
+ * @receiver [String] 字符串
  * @param regStr [String] 正则表达式字符串
- * @return [String]
+ * @return [String] 保留后的字符串
  */
 @JsExport
 fun String.keepByRegexStr(regStr: String) = keep(regStr.toRegex())
@@ -44,9 +44,9 @@ fun String.keep(reg: Regex) = reg.findAll(this).map { it.value }.joinToString(""
 
 /**
  * 利用正则表达式过滤字符串
- * @receiver [String]
- * @param regStr [String]
- * @return [String]
+ * @receiver [String] 字符串
+ * @param regStr [String] 正则表达式字符串
+ * @return [String] 过滤后的字符串
  */
 @JsExport
 fun String.filterByRegexStr(regStr: String) = filter(regStr.toRegex())

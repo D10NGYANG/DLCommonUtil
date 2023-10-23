@@ -6,54 +6,54 @@ import kotlin.js.JsExport
 
 /**
  * 将字符串转换成字节数组，编码格式为GBK
- * @receiver [String]
- * @return [ByteArray]
+ * @receiver [String] 字符串
+ * @return [ByteArray] GBK编码的字节数组
  */
 @JsExport
 fun String.encodeGBK(): ByteArray = encodeGBKDo()
 
 /**
  * 将字符串转换成字节数组，编码格式为GBK
- * @receiver [String]
- * @return [ByteArray]
+ * @receiver [String] 字符串
+ * @return [ByteArray] GBK编码的字节数组
  */
 expect fun String.encodeGBKDo(): ByteArray
 
 /**
  * 将字节数组转换成字符串，编码格式为GBK
- * @receiver [ByteArray]
- * @return [String]
+ * @receiver [ByteArray] GBK编码的字节数组
+ * @return [String] 字符串
  */
 @JsExport
 fun ByteArray.decodeGBK(): String = decodeGBKDo()
 
 /**
  * 将字节数组转换成字符串，编码格式为GBK
- * @receiver [ByteArray]
- * @return [String]
+ * @receiver [ByteArray] GBK编码的字节数组
+ * @return [String] 字符串
  */
 expect fun ByteArray.decodeGBKDo(): String
 
 /**
  * 将字符串转换成字节数组，编码格式为UTF8
- * @receiver [String]
- * @return [ByteArray]
+ * @receiver [String] 字符串
+ * @return [ByteArray] UTF8编码的字节数组
  */
 @JsExport
 fun String.encodeUTF8(): ByteArray = encodeToByteArray()
 
 /**
  * 将字节数组转换成字符串，编码格式为UTF8
- * @receiver [ByteArray]
- * @return [String]
+ * @receiver [ByteArray] UTF8编码的字节数组
+ * @return [String] 字符串
  */
 @JsExport
 fun ByteArray.decodeUTF8(): String = decodeToString()
 
 /**
  * 将字符串转换成字节数组，编码格式为Unicode
- * @receiver [String]
- * @return [ByteArray]
+ * @receiver [String] 字符串
+ * @return [ByteArray] Unicode编码的字节数组
  */
 @JsExport
 fun String.encodeUnicode(): ByteArray {
@@ -63,12 +63,12 @@ fun String.encodeUnicode(): ByteArray {
 
 /**
  * 将字符串转换成Unicode格式的16进制代码字符串，编码格式为Unicode
- * @receiver [String]
+ * @receiver [String] 字符串
  * @param isNeedU [Boolean] 是否需要带"\\u"，默认true
- * @return [String]
+ * @return [String] Unicode格式的16进制代码字符串
  */
 @JsExport
-fun String.encodeUnicodeString(isNeedU: Boolean): String {
+fun String.encodeUnicodeString(isNeedU: Boolean = true): String {
     val builder = StringBuilder()
     for (c in this.iterator()) {
         val item = c.code.toString(16)
@@ -80,8 +80,8 @@ fun String.encodeUnicodeString(isNeedU: Boolean): String {
 
 /**
  * 将字节数组转换成字符串，编码格式为Unicode
- * @receiver [String]
- * @return [String]
+ * @receiver [ByteArray] Unicode编码的字节数组
+ * @return [String] 字符串
  */
 @JsExport
 fun ByteArray.decodeUnicode(): String = toHexString().decodeUnicodeString()
@@ -90,8 +90,8 @@ fun ByteArray.decodeUnicode(): String = toHexString().decodeUnicodeString()
  * 将Unicode格式的16进制代码字符串转换成明文字符串，编码格式为Unicode
  * - 可以带"\\u"，也可以不带"\\u"
  * - 字符串中可以带空格
- * @receiver [String]
- * @return [String]
+ * @receiver [String] Unicode格式的16进制代码字符串
+ * @return [String] 明文字符串
  */
 @JsExport
 fun String.decodeUnicodeString(): String {
@@ -117,8 +117,8 @@ fun String.decodeUnicodeString(): String {
 
 /**
  * 将字符串转换成字节数组，编码格式为ASCII
- * @receiver [String]
- * @return [ByteArray]
+ * @receiver [String] 字符串
+ * @return [ByteArray] ASCII编码的字节数组
  */
 @JsExport
 fun String.encodeASCII(): ByteArray = encodeASCIIString().toByteArrayFromHex()
@@ -126,8 +126,8 @@ fun String.encodeASCII(): ByteArray = encodeASCIIString().toByteArrayFromHex()
 /**
  * 将 明文字符串 转换成 ASCII格式的16进制代码字符串
  * - ASCII 只支持英文数字和英文符号
- * @receiver [String]
- * @return [String]
+ * @receiver [String] 明文字符串
+ * @return [String] ASCII格式的16进制代码字符串
  */
 @JsExport
 fun String.encodeASCIIString(): String {
@@ -143,9 +143,17 @@ fun String.encodeASCIIString(): String {
 }
 
 /**
+ * 将 ASCII格式的字节数组 转换成 明文字符串
+ * @receiver [ByteArray] ASCII格式的字节数组
+ * @return [String] 明文字符串
+ */
+@JsExport
+fun ByteArray.decodeASCII(): String = toHexString().decodeASCIIString()
+
+/**
  * 将 ASCII格式的16进制代码字符串 转换成 明文字符串
- * @receiver [String]
- * @return [String]
+ * @receiver [String] ASCII格式的16进制代码字符串
+ * @return [String] 明文字符串
  */
 @JsExport
 fun String.decodeASCIIString(): String {
@@ -164,11 +172,3 @@ fun String.decodeASCIIString(): String {
     }
     return builder.toString()
 }
-
-/**
- * 将 ASCII格式的字节数组 转换成 明文字符串
- * @receiver [ByteArray]
- * @return [String]
- */
-@JsExport
-fun ByteArray.decodeASCII(): String = toHexString().decodeASCIIString()

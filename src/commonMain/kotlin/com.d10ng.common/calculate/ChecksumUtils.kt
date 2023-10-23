@@ -17,7 +17,7 @@ enum class ChecksumType {
 
 /**
  * 从字节数组中检验校验和，其中最后一位为校验和
- * @receiver [ByteArray]
+ * @receiver [ByteArray] 字节数组
  * @param type [ChecksumType] 计算方式，默认异或校验；
  * @return [Boolean] true:检验成功; false:检验失败;
  */
@@ -30,7 +30,7 @@ fun ByteArray.assertChecksum(type: ChecksumType = ChecksumType.XOR) : Boolean {
 
 /**
  * 获取校验和
- * @param type [ChecksumType] 计算方式
+ * @param type [ChecksumType] 计算方式，默认异或校验；
  * @param start [Int] 开始位置
  * @param length [Int] 长度
  * @return [Byte] 校验和
@@ -50,7 +50,7 @@ fun ByteArray.getChecksum(type: ChecksumType = ChecksumType.XOR, start: Int = 0,
 
 /**
  * 添加校验和
- * @param type [ChecksumType] 计算方式
+ * @param type [ChecksumType] 计算方式，默认异或校验；
  * @return [ByteArray] 增加较验和后的字节数组
  */
 fun ByteArray.addChecksum(type: ChecksumType = ChecksumType.XOR) = plus(this.getChecksum(type))

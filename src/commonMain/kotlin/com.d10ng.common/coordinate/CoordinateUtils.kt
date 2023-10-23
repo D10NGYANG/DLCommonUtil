@@ -47,7 +47,7 @@ fun Coordinate.convert(from: CoordinateSystemType, to: CoordinateSystemType): Co
 
 /**
  * 判断经度数据是否为东经
- * @receiver [Double]
+ * @receiver [Double] 经度数据
  * @return [Boolean] true: 东经；false: 西经
  */
 fun Double.isEastLongitude() = this in 0.0..180.0
