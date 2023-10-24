@@ -1,11 +1,10 @@
 # DLCommonUtil
 基于kotlin多平台的常用数据类型转换工具类库，目前支持`Android`、`JVM`、`IOS`、`JS`；
 
-*最新版本：`0.0.2`*
-
-> 说明文档未完善，敬请期待
+*最新版本：`0.0.3`*
 
 ## ① 安装
+> 请查看`WIKI`文档。
 
 ## ② 使用
 ### 1. 基础类型
@@ -31,3 +30,6 @@
 ### 4. 经纬度工具
 - [经纬度坐标 Coordinate](doc/Coordinate.md)
 - [轨迹算法 Track](doc/Track.md)
+
+## ③ TODO
+- [ ] 增加IOS平台库打包、增加IOS代码示例；
