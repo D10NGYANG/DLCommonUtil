@@ -4,6 +4,10 @@ import com.d10ng.common.base.toHexString
 import com.d10ng.common.base.toUnsignedInt
 import com.d10ng.common.calculate.chSymbolRegex
 import com.d10ng.common.transform.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.io.*
 import kotlin.test.Test
 
 class Test {
@@ -55,6 +59,7 @@ class Test {
     @Test
     fun test2() {
         val v = 0x20 .. 0x7E
+        val sb = StringBuilder("str")
         for (i in v) {
             val asciiCode = byteArrayOf(i.toByte())
             val asciiText = asciiCode.decodeASCII()
@@ -62,8 +67,12 @@ class Test {
             val uniText = uniCode.decodeUnicode()
             val gbkCode = (uniCode.toUnsignedInt() + 0xFEE0).toByteArray().decodeUnicode().encodeGBK()
             val gbkText = gbkCode.decodeGBK()
-            println("ASCII编码(${asciiCode.toHexString(false, uppercase = true)}) 内容(${asciiText}) | Unicode编码(${uniCode.toHexString(false, uppercase = true)}) 内容(${uniText}) | GBK编码(${gbkCode.toHexString(false, uppercase = true)}) 内容(${gbkText})")
+            if (gbkCode.size == 2) {
+                println("ASCII编码(${asciiCode.toHexString()}) 内容(${asciiText}) | Unicode编码(${uniCode.toHexString()}) 内容(${uniText}) | GBK编码(${gbkCode.toHexString()}) 内容(${gbkText})")
+                sb.appendLine(".replace(\"${asciiText}\", \"${gbkText}\")")
+            }
         }
+        println(sb.toString())
     }
 
     @Test
@@ -74,6 +83,7 @@ class Test {
     @Test
     fun test4() {
         val v = 0x0080 .. 0x00ff
+        val sb = StringBuilder("str")
         for (i in v) {
             val asciiCode = byteArrayOf(i.toByte())
             val asciiText = asciiCode.decodeASCII()
@@ -83,8 +93,10 @@ class Test {
             val gbkText = gbkCode.decodeGBK()
             if (gbkCode.size == 2) {
                 println("ASCII编码(${asciiCode.toHexString(false, uppercase = true)}) 内容(${asciiText}) | Unicode编码(${uniCode.toHexString(false, uppercase = true)}) 内容(${uniText}) | GBK编码(${gbkCode.toHexString(false, uppercase = true)}) 内容(${gbkText})")
+                sb.appendLine(".replace(\"${asciiText}\", \"${gbkText}\")")
             }
         }
+        println(sb.toString())
     }
 
     @Test
@@ -102,5 +114,88 @@ class Test {
                 println("GBK编码(${gbkCode.toHexString(false, uppercase = true)}) 内容(${gbkText}) | Unicode编码(${uniCode.toHexString(false, uppercase = true)}) 内容(${uniText}) | 差值(${less})")
             }
         }
+    }
+
+    @Test
+    fun test6() {
+        val str = "中文测试,https://baidu.com,hello?"
+        println(str.toFullWidth())
+    }
+
+    fun String.toFullWidth(): String {
+        val sb = StringBuilder()
+        for (c in this) {
+            if (c.code in 33..126) {
+                sb.append((c.code + 65248).toChar())
+            } else if (c.code == 32) {
+                sb.append("　")
+            } else {
+                sb.append(c)
+            }
+        }
+        return sb.toString()
+    }
+
+    @Test
+    fun test1111(): Unit = runBlocking {
+        CoroutineScope(Dispatchers.IO).launch {
+            val s = 8
+            for (i in 0x0000 .. 0xFFFF step s) {
+                val data = ByteArray(s + 2)
+                for (j in i until i + s) {
+                    data[j - i] = j.toByte()
+                }
+                data[s] = 0x0D
+                data[s + 1] = 0x0A
+                TestBuffer.write(data)
+                println("写入完成,${data.toHexString()}")
+                delay(1)
+            }
+        }
+        CoroutineScope(Dispatchers.IO).launch {
+            while (true) {
+                val buffer = try {
+                    TestBuffer.read()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    println("读取完成")
+                    break
+                }
+                if (buffer.isNotEmpty()) println(buffer.toHexString())
+            }
+        }
+        delay(1000)
+    }
+}
+
+object TestBuffer {
+
+    val buf = Buffer()
+
+    private val mutex = Mutex()
+
+    suspend fun write(data: ByteArray) {
+        mutex.withLock {
+            buf.write(data)
+        }
+    }
+
+    suspend fun read(): ByteArray {
+        val data = Buffer()
+        var last = 0x00.toByte()
+        while (true) {
+            val b = mutex.withLock {
+                if (buf.size == 0L) return@withLock null
+                buf.readByte()
+            }
+            if (b == null) {
+                delay(1)
+                continue
+            }
+            data.writeByte(b)
+            if (b == 0x0A.toByte() && last == 0x0D.toByte()) break
+            last = b
+        }
+        return data.readByteArray()
     }
 }

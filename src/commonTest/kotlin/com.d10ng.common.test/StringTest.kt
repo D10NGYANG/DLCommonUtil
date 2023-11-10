@@ -138,4 +138,18 @@ class StringTest {
             assertEquals(firstUpperCase, str.getFirstUpperCase())
         }
     }
+
+    @Test
+    fun testToFullWidthString() {
+        mapOf(
+            "123" to "１２３",
+            "a" to "ａ",
+            "A" to "Ａ",
+            "abc" to "ａｂｃ",
+            "Abc" to "Ａｂｃ",
+            "我de" to "我ｄｅ",
+        ).forEach { (str, fullWidthString) ->
+            assertEquals(fullWidthString, str.toFullWidthString())
+        }
+    }
 }

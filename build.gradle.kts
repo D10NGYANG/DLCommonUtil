@@ -3,14 +3,14 @@ val bds100MavenPassword: String by project
 val npmJsToken: String by project
 
 plugins {
-    kotlin("multiplatform") version "1.9.10"
+    kotlin("multiplatform") version "1.9.20"
     id("maven-publish")
     id("dev.petuska.npm.publish") version "3.4.1"
     id("com.github.ben-manes.versions") version "0.49.0"
 }
 
 group = "com.github.D10NGYANG"
-version = "0.0.3"
+version = "0.0.4"
 
 repositories {
     mavenCentral()
@@ -28,11 +28,9 @@ kotlin {
         nodejs()
         generateTypeScriptDefinitions()
     }
-    ios {
-        binaries {
-            framework {}
-        }
-    }
+    iosArm64()
+    iosSimulatorArm64()
+
     sourceSets {
         all {
             languageSettings.apply {
@@ -42,12 +40,15 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 // ByteBuffer
-                api("com.ditchoom:buffer:1.3.6")
+                api("com.ditchoom:buffer:1.3.7")
             }
         }
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.3.0")
+                // 协程
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:+")
             }
         }
         val jvmMain by getting {

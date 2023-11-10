@@ -112,3 +112,21 @@ String firstChar = StringUtilsKt.getFirstUpperCase("abc"); // "A"
 const DLBase = require('dl-common-util').com.d10ng.common.base;
 const firstChar = DLBase.getStringFirstUpperCase("abc"); // "A"
 ```
+
+## ⑦ 将字符串中的半角字符转换成全角字符
+> - @receiver [String] 字符串
+> - @return [String] 转换后的字符串
+
+》kotlin:
+```kotlin
+val str = "abc".toFullWidthString() // "ａｂｃ"
+```
+》java:
+```java
+String str = StringUtilsKt.toFullWidthString("abc"); // "ａｂｃ"
+```
+》js:
+```js
+const DLBase = require('dl-common-util').com.d10ng.common.base;
+const str = DLBase.stringToFullWidthString("abc"); // "ａｂｃ"
+```

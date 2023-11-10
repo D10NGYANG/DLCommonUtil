@@ -89,3 +89,21 @@ fun String.getFirstUpperCase(): String {
     return if (this.isEmpty()) ""
     else this[0].uppercase()
 }
+
+/**
+ * 将字符串中的半角字符转换成全角字符
+ * @receiver [String] 字符串
+ * @return [String] 转换后的字符串
+ */
+@JsName("stringToFullWidthString")
+fun String.toFullWidthString(): String {
+    val sb = StringBuilder()
+    for (c in this) {
+        when (c.code) {
+            in 33..126 -> sb.append((c.code + 65248).toChar())
+            32 -> sb.append("　")
+            else -> sb.append(c)
+        }
+    }
+    return sb.toString()
+}
