@@ -4,22 +4,26 @@ val npmJsToken: String by project
 
 plugins {
     kotlin("multiplatform") version "1.9.20"
+    id("com.android.library")
     id("maven-publish")
     id("dev.petuska.npm.publish") version "3.4.1"
-    id("com.github.ben-manes.versions") version "0.49.0"
+    id("com.github.ben-manes.versions") version "0.50.0"
 }
 
 group = "com.github.D10NGYANG"
-version = "0.0.4"
+version = "0.0.5"
 
 repositories {
+    google()
     mavenCentral()
 }
 
 kotlin {
+    androidTarget {
+        publishLibraryVariants("release")
+    }
     jvm {
         jvmToolchain(8)
-        withJava()
     }
     js(IR) {
         moduleName = "dl-common-util"
@@ -37,13 +41,13 @@ kotlin {
                 optIn("kotlin.js.ExperimentalJsExport")
             }
         }
-        val commonMain by getting {
+        commonMain {
             dependencies {
                 // ByteBuffer
                 api("com.ditchoom:buffer:1.3.7")
             }
         }
-        val commonTest by getting {
+        commonTest {
             dependencies {
                 implementation(kotlin("test"))
                 implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.3.0")
@@ -51,13 +55,19 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:+")
             }
         }
-        val jvmMain by getting {
+        jvmMain {
             dependencies {
                 // 拼音处理
                 api("io.github.biezhi:TinyPinyin:2.0.3.RELEASE")
             }
         }
-        val jsMain by getting {
+        androidMain {
+            dependencies {
+                // 拼音处理
+                api("io.github.biezhi:TinyPinyin:2.0.3.RELEASE")
+            }
+        }
+        jsMain {
             dependencies {
                 // 拼音处理
                 api(npm("pinyin-pro", "3.16.3"))
@@ -66,7 +76,26 @@ kotlin {
     }
 }
 
+android {
+    compileSdk = 34
+    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    defaultConfig {
+        minSdk = 24
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+    namespace = "$group.${rootProject.name}"
+}
+
+val javadocJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
+    archiveClassifier.set("javadoc")
+}
+
 publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            artifact(tasks["javadocJar"])
+        }
+    }
     repositories {
         maven {
             url = uri("/Users/d10ng/project/kotlin/maven-repo/repository")
