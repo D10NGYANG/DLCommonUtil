@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "com.github.D10NGYANG"
-version = "0.0.5"
+version = "0.0.6"
 
 repositories {
     google()
@@ -21,9 +21,15 @@ repositories {
 kotlin {
     androidTarget {
         publishLibraryVariants("release")
+        jvmToolchain(8)
     }
     jvm {
-        jvmToolchain(8)
+        compilations.all {
+            kotlinOptions.jvmTarget = "1.8"
+        }
+        testRuns["test"].executionTask.configure {
+            useJUnit()
+        }
     }
     js(IR) {
         moduleName = "dl-common-util"
@@ -78,12 +84,17 @@ kotlin {
 
 android {
     compileSdk = 34
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
+    namespace = "$group.${rootProject.name}"
+
     defaultConfig {
         minSdk = 24
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-    namespace = "$group.${rootProject.name}"
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
 }
 
 val javadocJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
@@ -91,10 +102,8 @@ val javadocJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
 }
 
 publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            artifact(tasks["javadocJar"])
-        }
+    publications.withType(MavenPublication::class) {
+        artifact(tasks["javadocJar"])
     }
     repositories {
         maven {
