@@ -11,3 +11,7 @@ fun Number.toByteArray(size: Int = 0) = when (this) {
     is Long -> toByteArray(size)
     else -> throw IllegalArgumentException("Number must be Int or Long")
 }
+
+@JsExport
+@Suppress("NON_EXPORTABLE_TYPE")
+fun Number.asLong() = this.toLong()

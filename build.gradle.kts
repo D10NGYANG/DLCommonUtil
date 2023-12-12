@@ -3,7 +3,7 @@ val bds100MavenPassword: String by project
 val npmJsToken: String by project
 
 plugins {
-    kotlin("multiplatform") version "1.9.20"
+    kotlin("multiplatform") version "1.9.21"
     id("com.android.library")
     id("maven-publish")
     id("dev.petuska.npm.publish") version "3.4.1"
@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "com.github.D10NGYANG"
-version = "0.0.6"
+version = "0.0.7"
 
 repositories {
     google()
@@ -58,7 +58,7 @@ kotlin {
                 implementation(kotlin("test"))
                 implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.3.0")
                 // 协程
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:+")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
             }
         }
         jvmMain {

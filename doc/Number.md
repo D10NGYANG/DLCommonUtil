@@ -28,3 +28,10 @@ const byteArray = DLBase.numberToByteArray(0xF1FF);
 // 设置为3，[0x00, 0xF1, 0xFF]
 const byteArray = DLBase.numberToByteArray(0xF1FF, 3);
 ```
+
+## ③ 转换为长整形
+》js:
+```js
+const DLBase = require('dl-common-util').com.d10ng.common.base;
+const longValue = DLBase.asLong(0xF1FF);
+```
