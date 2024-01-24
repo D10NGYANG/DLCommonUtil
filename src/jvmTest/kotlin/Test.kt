@@ -3,6 +3,7 @@ import com.d10ng.common.base.toByteArrayFromHex
 import com.d10ng.common.base.toHexString
 import com.d10ng.common.base.toUnsignedInt
 import com.d10ng.common.calculate.chSymbolRegex
+import com.d10ng.common.calculate.getChecksum
 import com.d10ng.common.transform.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
@@ -53,7 +54,8 @@ class Test {
 
     @Test
     fun test1() {
-        println("".encodeGBK().toHexString(false, true))
+        println("CCTXA,你".encodeGBK().toHexString())
+        println("CCTXA,你".encodeGBK().getChecksum().toHexString())
     }
 
     @Test

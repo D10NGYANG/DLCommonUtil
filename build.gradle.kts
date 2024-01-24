@@ -3,15 +3,15 @@ val bds100MavenPassword: String by project
 val npmJsToken: String by project
 
 plugins {
-    kotlin("multiplatform") version "1.9.21"
+    kotlin("multiplatform") version "1.9.22"
     id("com.android.library")
     id("maven-publish")
-    id("dev.petuska.npm.publish") version "3.4.1"
-    id("com.github.ben-manes.versions") version "0.50.0"
+    id("dev.petuska.npm.publish") version "3.4.2"
+    id("com.github.ben-manes.versions") version "0.51.0"
 }
 
 group = "com.github.D10NGYANG"
-version = "0.0.7"
+version = "0.0.8"
 
 repositories {
     google()
