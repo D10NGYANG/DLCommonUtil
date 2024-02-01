@@ -4,6 +4,7 @@ val npmJsToken: String by project
 
 plugins {
     kotlin("multiplatform") version "1.9.22"
+    kotlin("plugin.serialization") version "1.9.22"
     id("com.android.library")
     id("maven-publish")
     id("dev.petuska.npm.publish") version "3.4.2"
@@ -11,7 +12,7 @@ plugins {
 }
 
 group = "com.github.D10NGYANG"
-version = "0.0.8"
+version = "0.0.9"
 
 repositories {
     google()
@@ -51,6 +52,8 @@ kotlin {
             dependencies {
                 // ByteBuffer
                 api("com.ditchoom:buffer:1.3.7")
+                // serialization
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
             }
         }
         commonTest {
