@@ -53,15 +53,15 @@ kotlin {
                 // ByteBuffer
                 api("com.ditchoom:buffer:1.3.7")
                 // serialization
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
             }
         }
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
-                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.3.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.3.1")
                 // 协程
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
             }
         }
         jvmMain {
