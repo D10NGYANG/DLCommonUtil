@@ -3,8 +3,8 @@ val bds100MavenPassword: String by project
 val npmJsToken: String by project
 
 plugins {
-    kotlin("multiplatform") version "1.9.22"
-    kotlin("plugin.serialization") version "1.9.22"
+    kotlin("multiplatform") version "1.9.23"
+    kotlin("plugin.serialization") version "1.9.23"
     id("com.android.library")
     id("maven-publish")
     id("dev.petuska.npm.publish") version "3.4.2"
@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "com.github.D10NGYANG"
-version = "0.0.9"
+version = "0.1.0"
 
 repositories {
     google()
@@ -51,7 +51,7 @@ kotlin {
         commonMain {
             dependencies {
                 // ByteBuffer
-                api("com.ditchoom:buffer:1.3.7")
+                api("com.ditchoom:buffer:1.3.38")
                 // serialization
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
             }
@@ -59,7 +59,7 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
-                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.3.1")
+                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.3.2")
                 // 协程
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
             }
