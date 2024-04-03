@@ -12,7 +12,7 @@ import kotlin.math.ceil
  */
 fun Int.toByteArray(size: Int = 0): ByteArray {
     if (this < 0) throw IllegalArgumentException("Int must be unsigned")
-    val hex = toString(16)
+    val hex = toString(radix = 16)
     val length = if (size <= 0) ceil(hex.length / 2.0).toInt() else size
     return hex.padStart(length * 2, '0').toByteArrayFromHex()
 }

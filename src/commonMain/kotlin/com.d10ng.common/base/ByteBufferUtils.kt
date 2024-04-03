@@ -1,19 +1,20 @@
+@file:JsExport
 package com.d10ng.common.base
 
-import com.ditchoom.buffer.PlatformBuffer
+import kotlin.js.JsExport
 import kotlin.math.ceil
 
 /**
  * 获取指定范围的比特位组成新的字节数组
- * @receiver [PlatformBuffer] 原始字节数组
+ * @receiver [ByteBuffer] 原始字节数组
  * @param start [Int] 开始比特位置
  * @param length [Int] 比特位长度
  * @return [ByteArray] 新的字节数组
  */
-fun PlatformBuffer.getBitRange(start: Int, length: Int): ByteArray {
+fun ByteBuffer.getBitRange(start: Int, length: Int): ByteArray {
     if (length <= 0) return byteArrayOf()
     if (start < 0) throw IllegalArgumentException("start must be greater than 0")
-    if (start + length > capacity * 8) throw IllegalArgumentException("start + offset must be less than capacity * 8")
+    if (start + length > capacity() * 8) throw IllegalArgumentException("start + offset must be less than capacity * 8")
     // 右移位数
     val right = (8 - (start + length) % 8) % 8
     // 左侧清空位数

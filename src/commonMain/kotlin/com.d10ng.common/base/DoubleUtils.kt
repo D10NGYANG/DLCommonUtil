@@ -9,4 +9,4 @@ package com.d10ng.common.base
  * @param maxDecimalCount [Int] 最大保留小数位数，不能小于0
  * @return [String] 字符串，如 "1.23"
  */
-fun Double.toString(maxDecimalCount: Int) = toString().keep(maxDecimalCount)
+fun Double.toStringWithMaxDecimal(maxDecimalCount: Int) = toString().keep(maxDecimalCount)

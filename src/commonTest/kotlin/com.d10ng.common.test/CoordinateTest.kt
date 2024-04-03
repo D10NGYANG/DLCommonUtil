@@ -3,6 +3,7 @@ package com.d10ng.common.test
 import com.d10ng.common.coordinate.*
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class CoordinateTest {
 
@@ -72,16 +73,16 @@ class CoordinateTest {
     fun testToDMS() {
         assertEquals(0.0.toDMS(true).toString(), "0°0′0.0″")
         assertEquals(180.0.toDMS(true).toString(), "180°0′0.0″")
-        assertEquals(118.234123.toDMS(true).toString(), "118°14′2.8428″")
+        assertEquals(118.234123.toDMS(true).toString(), "118°14′2.84″")
         assertEquals(45.234.toDMS(false).toString(), "45°14′2.4″")
     }
 
     @Test
     fun testToLatLng() {
-        assertEquals(DMS(0, 0, 0.0f).toLatLng().toString(), "0.0")
-        assertEquals(DMS(180, 0, 0.0f).toLatLng().toString(), "180.0")
-        assertEquals(DMS(118, 14, 2.8428f).toLatLng().toString(), "118.23412300745646")
-        assertEquals(DMS(45, 14, 2.4f).toLatLng().toString(), "45.233999999364215")
+        assertEquals(DMS(0, 0, 0.0f).toLatLng(), 0.0)
+        assertEquals(DMS(180, 0, 0.0f).toLatLng(), 180.0)
+        assertTrue { DMS(118, 14, 2.8428f).toLatLng() in 118.234122 .. 118.234124 }
+        assertTrue { DMS(45, 14, 2.4f).toLatLng() in 45.233999 .. 45.234001}
     }
 
     @Test

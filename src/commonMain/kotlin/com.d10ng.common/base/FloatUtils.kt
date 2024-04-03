@@ -29,4 +29,4 @@ internal fun String.keep(maxDecimalCount: Int): String {
  * @param maxDecimalCount [Int] 最大保留小数位数，不能小于0
  * @return [String] 字符串，如 "1.23"
  */
-fun Float.toString(maxDecimalCount: Int) = toString().keep(maxDecimalCount)
+fun Float.toStringWithMaxDecimal(maxDecimalCount: Int) = toString().keep(maxDecimalCount)

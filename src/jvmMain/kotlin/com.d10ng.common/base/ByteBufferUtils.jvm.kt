@@ -1,7 +1,7 @@
 package com.d10ng.common.base
 
-import com.ditchoom.buffer.JvmBuffer
 import java.nio.ByteBuffer
+import com.d10ng.common.base.ByteBuffer as MyByteBuffer
 
 /**
  * 获取指定范围的比特位组成新的字节数组
@@ -11,5 +11,5 @@ import java.nio.ByteBuffer
  * @return [ByteArray] 新的字节数组
  */
 fun ByteBuffer.getBitRange(start: Int, length: Int): ByteArray {
-    return JvmBuffer(this).getBitRange(start, length)
+    return MyByteBuffer(this.array()).getBitRange(start, length)
 }

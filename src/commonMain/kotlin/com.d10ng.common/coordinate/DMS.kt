@@ -15,6 +15,7 @@ data class DMS(
     var seconds: Float = 0f
 ) {
     override fun toString(): String {
-        return "$degrees°$minutes′$seconds″"
+        val secondsStr = if (seconds.toString().contains(".").not()) "$seconds.0" else seconds.toString()
+        return "$degrees°$minutes′$secondsStr″"
     }
 }

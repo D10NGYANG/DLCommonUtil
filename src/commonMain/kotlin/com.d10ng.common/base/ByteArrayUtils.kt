@@ -2,9 +2,6 @@
 package com.d10ng.common.base
 
 import kotlin.js.JsExport
-import com.ditchoom.buffer.PlatformBuffer
-import com.ditchoom.buffer.allocate
-import com.ditchoom.buffer.wrap
 import kotlin.js.JsName
 
 /**
@@ -60,9 +57,9 @@ fun ByteArray.toUnsignedInt() = toUnsignedLong().toInt()
 @JsName("byteArrayToUnsignedLong")
 fun ByteArray.toUnsignedLong(): Long {
     if (isEmpty()) return 0L
-    val buffer = PlatformBuffer.wrap(this)
+    val buffer = ByteBuffer.wrap(this)
     var temp = buffer[0].toUnsignedInt().toLong()
-    for (i in 1 until buffer.capacity) {
+    for (i in 1 until buffer.capacity()) {
         temp = temp shl 8 or buffer[i].toUnsignedInt().toLong()
     }
     return temp
@@ -80,12 +77,12 @@ fun ByteArray.indexOf(bs: ByteArray): Int {
     if (bs.isEmpty()) return -1
     if (bs.size > size) return -1
     if (bs.size == 1) return indexOf(bs[0])
-    val buffer = PlatformBuffer.wrap(this)
+    val buffer = ByteBuffer.wrap(this)
     while (buffer.hasRemaining()) {
         if (buffer.remaining() < bs.size) return -1
         var idx = 0
         while (idx < bs.size) {
-            if (buffer.readByte() != bs[idx]) break
+            if (buffer.getByte() != bs[idx]) break
             idx ++
         }
         if (idx == bs.size) return buffer.position() - idx
@@ -104,14 +101,14 @@ fun ByteArray.indexOf(bs: ByteArray): Int {
 @JsName("byteArrayPadStart")
 fun ByteArray.padStart(length: Int, padByte: Byte = 0x00): ByteArray {
     if (size >= length) return this.copyOfRange(size - length, size)
-    val buf = PlatformBuffer.allocate(length)
+    val buf = ByteBuffer.allocate(length)
     for (i in 0 until length - size) {
         buf[i] = padByte
     }
     buf.position(length - size)
-    buf.writeBytes(this)
-    buf.position(0)
-    return buf.readByteArray(length)
+    buf.setBytes(this)
+    buf.reset()
+    return buf.getRemainingBytes()
 }
 
 /**
@@ -124,13 +121,13 @@ fun ByteArray.padStart(length: Int, padByte: Byte = 0x00): ByteArray {
 @JsName("byteArrayPadEnd")
 fun ByteArray.padEnd(length: Int, padByte: Byte = 0x00): ByteArray {
     if (size >= length) return this.copyOfRange(0, length)
-    val buf = PlatformBuffer.allocate(length)
-    buf.writeBytes(this)
+    val buf = ByteBuffer.allocate(length)
+    buf.setBytes(this)
     for (i in 0 until length - size) {
         buf[i + size] = padByte
     }
-    buf.position(0)
-    return buf.readByteArray(length)
+    buf.reset()
+    return buf.getRemainingBytes()
 }
 
 /**
@@ -143,6 +140,6 @@ fun ByteArray.padEnd(length: Int, padByte: Byte = 0x00): ByteArray {
 @JsName("byteArrayGetBitRange")
 fun ByteArray.getBitRange(start: Int, length: Int): ByteArray {
     // 缓存区
-    val buf = PlatformBuffer.wrap(this)
+    val buf = ByteBuffer.wrap(this)
     return buf.getBitRange(start, length)
 }

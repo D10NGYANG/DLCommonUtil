@@ -186,7 +186,7 @@ fun Double.toDMS(isLongitude: Boolean): DMS {
     val dValue = value.toInt()
     val m = (value - dValue) * 60.0
     val mValue = m.toInt()
-    val s = (m - mValue) * 60.0
+    val s = ((m - mValue) * 6000.0).roundToInt() / 100.0
     return DMS(dValue, mValue, s.toFloat())
 }
 
