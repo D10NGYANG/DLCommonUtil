@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "com.github.D10NGYANG"
-version = "0.1.1"
+version = "0.1.2"
 
 repositories {
     google()
@@ -40,7 +40,6 @@ kotlin {
         generateTypeScriptDefinitions()
     }
     iosArm64()
-    iosSimulatorArm64()
 
     sourceSets {
         all {
@@ -52,14 +51,16 @@ kotlin {
             dependencies {
                 // serialization
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+                // 协程
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+                // 时间工具
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
             }
         }
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
-                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.3.2")
-                // 协程
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.3.5")
             }
         }
         jvmMain {
