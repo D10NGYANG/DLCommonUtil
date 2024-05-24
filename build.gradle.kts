@@ -3,8 +3,8 @@ val bds100MavenPassword: String by project
 val npmJsToken: String by project
 
 plugins {
-    kotlin("multiplatform") version "1.9.23"
-    kotlin("plugin.serialization") version "1.9.23"
+    kotlin("multiplatform") version "2.0.0"
+    kotlin("plugin.serialization") version "2.0.0"
     id("com.android.library")
     id("maven-publish")
     id("dev.petuska.npm.publish") version "3.4.2"
@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "com.github.D10NGYANG"
-version = "0.1.2"
+version = "0.1.3"
 
 repositories {
     google()
@@ -20,14 +20,11 @@ repositories {
 }
 
 kotlin {
+    jvmToolchain(8)
     androidTarget {
         publishLibraryVariants("release")
-        jvmToolchain(8)
     }
     jvm {
-        compilations.all {
-            kotlinOptions.jvmTarget = "1.8"
-        }
         testRuns["test"].executionTask.configure {
             useJUnit()
         }
@@ -149,6 +146,6 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 }
 
 // TODO 修复gradle 8.0以后出现任务依赖不声明导致的问题，待后续修复了再移除
-tasks.named("jsNodeProductionLibraryPrepare") {
+tasks.named("jsNodeProductionLibraryDistribution") {
     dependsOn("jsProductionExecutableCompileSync")
 }
