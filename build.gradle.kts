@@ -7,7 +7,7 @@ plugins {
     kotlin("plugin.serialization") version "2.0.0"
     id("com.android.library")
     id("maven-publish")
-    id("dev.petuska.npm.publish") version "3.4.2"
+    id("dev.petuska.npm.publish") version "3.4.3"
     id("com.github.ben-manes.versions") version "0.51.0"
 }
 
@@ -47,7 +47,7 @@ kotlin {
         commonMain {
             dependencies {
                 // serialization
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
                 // 协程
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
                 // 时间工具
@@ -57,7 +57,7 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
-                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.3.5")
+                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.5.1")
             }
         }
         jvmMain {
