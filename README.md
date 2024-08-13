@@ -1,7 +1,7 @@
 # DLCommonUtil
-基于kotlin多平台的常用数据类型转换工具类库，目前支持`Android`、`JVM`、`IOS`、`JS`；
+基于kotlin多平台的常用数据类型转换工具类库，目前支持`Android`、`JVM`、`IOS`、`MacOS`、`JS`；
 
-*最新版本：`0.1.3`*
+*最新版本：`0.2.0`*
 
 ## ① 安装
 > 请查看`WIKI`文档。

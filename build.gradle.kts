@@ -3,8 +3,8 @@ val bds100MavenPassword: String by project
 val npmJsToken: String by project
 
 plugins {
-    kotlin("multiplatform") version "2.0.0"
-    kotlin("plugin.serialization") version "2.0.0"
+    kotlin("multiplatform") version "2.0.10"
+    kotlin("plugin.serialization") version "2.0.10"
     id("com.android.library")
     id("maven-publish")
     id("dev.petuska.npm.publish") version "3.4.3"
@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "com.github.D10NGYANG"
-version = "0.1.3"
+version = "0.2.0"
 
 repositories {
     google()
@@ -37,6 +37,8 @@ kotlin {
         generateTypeScriptDefinitions()
     }
     iosArm64()
+    macosArm64()
+    //linuxX64() TODO
 
     sourceSets {
         all {
@@ -49,7 +51,7 @@ kotlin {
                 // serialization
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
                 // 协程
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC")
                 // 时间工具
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
             }
