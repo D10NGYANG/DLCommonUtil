@@ -3,8 +3,8 @@ val bds100MavenPassword: String by project
 val npmJsToken: String by project
 
 plugins {
-    kotlin("multiplatform") version "2.0.10"
-    kotlin("plugin.serialization") version "2.0.10"
+    kotlin("multiplatform") version "2.0.20"
+    kotlin("plugin.serialization") version "2.0.20"
     id("com.android.library")
     id("maven-publish")
     id("dev.petuska.npm.publish") version "3.4.3"
@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "com.github.D10NGYANG"
-version = "0.2.0"
+version = "0.3.0"
 
 repositories {
     google()
@@ -37,8 +37,11 @@ kotlin {
         generateTypeScriptDefinitions()
     }
     iosArm64()
+    iosSimulatorArm64()
     macosArm64()
-    //linuxX64() TODO
+    macosX64()
+    linuxX64()
+    linuxArm64()
 
     sourceSets {
         all {
@@ -51,33 +54,21 @@ kotlin {
                 // serialization
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
                 // 协程
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC.2")
                 // 时间工具
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
             }
         }
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
-                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.5.1")
+                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.5.3")
             }
         }
-        jvmMain {
+        jvmTest {
             dependencies {
                 // 拼音处理
-                api("io.github.biezhi:TinyPinyin:2.0.3.RELEASE")
-            }
-        }
-        androidMain {
-            dependencies {
-                // 拼音处理
-                api("io.github.biezhi:TinyPinyin:2.0.3.RELEASE")
-            }
-        }
-        jsMain {
-            dependencies {
-                // 拼音处理
-                api(npm("pinyin-pro", "3.16.3"))
+                implementation("io.github.biezhi:TinyPinyin:2.0.3.RELEASE")
             }
         }
     }

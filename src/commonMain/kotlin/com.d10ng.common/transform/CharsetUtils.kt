@@ -10,14 +10,7 @@ import kotlin.js.JsExport
  * @return [ByteArray] GBK编码的字节数组
  */
 @JsExport
-fun String.encodeGBK(): ByteArray = encodeGBKDo()
-
-/**
- * 将字符串转换成字节数组，编码格式为GBK
- * @receiver [String] 字符串
- * @return [ByteArray] GBK编码的字节数组
- */
-expect fun String.encodeGBKDo(): ByteArray
+fun String.encodeGBK(): ByteArray = GBK.encode(this)
 
 /**
  * 将字节数组转换成字符串，编码格式为GBK
@@ -25,14 +18,7 @@ expect fun String.encodeGBKDo(): ByteArray
  * @return [String] 字符串
  */
 @JsExport
-fun ByteArray.decodeGBK(): String = decodeGBKDo()
-
-/**
- * 将字节数组转换成字符串，编码格式为GBK
- * @receiver [ByteArray] GBK编码的字节数组
- * @return [String] 字符串
- */
-expect fun ByteArray.decodeGBKDo(): String
+fun ByteArray.decodeGBK(): String = GBK.decode(this)
 
 /**
  * 将字符串转换成字节数组，编码格式为UTF8
