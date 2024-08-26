@@ -82,7 +82,7 @@ fun ByteArray.indexOf(bs: ByteArray): Int {
         if (buffer.remaining() < bs.size) return -1
         var idx = 0
         while (idx < bs.size) {
-            if (buffer.getByte() != bs[idx]) break
+            if (buffer.get() != bs[idx]) break
             idx ++
         }
         if (idx == bs.size) return buffer.position() - idx
@@ -103,11 +103,11 @@ fun ByteArray.padStart(length: Int, padByte: Byte = 0x00): ByteArray {
     if (size >= length) return this.copyOfRange(size - length, size)
     val buf = ByteBuffer.allocate(length)
     for (i in 0 until length - size) {
-        buf[i] = padByte
+        buf.put(i, padByte)
     }
     buf.position(length - size)
-    buf.setBytes(this)
-    buf.reset()
+    buf.put(this)
+    buf.clear()
     return buf.getRemainingBytes()
 }
 
@@ -122,11 +122,11 @@ fun ByteArray.padStart(length: Int, padByte: Byte = 0x00): ByteArray {
 fun ByteArray.padEnd(length: Int, padByte: Byte = 0x00): ByteArray {
     if (size >= length) return this.copyOfRange(0, length)
     val buf = ByteBuffer.allocate(length)
-    buf.setBytes(this)
+    buf.put(this)
     for (i in 0 until length - size) {
-        buf[i + size] = padByte
+        buf.put(i + size, padByte)
     }
-    buf.reset()
+    buf.clear()
     return buf.getRemainingBytes()
 }
 

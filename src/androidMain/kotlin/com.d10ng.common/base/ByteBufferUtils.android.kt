@@ -11,5 +11,5 @@ import com.d10ng.common.base.ByteBuffer as MyByteBuffer
  * @return [ByteArray] 新的字节数组
  */
 fun ByteBuffer.getBitRange(start: Int, length: Int): ByteArray {
-    return MyByteBuffer(this.array()).getBitRange(start, length)
+    return MyByteBuffer.wrap(this.array()).getBitRange(start, length)
 }
