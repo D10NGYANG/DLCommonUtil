@@ -86,7 +86,7 @@ fun ByteArray.indexOf(bs: ByteArray): Int {
             idx ++
         }
         if (idx == bs.size) return buffer.position() - idx
-        buffer.position(buffer.position() - idx + 1)
+        buffer.position(buffer.position() - idx)
     }
     return -1
 }
