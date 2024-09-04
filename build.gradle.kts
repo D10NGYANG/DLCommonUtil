@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "com.github.D10NGYANG"
-version = "0.4.1"
+version = "0.5.0"
 
 repositories {
     google()
@@ -139,6 +139,6 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 }
 
 // TODO 修复gradle 8.0以后出现任务依赖不声明导致的问题，待后续修复了再移除
-tasks.named("jsNodeProductionLibraryDistribution") {
+/*tasks.named("jsNodeProductionLibraryDistribution") {
     dependsOn("jsProductionExecutableCompileSync")
-}
+}*/
