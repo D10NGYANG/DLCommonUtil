@@ -137,8 +137,3 @@ tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
         isNonStable(candidate.version)
     }
 }
-
-// TODO 修复gradle 8.0以后出现任务依赖不声明导致的问题，待后续修复了再移除
-/*tasks.named("jsNodeProductionLibraryDistribution") {
-    dependsOn("jsProductionExecutableCompileSync")
-}*/
