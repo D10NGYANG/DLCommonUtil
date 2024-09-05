@@ -21,6 +21,17 @@ fun Short.toByteArray(size: Int? = null): ByteArray {
 }
 
 /**
+ * 将 短整型 转 N 个字节的 ByteArray
+ * > 字节数设置为null（默认），则根据整型值自动计算字节数；
+ * > 字节数设置为大于0，则根据设置的字节数进行转换，如果字节数不足，则在前面补0，如果字节数过多，则截取前面的字节；
+ * @param short [Short] 短整型
+ * @param size [Int]? 字节数，默认为null，根据整型值自动计算字节数
+ * @return [ByteArray] 字节数组
+ */
+fun shortToByteArray(short: Short, size: Int? = null): ByteArray =
+    short.toByteArray(size)
+
+/**
  * 将 字节数组 转换成 短整型
  * @receiver [ByteArray] 最大长度为2的字节数组
  * @return [Short] 短整型

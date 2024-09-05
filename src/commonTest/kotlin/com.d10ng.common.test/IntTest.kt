@@ -1,5 +1,6 @@
 package com.d10ng.common.test
 
+import com.d10ng.common.base.intToByteArray
 import com.d10ng.common.base.toByteArray
 import com.d10ng.common.base.toHexString
 import com.d10ng.common.base.toInt
@@ -21,9 +22,9 @@ class IntTest {
             assertEquals(byteArray.toHexString(), int.toByteArray().toHexString())
         }
         // 自定义字节数
-        assertEquals(byteArrayOf(0x12).toHexString(), 0x12.toInt().toByteArray(1).toHexString())
-        assertEquals(byteArrayOf(0x12, 0x34).toHexString(), 0x1234.toInt().toByteArray(2).toHexString())
-        assertEquals(byteArrayOf(0x12, 0x34, 0x56).toHexString(), 0x123456.toInt().toByteArray(3).toHexString())
+        assertEquals(byteArrayOf(0x12).toHexString(), intToByteArray(0x12, 1).toHexString())
+        assertEquals(byteArrayOf(0x12, 0x34).toHexString(), intToByteArray(0x1234, 2).toHexString())
+        assertEquals(byteArrayOf(0x12, 0x34, 0x56).toHexString(), intToByteArray(0x123456, 3).toHexString())
         // 负数
         assertEquals((-1).toByteArray().toHexString(), "FFFFFFFF")
     }

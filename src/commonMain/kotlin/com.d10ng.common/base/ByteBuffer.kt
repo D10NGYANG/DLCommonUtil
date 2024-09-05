@@ -608,98 +608,132 @@ class ByteBuffer private constructor(private val capacity: Int) {
         return this
     }
 
+    /**
+     * 从 ByteBuffer 中读取一个双精度浮点数值。
+     *
+     * @return [Double] 读取的双精度浮点数值。
+     * @throws BufferUnderflowException 如果 ByteBuffer 中没有足够的可读字节。
+     */
     fun getDouble(): Double {
+        // 检查是否有足够的可读字节
         if (remaining() < 8) {
             throw BufferUnderflowException()
         }
-        val bytes = ByteArray(8)
-        get(bytes)
-        return Double.fromBits(
-            if (bigEndian) {
-                ((bytes[0].toLong() and 0xff) shl 56) or
-                        ((bytes[1].toLong() and 0xff) shl 48) or
-                        ((bytes[2].toLong() and 0xff) shl 40) or
-                        ((bytes[3].toLong() and 0xff) shl 32) or
-                        ((bytes[4].toLong() and 0xff) shl 24) or
-                        ((bytes[5].toLong() and 0xff) shl 16) or
-                        ((bytes[6].toLong() and 0xff) shl 8) or
-                        (bytes[7].toLong() and 0xff)
-            } else {
-                ((bytes[7].toLong() and 0xff) shl 56) or
-                        ((bytes[6].toLong() and 0xff) shl 48) or
-                        ((bytes[5].toLong() and 0xff) shl 40) or
-                        ((bytes[4].toLong() and 0xff) shl 32) or
-                        ((bytes[3].toLong() and 0xff) shl 24) or
-                        ((bytes[2].toLong() and 0xff) shl 16) or
-                        ((bytes[1].toLong() and 0xff) shl 8) or
-                        (bytes[0].toLong() and 0xff)
-            }
-        )
+        // 读取 8 个字节
+        val bytes = getBytes(8)
+        // 根据字节序将字节转换为双精度浮点数值
+        return if (bigEndian) {
+            // 大端字节序
+            bytes.toDouble()
+        } else {
+            // 小端字节序,需要反转字节数组
+            bytes.let { it.reverse(); it.toDouble() }
+        }
     }
 
+    /**
+     * 将一个双精度浮点数值写入 ByteBuffer。
+     *
+     * @param value [Double] 要写入的双精度浮点数值。
+     * @return [ByteBuffer] 返回当前 ByteBuffer 实例,以支持方法链式调用。
+     * @throws BufferOverflowException 如果 ByteBuffer 中没有足够的空间写入双精度浮点数值。
+     */
     fun putDouble(value: Double): ByteBuffer {
+        // 检查是否有足够的空间写入双精度浮点数值
         if (remaining() < 8) {
             throw BufferOverflowException()
         }
-        val bits = value.toBits()
-        val bytes = ByteArray(8)
-        if (bigEndian) {
-            bytes[0] = (bits shr 56).toByte()
-            bytes[1] = (bits shr 48).toByte()
-            bytes[2] = (bits shr 40).toByte()
-            bytes[3] = (bits shr 32).toByte()
-            bytes[4] = (bits shr 24).toByte()
-            bytes[5] = (bits shr 16).toByte()
-            bytes[6] = (bits shr 8).toByte()
-            bytes[7] = bits.toByte()
-        } else {
-            bytes[7] = (bits shr 56).toByte()
-            bytes[6] = (bits shr 48).toByte()
-            bytes[5] = (bits shr 40).toByte()
-            bytes[4] = (bits shr 32).toByte()
-            bytes[3] = (bits shr 24).toByte()
-            bytes[2] = (bits shr 16).toByte()
-            bytes[1] = (bits shr 8).toByte()
-            bytes[0] = bits.toByte()
+        // 将双精度浮点数值转换为字节数组
+        val bytes = value.toByteArray()
+        // 根据字节序调整字节数组
+        if (bigEndian.not()) {
+            // 小端字节序,需要反转字节数组
+            bytes.reverse()
         }
+        // 将字节数组写入 ByteBuffer
         put(bytes)
         return this
     }
 
+    /**
+     * 从 ByteBuffer 的指定索引处读取一个双精度浮点数值。
+     *
+     * @param index [Int] 要读取双精度浮点数值的索引,必须在 0 到 limit-8 之间。
+     * @return [Double] 读取的双精度浮点数值。
+     * @throws IndexOutOfBoundsException 如果索引超出范围。
+     */
     @JsName("getDoubleByIndex")
     fun getDouble(index: Int): Double {
-        if (index < 0 || index > limit - 8) {
+        // 检查索引是否在有效范围内
+        if (index !in 0 .. limit - 8) {
             throw IndexOutOfBoundsException()
         }
+        // 保存当前位置
         val originalPosition = position
+        // 将位置设置为指定索引
         position = index
+        // 读取双精度浮点数值
         val value = getDouble()
+        // 恢复原始位置
         position = originalPosition
         return value
     }
 
+    /**
+     * 将一个双精度浮点数值写入 ByteBuffer 的指定索引处。
+     *
+     * @param index [Int] 要写入双精度浮点数值的索引,必须在 0 到 limit-8 之间。
+     * @param value [Double] 要写入的双精度浮点数值。
+     * @return [ByteBuffer] 返回当前 ByteBuffer 实例,以支持方法链式调用。
+     * @throws IndexOutOfBoundsException 如果索引超出范围。
+     */
     @JsName("putDoubleByIndex")
     fun putDouble(index: Int, value: Double): ByteBuffer {
-        if (index < 0 || index > limit - 8) {
+        // 检查索引是否在有效范围内
+        if (index !in 0 .. limit - 8) {
             throw IndexOutOfBoundsException()
         }
+        // 保存当前位置
         val originalPosition = position
+        // 将位置设置为指定索引
         position = index
+        // 写入双精度浮点数值
         putDouble(value)
+        // 恢复原始位置
         position = originalPosition
         return this
     }
 
+    /**
+     * 压缩 ByteBuffer,将当前位置到极限位置之间的数据复制到缓冲区的开头,并将位置设置为剩余字节的数量,极限设置为容量。
+     *
+     * 此方法通常在读取缓冲区的数据后调用,以便下一次写入操作可以重用缓冲区的空间。
+     *
+     * @return [ByteBuffer] 返回当前 ByteBuffer 实例,以支持方法链式调用。
+     */
     fun compact(): ByteBuffer {
+        // 获取剩余字节数
         val remainingBytes = remaining()
+        // 将当前位置到极限位置之间的数据复制到缓冲区的开头
         array.copyInto(array, 0, position, limit)
+        // 将位置设置为剩余字节的数量
         position(remainingBytes)
+        // 将极限设置为容量
         limit(capacity)
         return this
     }
 
+    /**
+     * 获取 ByteBuffer 中从当前位置到极限位置之间的剩余字节数据,并将位置设置为极限位置。
+     *
+     * 此方法通常在需要读取缓冲区中剩余的所有数据时调用。
+     *
+     * @return [ByteArray] 包含剩余字节数据的字节数组。
+     */
     fun getRemainingBytes(): ByteArray {
+        // 复制当前位置到极限位置之间的数据到新的字节数组
         val data = array.copyOfRange(position, limit)
+        // 将位置设置为极限位置
         position = limit
         return data
     }

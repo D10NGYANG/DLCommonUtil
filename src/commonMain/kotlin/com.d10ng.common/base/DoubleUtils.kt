@@ -10,3 +10,22 @@ package com.d10ng.common.base
  * @return [String] 字符串，如 "1.23"
  */
 fun Double.toStringWithMaxDecimal(maxDecimalCount: Int) = toString().keep(maxDecimalCount)
+
+/**
+ * 将 Double 类型转为 字节数组
+ * @receiver [Double] 双精度浮点数
+ * @return [ByteArray] 长度为8的字节数组
+ */
+fun Double.toByteArray(): ByteArray {
+    return toBits().toByteArray(8)
+}
+
+/**
+ * 将 字节数组 转为 Double
+ * @receiver [ByteArray] 长度为8的字节数组
+ * @return [Double] 双精度浮点数
+ */
+fun ByteArray.toDouble(): Double {
+    if (size != 8) throw IllegalArgumentException("ByteArray must be 8 bytes")
+    return Double.fromBits(toLong())
+}

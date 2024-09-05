@@ -6,9 +6,9 @@ fun Number.toString(maxDecimalCount: Int) = toString().keep(maxDecimalCount)
 
 @JsExport
 @JsName("numberToByteArray")
-fun Number.toByteArray(size: Int = 0) = when (this) {
-    is Int -> toByteArray(size)
-    is Long -> toByteArray(size)
+fun Number.toByteArray(size: Int = 0): ByteArray = when (this) {
+    is Int -> intToByteArray(this, size)
+    is Long -> longToByteArray(this, size)
     else -> throw IllegalArgumentException("Number must be Int or Long")
 }
 

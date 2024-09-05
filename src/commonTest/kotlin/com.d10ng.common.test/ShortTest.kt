@@ -1,5 +1,6 @@
 package com.d10ng.common.test
 
+import com.d10ng.common.base.shortToByteArray
 import com.d10ng.common.base.toByteArray
 import com.d10ng.common.base.toShort
 import kotlin.test.Test
@@ -12,18 +13,18 @@ class ShortTest {
     @Test
     fun testShortToByteArray() {
         // 测试自动计算字节数的情况
-        assertContentEquals(byteArrayOf(0x12), 0x12.toShort().toByteArray())
-        assertContentEquals(byteArrayOf(0x12, 0x34), 0x1234.toShort().toByteArray())
+        assertContentEquals(byteArrayOf(0x12), shortToByteArray(0x12))
+        assertContentEquals(byteArrayOf(0x12, 0x34), shortToByteArray(0x1234))
 
         // 测试指定字节数的情况
-        assertContentEquals(byteArrayOf(0x12), 0x12.toShort().toByteArray(1))
-        assertContentEquals(byteArrayOf(0x00, 0x12), 0x12.toShort().toByteArray(2))
-        assertContentEquals(byteArrayOf(0x00, 0x00, 0x12), 0x12.toShort().toByteArray(3))
-        assertContentEquals(byteArrayOf(0x00, 0x00, 0x00, 0x12), 0x12.toShort().toByteArray(4))
+        assertContentEquals(byteArrayOf(0x12), shortToByteArray(0x12, 1))
+        assertContentEquals(byteArrayOf(0x00, 0x12), shortToByteArray(0x12, 2))
+        assertContentEquals(byteArrayOf(0x00, 0x00, 0x12), shortToByteArray(0x12, 3))
+        assertContentEquals(byteArrayOf(0x00, 0x00, 0x00, 0x12), shortToByteArray(0x12, 4))
 
-        assertContentEquals(byteArrayOf(0x12, 0x34), 0x1234.toShort().toByteArray(2))
-        assertContentEquals(byteArrayOf(0x00, 0x12, 0x34), 0x1234.toShort().toByteArray(3))
-        assertContentEquals(byteArrayOf(0x00, 0x00, 0x12, 0x34), 0x1234.toShort().toByteArray(4))
+        assertContentEquals(byteArrayOf(0x12, 0x34), shortToByteArray(0x1234, 2))
+        assertContentEquals(byteArrayOf(0x00, 0x12, 0x34), shortToByteArray(0x1234, 3))
+        assertContentEquals(byteArrayOf(0x00, 0x00, 0x12, 0x34), shortToByteArray(0x1234, 4))
 
         // 负数
         assertContentEquals(byteArrayOf(0xff.toByte(), 0xff.toByte()), (-1).toShort().toByteArray())
