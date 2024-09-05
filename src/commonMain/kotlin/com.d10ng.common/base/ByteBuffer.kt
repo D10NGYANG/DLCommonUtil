@@ -187,6 +187,11 @@ class ByteBuffer private constructor(private val capacity: Int) {
         return this
     }
 
+    @Deprecated("Use rewind() instead", ReplaceWith("rewind()"))
+    fun reset() {
+        rewind()
+    }
+
     /**
      * 从 ByteBuffer 中读取一个字节。
      *
@@ -201,6 +206,9 @@ class ByteBuffer private constructor(private val capacity: Int) {
         // 读取当前位置的字节,并将位置增加 1
         return array[position++]
     }
+
+    @Deprecated("Use get() instead", ReplaceWith("get()"))
+    fun getByte(): Byte = get()
 
     /**
      * 从 ByteBuffer 中指定索引处读取一个字节。
@@ -280,6 +288,9 @@ class ByteBuffer private constructor(private val capacity: Int) {
         return this
     }
 
+    @Deprecated("Use put() instead", ReplaceWith("put(b)"))
+    fun setByte(b: Byte) = put(b)
+
     /**
      * 将一个字节写入 ByteBuffer 的指定索引处。
      *
@@ -303,6 +314,16 @@ class ByteBuffer private constructor(private val capacity: Int) {
      * 将字节数组中的数据写入 ByteBuffer。
      *
      * @param src [ByteArray] 源字节数组。
+     * @return [ByteBuffer] 返回当前 ByteBuffer 实例,以支持方法链式调用。
+     * @throws BufferOverflowException 如果 ByteBuffer 中没有足够的空间写入字节。
+     */
+    @JsName("putBytes")
+    fun put(src: ByteArray) = put(src, 0, src.size)
+
+    /**
+     * 将字节数组中的数据写入 ByteBuffer。
+     *
+     * @param src [ByteArray] 源字节数组。
      * @param offset [Int] 源字节数组的起始偏移量,默认为 0。
      * @param length [Int] 要写入的字节数,默认为源字节数组的长度。
      * @return [ByteBuffer] 返回当前 ByteBuffer 实例,以支持方法链式调用。
@@ -321,6 +342,11 @@ class ByteBuffer private constructor(private val capacity: Int) {
             }
         }
         return this
+    }
+
+    @Deprecated("Use put(value) instead", ReplaceWith("put(value)"))
+    fun setBytes(value: ByteArray) {
+        put(value)
     }
 
     /**

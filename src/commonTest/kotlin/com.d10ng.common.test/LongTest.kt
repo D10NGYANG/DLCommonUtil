@@ -1,6 +1,5 @@
 package com.d10ng.common.test
 
-import com.d10ng.common.base.longToByteArray
 import com.d10ng.common.base.toByteArray
 import com.d10ng.common.base.toLong
 import kotlin.test.Test
@@ -32,14 +31,14 @@ class LongTest {
         assertContentEquals(byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()), (-1L).toByteArray())
 
         // 测试指定字节数的情况
-        assertContentEquals(byteArrayOf(0x01), longToByteArray(1L, 1))
-        assertContentEquals(byteArrayOf(0x00, 0x01), longToByteArray(1L,2))
-        assertContentEquals(byteArrayOf(0x00, 0x00, 0x01), longToByteArray(1L,3))
-        assertContentEquals(byteArrayOf(0x00, 0x00, 0x00, 0x01), longToByteArray(1L,4))
-        assertContentEquals(byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x01), longToByteArray(1L,5))
-        assertContentEquals(byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x00, 0x01), longToByteArray(1L,6))
-        assertContentEquals(byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01), longToByteArray(1L,7))
-        assertContentEquals(byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01), longToByteArray(1L,8))
+        assertContentEquals(byteArrayOf(0x01), 1L.toByteArray(1))
+        assertContentEquals(byteArrayOf(0x00, 0x01), 1L.toByteArray(2))
+        assertContentEquals(byteArrayOf(0x00, 0x00, 0x01), 1L.toByteArray(3))
+        assertContentEquals(byteArrayOf(0x00, 0x00, 0x00, 0x01), 1L.toByteArray(4))
+        assertContentEquals(byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x01), 1L.toByteArray(5))
+        assertContentEquals(byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x00, 0x01), 1L.toByteArray(6))
+        assertContentEquals(byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01), 1L.toByteArray(7))
+        assertContentEquals(byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01), 1L.toByteArray(8))
 
         // 测试负数的情况
         assertContentEquals(byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()), (-1L).toByteArray())
