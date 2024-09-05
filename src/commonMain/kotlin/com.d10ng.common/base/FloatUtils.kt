@@ -30,3 +30,22 @@ internal fun String.keep(maxDecimalCount: Int): String {
  * @return [String] 字符串，如 "1.23"
  */
 fun Float.toStringWithMaxDecimal(maxDecimalCount: Int) = toString().keep(maxDecimalCount)
+
+/**
+ * 将 Float 类型转为 字节数组
+ * @receiver [Float] 单精度浮点数
+ * @return [ByteArray] 长度为4的字节数组
+ */
+fun Float.toByteArray(): ByteArray {
+    return toBits().toByteArray(4)
+}
+
+/**
+ * 将 字节数组 转为 Float
+ * @receiver [ByteArray] 长度为4的字节数组
+ * @return [Float] 单精度浮点数
+ */
+fun ByteArray.toFloat(): Float {
+    if (size != 4) throw IllegalArgumentException("ByteArray must be 4 bytes")
+    return Float.fromBits(toInt())
+}

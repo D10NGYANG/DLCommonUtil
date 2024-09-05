@@ -416,121 +416,194 @@ class ByteBuffer private constructor(private val capacity: Int) {
         return this
     }
 
+    /**
+     * 从 ByteBuffer 中读取一个短整数值。
+     *
+     * @return [Short] 读取的短整数值。
+     * @throws BufferUnderflowException 如果 ByteBuffer 中没有足够的可读字节。
+     */
     fun getShort(): Short {
+        // 检查是否有足够的可读字节
         if (remaining() < 2) {
             throw BufferUnderflowException()
         }
-        val bytes = ByteArray(2)
-        get(bytes)
+        // 读取 2 个字节
+        val bytes = getBytes(2)
+        // 根据字节序将字节转换为短整数值
         return if (bigEndian) {
-            ((bytes[0].toInt() and 0xff) shl 8 or (bytes[1].toInt() and 0xff)).toShort()
+            // 大端字节序
+            bytes.toShort()
         } else {
-            ((bytes[1].toInt() and 0xff) shl 8 or (bytes[0].toInt() and 0xff)).toShort()
+            // 小端字节序,需要反转字节数组
+            bytes.let { it.reverse(); it.toShort() }
         }
     }
 
+    /**
+     * 将一个短整数值写入 ByteBuffer。
+     *
+     * @param value [Short] 要写入的短整数值。
+     * @return [ByteBuffer] 返回当前 ByteBuffer 实例,以支持方法链式调用。
+     * @throws BufferOverflowException 如果 ByteBuffer 中没有足够的空间写入短整数值。
+     */
     fun putShort(value: Short): ByteBuffer {
+        // 检查是否有足够的空间写入短整数值
         if (remaining() < 2) {
             throw BufferOverflowException()
         }
-        val bytes = ByteArray(2)
-        if (bigEndian) {
-            bytes[0] = (value.toInt() shr 8).toByte()
-            bytes[1] = value.toByte()
-        } else {
-            bytes[0] = value.toByte()
-            bytes[1] = (value.toInt() shr 8).toByte()
+        // 将短整数值转换为字节数组
+        val bytes = value.toByteArray(2)
+        // 根据字节序调整字节数组
+        if (bigEndian.not()) {
+            // 小端字节序,需要反转字节数组
+            bytes.reverse()
         }
+        // 将字节数组写入 ByteBuffer
         put(bytes)
         return this
     }
 
+    /**
+     * 从 ByteBuffer 的指定索引处读取一个短整数值。
+     *
+     * @param index [Int] 要读取短整数值的索引,必须在 0 到 limit-2 之间。
+     * @return [Short] 读取的短整数值。
+     * @throws IndexOutOfBoundsException 如果索引超出范围。
+     */
     @JsName("getShortByIndex")
     fun getShort(index: Int): Short {
-        if (index < 0 || index > limit - 2) {
+        // 检查索引是否在有效范围内
+        if (index !in 0 .. limit - 2) {
             throw IndexOutOfBoundsException()
         }
+        // 保存当前位置
         val originalPosition = position
+        // 将位置设置为指定索引
         position = index
+        // 读取短整数值
         val value = getShort()
+        // 恢复原始位置
         position = originalPosition
         return value
     }
 
+    /**
+     * 将一个短整数值写入 ByteBuffer 的指定索引处。
+     *
+     * @param index [Int] 要写入短整数值的索引,必须在 0 到 limit-2 之间。
+     * @param value [Short] 要写入的短整数值。
+     * @return [ByteBuffer] 返回当前 ByteBuffer 实例,以支持方法链式调用。
+     * @throws IndexOutOfBoundsException 如果索引超出范围。
+     */
     @JsName("putShortByIndex")
     fun putShort(index: Int, value: Short): ByteBuffer {
-        if (index < 0 || index > limit - 2) {
+        // 检查索引是否在有效范围内
+        if (index !in 0 .. limit - 2) {
             throw IndexOutOfBoundsException()
         }
+        // 保存当前位置
         val originalPosition = position
+        // 将位置设置为指定索引
         position = index
+        // 写入短整数值
         putShort(value)
+        // 恢复原始位置
         position = originalPosition
         return this
     }
 
+    /**
+     * 从 ByteBuffer 中读取一个浮点数值。
+     *
+     * @return [Float] 读取的浮点数值。
+     * @throws BufferUnderflowException 如果 ByteBuffer 中没有足够的可读字节。
+     */
     fun getFloat(): Float {
+        // 检查是否有足够的可读字节
         if (remaining() < 4) {
             throw BufferUnderflowException()
         }
-        val bytes = ByteArray(4)
-        get(bytes)
-        return Float.fromBits(
-            if (bigEndian) {
-                ((bytes[0].toInt() and 0xff) shl 24) or
-                        ((bytes[1].toInt() and 0xff) shl 16) or
-                        ((bytes[2].toInt() and 0xff) shl 8) or
-                        (bytes[3].toInt() and 0xff)
-            } else {
-                ((bytes[3].toInt() and 0xff) shl 24) or
-                        ((bytes[2].toInt() and 0xff) shl 16) or
-                        ((bytes[1].toInt() and 0xff) shl 8) or
-                        (bytes[0].toInt() and 0xff)
-            }
-        )
+        // 读取 4 个字节
+        val bytes = getBytes(4)
+        // 根据字节序将字节转换为浮点数值
+        return if (bigEndian) {
+            // 大端字节序
+            bytes.toFloat()
+        } else {
+            // 小端字节序,需要反转字节数组
+            bytes.let { it.reverse(); it.toFloat() }
+        }
     }
 
+    /**
+     * 将一个浮点数值写入 ByteBuffer。
+     *
+     * @param value [Float] 要写入的浮点数值。
+     * @return [ByteBuffer] 返回当前 ByteBuffer 实例,以支持方法链式调用。
+     * @throws BufferOverflowException 如果 ByteBuffer 中没有足够的空间写入浮点数值。
+     */
     fun putFloat(value: Float): ByteBuffer {
+        // 检查是否有足够的空间写入浮点数值
         if (remaining() < 4) {
             throw BufferOverflowException()
         }
-        val bits = value.toBits()
-        val bytes = ByteArray(4)
-        if (bigEndian) {
-            bytes[0] = (bits shr 24).toByte()
-            bytes[1] = (bits shr 16).toByte()
-            bytes[2] = (bits shr 8).toByte()
-            bytes[3] = bits.toByte()
-        } else {
-            bytes[0] = bits.toByte()
-            bytes[1] = (bits shr 8).toByte()
-            bytes[2] = (bits shr 16).toByte()
-            bytes[3] = (bits shr 24).toByte()
+        // 将浮点数值转换为字节数组
+        val bytes = value.toByteArray()
+        // 根据字节序调整字节数组
+        if (bigEndian.not()) {
+            // 小端字节序,需要反转字节数组
+            bytes.reverse()
         }
+        // 将字节数组写入 ByteBuffer
         put(bytes)
         return this
     }
 
+    /**
+     * 从 ByteBuffer 的指定索引处读取一个浮点数值。
+     *
+     * @param index [Int] 要读取浮点数值的索引,必须在 0 到 limit-4 之间。
+     * @return [Float] 读取的浮点数值。
+     * @throws IndexOutOfBoundsException 如果索引超出范围。
+     */
     @JsName("getFloatByIndex")
     fun getFloat(index: Int): Float {
-        if (index < 0 || index > limit - 4) {
+        // 检查索引是否在有效范围内
+        if (index !in 0 .. limit - 4) {
             throw IndexOutOfBoundsException()
         }
+        // 保存当前位置
         val originalPosition = position
+        // 将位置设置为指定索引
         position = index
+        // 读取浮点数值
         val value = getFloat()
+        // 恢复原始位置
         position = originalPosition
         return value
     }
 
+    /**
+     * 将一个浮点数值写入 ByteBuffer 的指定索引处。
+     *
+     * @param index [Int] 要写入浮点数值的索引,必须在 0 到 limit-4 之间。
+     * @param value [Float] 要写入的浮点数值。
+     * @return [ByteBuffer] 返回当前 ByteBuffer 实例,以支持方法链式调用。
+     * @throws IndexOutOfBoundsException 如果索引超出范围。
+     */
     @JsName("putFloatByIndex")
     fun putFloat(index: Int, value: Float): ByteBuffer {
-        if (index < 0 || index > limit - 4) {
+        // 检查索引是否在有效范围内
+        if (index !in 0 .. limit - 4) {
             throw IndexOutOfBoundsException()
         }
+        // 保存当前位置
         val originalPosition = position
+        // 将位置设置为指定索引
         position = index
+        // 写入浮点数值
         putFloat(value)
+        // 恢复原始位置
         position = originalPosition
         return this
     }

@@ -23,9 +23,9 @@ class LongTest {
             assertEquals(byteArray.toHexString(), long.toByteArray().toHexString())
         }
         // 自定义字节数
-        assertEquals(byteArrayOf(0x12).toHexString(), 0x12.toByteArray(1).toHexString())
-        assertEquals(byteArrayOf(0x12, 0x34).toHexString(), 0x1234.toByteArray(2).toHexString())
-        assertEquals(byteArrayOf(0x12, 0x34, 0x56).toHexString(), 0x123456.toByteArray(3).toHexString())
+        assertEquals(byteArrayOf(0x12).toHexString(), 0x12L.toByteArray(1).toHexString())
+        assertEquals(byteArrayOf(0x12, 0x34).toHexString(), 0x1234L.toByteArray(2).toHexString())
+        assertEquals(byteArrayOf(0x12, 0x34, 0x56).toHexString(), 0x123456L.toByteArray(3).toHexString())
         // 负数
         assertFails { (-1).toByteArray() }
     }
