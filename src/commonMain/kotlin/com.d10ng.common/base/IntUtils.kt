@@ -2,15 +2,15 @@ package com.d10ng.common.base
 
 /**
  * 将 整型 转 N 个字节的 ByteArray
- * > 字节数设置为小于等于0，则根据整型值自动计算字节数（默认设置为0）;
+ * > 字节数设置为null（默认），则根据整型值自动计算字节数;
  * > 字节数设置为大于0，则根据设置的字节数进行转换，如果字节数不足，则在前面补0，如果字节数过多，则截取前面的字节；
  * @receiver [Int] 整型
- * @param size [Int] 字节数，默认为0
+ * @param size [Int] 字节数，默认为null，根据整型值自动计算字节数
  * @return [ByteArray] 字节数组
  */
-fun Int.toByteArray(size: Int = 0): ByteArray {
+fun Int.toByteArray(size: Int? = null): ByteArray {
     val length = when {
-        size > 0 -> size
+        size != null && size > 0 -> size
         this in 0..0xff -> 1
         this in 0x100 .. 0xffff -> 2
         this in 0x10000..0xffffff -> 3
