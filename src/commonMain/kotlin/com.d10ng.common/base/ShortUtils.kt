@@ -1,5 +1,8 @@
 package com.d10ng.common.base
 
+import kotlin.js.JsExport
+import kotlin.js.JsName
+
 /**
  * 将 短整型 转 N 个字节的 ByteArray
  * > 字节数设置为null（默认），则根据整型值自动计算字节数；
@@ -36,6 +39,8 @@ fun shortToByteArray(short: Short, size: Int? = null): ByteArray =
  * @receiver [ByteArray] 最大长度为2的字节数组
  * @return [Short] 短整型
  */
+@JsExport
+@JsName("byteArrayToShort")
 fun ByteArray.toShort(): Short {
     if (this.isEmpty()) throw IllegalArgumentException("ByteArray must not be empty")
     if (size > 2) throw IllegalArgumentException("ByteArray must not be greater than 2 bytes")

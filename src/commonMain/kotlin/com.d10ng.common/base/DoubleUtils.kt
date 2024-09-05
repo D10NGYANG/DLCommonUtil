@@ -1,5 +1,8 @@
 package com.d10ng.common.base
 
+import kotlin.js.JsExport
+import kotlin.js.JsName
+
 /**
  * 将 Double 类型转字符串并最大保留指定位数的小数
  * > 该方法不会对字符串进行四舍五入，只是简单的截取；
@@ -16,6 +19,8 @@ fun Double.toStringWithMaxDecimal(maxDecimalCount: Int) = toString().keep(maxDec
  * @receiver [Double] 双精度浮点数
  * @return [ByteArray] 长度为8的字节数组
  */
+@JsExport
+@JsName("doubleToByteArray")
 fun Double.toByteArray(): ByteArray {
     return toBits().toByteArray(8)
 }
@@ -25,6 +30,8 @@ fun Double.toByteArray(): ByteArray {
  * @receiver [ByteArray] 长度为8的字节数组
  * @return [Double] 双精度浮点数
  */
+@JsExport
+@JsName("byteArrayToDouble")
 fun ByteArray.toDouble(): Double {
     if (size != 8) throw IllegalArgumentException("ByteArray must be 8 bytes")
     return Double.fromBits(toLong())

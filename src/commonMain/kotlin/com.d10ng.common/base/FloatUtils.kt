@@ -1,5 +1,8 @@
 package com.d10ng.common.base
 
+import kotlin.js.JsExport
+import kotlin.js.JsName
+
 /**
  * 将 Double/Float 类型的字符串最大保留指定位数的小数
  * > 该方法不会对字符串进行四舍五入，只是简单的截取；
@@ -36,6 +39,8 @@ fun Float.toStringWithMaxDecimal(maxDecimalCount: Int) = toString().keep(maxDeci
  * @receiver [Float] 单精度浮点数
  * @return [ByteArray] 长度为4的字节数组
  */
+@JsExport
+@JsName("floatToByteArray")
 fun Float.toByteArray(): ByteArray {
     return toBits().toByteArray(4)
 }
@@ -45,6 +50,8 @@ fun Float.toByteArray(): ByteArray {
  * @receiver [ByteArray] 长度为4的字节数组
  * @return [Float] 单精度浮点数
  */
+@JsExport
+@JsName("byteArrayToFloat")
 fun ByteArray.toFloat(): Float {
     if (size != 4) throw IllegalArgumentException("ByteArray must be 4 bytes")
     return Float.fromBits(toInt())

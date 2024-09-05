@@ -3,7 +3,7 @@
 > 浮点数处理工具
 
 ## ① 转字符串并最大保留指定位数的小数
-> > 将 Float 类型转字符串并最大保留指定位数的小数
+> 将 Float 类型转字符串并最大保留指定位数的小数
 > > - 该方法不会对数值进行四舍五入；
 > > - 如果数值为整数，则直接返回原字符串；
 > > - 如果数值中小数位数小于指定位数，则直接返回原字符串；
@@ -23,3 +23,41 @@ String str = FloatUtilsKt.toString(3.1415926f, 2);
 ```
 》js:
 > 请查看 [Number](./Number.md) 中的 `numberToString` 方法
+
+## ② 将Float转换为字节数组
+> 将 Float 类型转为 字节数组
+> - @receiver [Float] 单精度浮点数
+> - @return [ByteArray] 长度为4的字节数组
+
+》kotlin:
+```kotlin
+val byteArray = 3.14f.toByteArray()
+```
+》java:
+```java
+byte[] byteArray = FloatUtilsKt.toByteArray(3.14f);
+```
+》js:
+```js
+const DLBase = require('dl-common-util').com.d10ng.common.base;
+const byteArray = DLBase.floatToByteArray(3.14);
+```
+
+## ③ 将字节数组转换为Float
+> 将 字节数组 转为 Float
+> - @receiver [ByteArray] 长度为4的字节数组
+> - @return [Float] 单精度浮点数
+
+》kotlin:
+```kotlin
+val value = byteArray.toFloat()
+```
+》java:
+```java
+float value = FloatUtilsKt.toFloat(byteArray);
+```
+》js:
+```js
+const DLBase = require('dl-common-util').com.d10ng.common.base;
+const value = DLBase.byteArrayToFloat(byteArray);
+```

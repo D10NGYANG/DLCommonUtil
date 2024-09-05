@@ -2,7 +2,7 @@
 
 > 长整型数据处理工具
 
-## ① 转换为字节数组
+## ① 将Long转换为字节数组
 > 将 无符号长整型 转 N 个字节的 ByteArray；
 > > 字节数设置为小于等于0，则根据整型值自动计算字节数（默认设置为0）; \
 > > 字节数设置为大于0，则根据设置的字节数进行转换，如果字节数不足，则在前面补0，如果字节数过多，则截取前面的字节；
@@ -26,3 +26,22 @@ byte[] byteArray = LongUtilsKt.toByteArray(0xF1FF, 3);
 ```
 》js:
 > 请查看 [Number](./Number.md) 中的 `numberToByteArray` 方法
+
+## ② 将字节数组转换成长整型
+> 将 字节数组 转换成 长整型
+> - @receiver [ByteArray] 最大长度为8的字节数组
+> - @return [Int] 整型
+
+》kotlin:
+```kotlin
+val value = bytes.toLong()
+```
+》java:
+```java
+long value = ByteArrayUtilsKt.toLong(bytes);
+```
+》js:
+```js
+const DLBase = require('dl-common-util').com.d10ng.common.base;
+const value = DLBase.byteArrayToLong(bytes);
+```

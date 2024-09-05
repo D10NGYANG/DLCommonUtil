@@ -1,7 +1,7 @@
 # DLCommonUtil
 基于kotlin多平台的常用数据类型转换工具类库，目前支持`Android`、`JVM`、`IOS`、`MacOS`、`JS`、`Linux`；
 
-*最新版本：`0.5.0`*
+*最新版本：`0.5.1`*
 
 ## ① 安装
 > 请查看`WIKI`文档。
@@ -15,6 +15,7 @@
 - [单精度浮点型 Float](doc/Float.md)
 - [整型 Int](doc/Int.md)
 - [长整型 Long](doc/Long.md)
+- [短整型 Short](doc/Short.md)
 - [数字 Number(JS)](doc/Number.md)
 - [短整型数组 ShortArray](doc/ShortArray.md)
 - [字符串 String](doc/String.md)
