@@ -20,7 +20,11 @@ object GBK {
                 byteArrayOf(c.code.toByte())
             } else {
                 val i = uniCode.indexOf(c.code)
-                gbkCode[i].toByteArray(2)
+                if (i !in gbkCode.indices) {
+                    byteArrayOf(0xFF.toByte(), 0xFD.toByte())
+                } else {
+                    gbkCode[i].toByteArray(2)
+                }
             }
         }
         return ls.fold(ByteArray(0)) { acc, bytes -> acc + bytes }
