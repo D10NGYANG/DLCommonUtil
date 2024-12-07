@@ -3,8 +3,8 @@ val bds100MavenPassword: String by project
 val npmJsToken: String by project
 
 plugins {
-    kotlin("multiplatform") version "2.0.20"
-    kotlin("plugin.serialization") version "2.0.20"
+    kotlin("multiplatform") version "2.0.21"
+    kotlin("plugin.serialization") version "2.0.21"
     id("com.android.library")
     id("maven-publish")
     id("dev.petuska.npm.publish") version "3.4.3"
@@ -15,7 +15,13 @@ group = "com.github.D10NGYANG"
 version = "0.5.3"
 
 repositories {
-    google()
+    google {
+        mavenContent {
+            includeGroupAndSubgroups("androidx")
+            includeGroupAndSubgroups("com.android")
+            includeGroupAndSubgroups("com.google")
+        }
+    }
     mavenCentral()
 }
 
@@ -52,9 +58,9 @@ kotlin {
         commonMain {
             dependencies {
                 // serialization
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
                 // 协程
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0-RC.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.9.0")
                 // 时间工具
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
             }
@@ -62,7 +68,7 @@ kotlin {
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
-                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.5.3")
+                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.6.0")
             }
         }
         jvmTest {
@@ -134,6 +140,6 @@ fun isNonStable(version: String): Boolean {
 
 tasks.withType<com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask> {
     rejectVersionIf {
-        isNonStable(candidate.version)
+        isNonStable(candidate.version) && !isNonStable(currentVersion)
     }
 }
