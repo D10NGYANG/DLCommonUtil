@@ -13,7 +13,7 @@ import platform.Foundation.dataUsingEncoding
  * @return [ByteArray] GBK编码的字节数组
  */
 @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
-fun String.encodeGBKDo(): ByteArray {
+actual fun String.encodeGBK(): ByteArray {
     val gbkEncoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000.convert())
     val str = NSString.create(string = this)
     val nsData = str.dataUsingEncoding(gbkEncoding)
@@ -27,7 +27,7 @@ fun String.encodeGBKDo(): ByteArray {
  * @return [String] 字符串
  */
 @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
-fun ByteArray.decodeGBKDo(): String {
+actual fun ByteArray.decodeGBK(): String {
     if (this.isEmpty()) return ""
     val gbkEncoding = CFStringConvertEncodingToNSStringEncoding(kCFStringEncodingGB_18030_2000.convert())
     return this.usePinned {
