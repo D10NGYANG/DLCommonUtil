@@ -31,11 +31,10 @@ fun ByteArray.toBinString(space: Boolean = false): String {
 fun ByteArray.toHexString(space: Boolean = false, uppercase: Boolean = true): String {
     val builder = StringBuilder()
     for (byte in this) {
-        builder.append(byte.toHexString())
+        builder.append(byte.toHexString(uppercase))
         if (space) builder.append(" ")
     }
-    val result = builder.toString().trim()
-    return if (uppercase) result.uppercase() else result.lowercase()
+    return builder.toString().trim()
 }
 
 /**
