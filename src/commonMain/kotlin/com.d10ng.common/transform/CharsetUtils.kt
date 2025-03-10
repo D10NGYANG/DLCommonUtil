@@ -1,4 +1,3 @@
-@file:JsExport
 package com.d10ng.common.transform
 
 import com.d10ng.common.base.toByteArrayFromHex
@@ -24,6 +23,7 @@ expect fun ByteArray.decodeGBK(): String
  * @receiver [String] 字符串
  * @return [ByteArray] UTF8编码的字节数组
  */
+@JsExport
 fun String.encodeUTF8(): ByteArray = encodeToByteArray()
 
 /**
@@ -31,6 +31,7 @@ fun String.encodeUTF8(): ByteArray = encodeToByteArray()
  * @receiver [ByteArray] UTF8编码的字节数组
  * @return [String] 字符串
  */
+@JsExport
 fun ByteArray.decodeUTF8(): String = decodeToString()
 
 /**
@@ -38,6 +39,7 @@ fun ByteArray.decodeUTF8(): String = decodeToString()
  * @receiver [String] 字符串
  * @return [ByteArray] Unicode编码的字节数组
  */
+@JsExport
 fun String.encodeUnicode(): ByteArray {
     val hex = encodeUnicodeString(false)
     return hex.toByteArrayFromHex()
@@ -49,6 +51,7 @@ fun String.encodeUnicode(): ByteArray {
  * @param isNeedU [Boolean] 是否需要带"\\u"，默认true
  * @return [String] Unicode格式的16进制代码字符串
  */
+@JsExport
 fun String.encodeUnicodeString(isNeedU: Boolean = true): String {
     val builder = StringBuilder()
     for (c in this.iterator()) {
@@ -64,6 +67,7 @@ fun String.encodeUnicodeString(isNeedU: Boolean = true): String {
  * @receiver [ByteArray] Unicode编码的字节数组
  * @return [String] 字符串
  */
+@JsExport
 fun ByteArray.decodeUnicode(): String = toHexString().decodeUnicodeString()
 
 /**
@@ -73,6 +77,7 @@ fun ByteArray.decodeUnicode(): String = toHexString().decodeUnicodeString()
  * @receiver [String] Unicode格式的16进制代码字符串
  * @return [String] 明文字符串
  */
+@JsExport
 fun String.decodeUnicodeString(): String {
     val value = this.replace("\\u", "").replace(" ", "")
     val regex = "[A-Fa-f0-9]+".toRegex()
@@ -99,6 +104,7 @@ fun String.decodeUnicodeString(): String {
  * @receiver [String] 字符串
  * @return [ByteArray] ASCII编码的字节数组
  */
+@JsExport
 fun String.encodeASCII(): ByteArray = encodeASCIIString().toByteArrayFromHex()
 
 /**
@@ -107,6 +113,7 @@ fun String.encodeASCII(): ByteArray = encodeASCIIString().toByteArrayFromHex()
  * @receiver [String] 明文字符串
  * @return [String] ASCII格式的16进制代码字符串
  */
+@JsExport
 fun String.encodeASCIIString(): String {
     val regex = "[\\u0020-\\u007e]+".toRegex()
     val isMatch = regex.matches(this)
@@ -124,6 +131,7 @@ fun String.encodeASCIIString(): String {
  * @receiver [ByteArray] ASCII格式的字节数组
  * @return [String] 明文字符串
  */
+@JsExport
 fun ByteArray.decodeASCII(): String = toHexString().decodeASCIIString()
 
 /**
@@ -131,6 +139,7 @@ fun ByteArray.decodeASCII(): String = toHexString().decodeASCIIString()
  * @receiver [String] ASCII格式的16进制代码字符串
  * @return [String] 明文字符串
  */
+@JsExport
 fun String.decodeASCIIString(): String {
     val value = this.replace(" ", "")
     val regex = "[A-Fa-f0-9]+".toRegex()

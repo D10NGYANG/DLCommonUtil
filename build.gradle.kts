@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "com.github.D10NGYANG"
-version = "0.5.4"
+version = "0.6.0"
 
 repositories {
     google {
@@ -44,6 +44,7 @@ kotlin {
     }
     iosArm64()
     iosSimulatorArm64()
+    iosX64()
     macosArm64()
     macosX64()
     linuxX64()
