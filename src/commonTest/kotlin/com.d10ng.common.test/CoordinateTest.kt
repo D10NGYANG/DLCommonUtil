@@ -96,6 +96,16 @@ class CoordinateTest {
     }
 
     @Test
+    fun testToFullLatitude() {
+        assertEquals(0.0.toFullLatitude(true), 0.0)
+        assertEquals(90.0.toFullLatitude(true), 90.0)
+        assertEquals(113.1.toFullLatitude(true), 113.1)
+        assertEquals(113.1.toFullLatitude(true, false), -66.9)
+        assertEquals(10.1.toFullLatitude(false), 169.9)
+        assertEquals(10.1.toFullLatitude(false, isPositive = false), -10.1)
+    }
+
+    @Test
     fun testToDMS() {
         assertEquals(0.0.toDMS(true).toString(), "0°0′0.0″")
         assertEquals(180.0.toDMS(true).toString(), "180°0′0.0″")

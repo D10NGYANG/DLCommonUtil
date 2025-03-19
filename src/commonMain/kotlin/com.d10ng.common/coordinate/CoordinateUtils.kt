@@ -132,7 +132,7 @@ fun Double.toFullLongitude(isEast: Boolean, isPositive: Boolean = true): Double 
 /**
  * 将纬度添加北纬标记转换成完整数据
  * - eg: 输入纬度=10.1，isNorth=false，isPositive=false，输出纬度=-10.1
- * - eg: 输入纬度=10.1，isNorth=false，isPositive=true，输出纬度=79.9
+ * - eg: 输入纬度=10.1，isNorth=false，isPositive=true，输出纬度=169.9
  * @receiver Double
  * @param isNorth [Boolean] 是否为北纬
  * @param isPositive [Boolean] 输出数据是否需要为正值，默认true，如果isNorth为false表示南纬，则输出的值根据此参数决定正负，如果isNorth为true表示北纬，则此参数无效，输出的值都为正值
@@ -148,13 +148,13 @@ fun Double.toFullLatitude(isNorth: Boolean, isPositive: Boolean = true): Double 
                 this
             } else {
                 // 输入数据是负值
-                90 + this
+                180 + this
             }
         } else {
             // 输出要求负值
             return if (this > 0) {
                 // 输入数据是正值
-                this - 90
+                this - 180
             } else {
                 // 输入数据是负值
                 this
@@ -167,7 +167,7 @@ fun Double.toFullLatitude(isNorth: Boolean, isPositive: Boolean = true): Double 
         // 当前输入的数据，是一个南纬非完整数据
         return if (isPositive) {
             // 输出要求正值
-            90 - this
+            180 - this
         } else {
             // 输出要求负值
             - this
