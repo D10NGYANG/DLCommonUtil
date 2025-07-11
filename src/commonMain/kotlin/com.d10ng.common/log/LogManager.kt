@@ -2,7 +2,8 @@ package com.d10ng.common.log
 
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 /**
  * 日志管理器
@@ -18,6 +19,7 @@ object LogManager {
      * 提交日志
      * @param message String
      */
+    @OptIn(ExperimentalTime::class)
     fun emit(message: String) {
         while (true) {
             if (dataFlow.tryEmit(Clock.System.now().toEpochMilliseconds() to message)) break

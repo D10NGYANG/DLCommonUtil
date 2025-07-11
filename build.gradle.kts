@@ -3,8 +3,8 @@ val bds100MavenPassword: String by project
 val npmJsToken: String by project
 
 plugins {
-    kotlin("multiplatform") version "2.1.10"
-    kotlin("plugin.serialization") version "2.1.10"
+    kotlin("multiplatform") version "2.2.0"
+    kotlin("plugin.serialization") version "2.2.0"
     id("com.android.library")
     id("maven-publish")
     id("dev.petuska.npm.publish") version "3.5.3"
@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "com.github.D10NGYANG"
-version = "0.6.1"
+version = "0.7.0"
 
 repositories {
     google {
@@ -36,9 +36,9 @@ kotlin {
         }
     }
     js(IR) {
-        moduleName = "dl-common-util"
+        outputModuleName = "dl-common-util"
         binaries.library()
-        binaries.executable()
+        //binaries.executable()
         nodejs()
         generateTypeScriptDefinitions()
     }
@@ -59,17 +59,17 @@ kotlin {
         commonMain {
             dependencies {
                 // serialization
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
                 // 协程
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
                 // 时间工具
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
             }
         }
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
-                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.7.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.8.0")
             }
         }
         jvmTest {
