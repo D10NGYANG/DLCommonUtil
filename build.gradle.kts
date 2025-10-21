@@ -3,16 +3,16 @@ val bds100MavenPassword: String by project
 val npmJsToken: String by project
 
 plugins {
-    kotlin("multiplatform") version "2.2.0"
-    kotlin("plugin.serialization") version "2.2.0"
+    kotlin("multiplatform") version "2.2.20"
+    kotlin("plugin.serialization") version "2.2.20"
     id("com.android.library")
     id("maven-publish")
     id("dev.petuska.npm.publish") version "3.5.3"
-    id("com.github.ben-manes.versions") version "0.52.0"
+    id("com.github.ben-manes.versions") version "0.53.0"
 }
 
 group = "com.github.D10NGYANG"
-version = "0.7.0"
+version = "0.8.1"
 
 repositories {
     google {
@@ -41,6 +41,9 @@ kotlin {
         //binaries.executable()
         nodejs()
         generateTypeScriptDefinitions()
+        compilerOptions {
+            freeCompilerArgs.add("-Xes-long-as-bigint")
+        }
     }
     iosArm64()
     iosSimulatorArm64()
@@ -62,8 +65,6 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
                 // 协程
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
-                // 时间工具
-                implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
             }
         }
         commonTest {
@@ -96,14 +97,7 @@ android {
     }
 }
 
-val javadocJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
-    archiveClassifier.set("javadoc")
-}
-
 publishing {
-    publications.withType(MavenPublication::class) {
-        artifact(tasks["javadocJar"])
-    }
     repositories {
         maven {
             url = uri("/Users/d10ng/project/kotlin/maven-repo/repository")
