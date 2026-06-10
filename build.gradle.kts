@@ -1,14 +1,10 @@
-val bds100MavenUsername: String by project
-val bds100MavenPassword: String by project
-val npmJsToken: String by project
-
 plugins {
-    kotlin("multiplatform") version "2.2.20"
-    kotlin("plugin.serialization") version "2.2.20"
-    id("com.android.library")
+    kotlin("multiplatform") version "2.3.21"
+    kotlin("plugin.serialization") version "2.3.21"
+    id("com.android.kotlin.multiplatform.library") version "9.0.1"
     id("maven-publish")
     id("dev.petuska.npm.publish") version "3.5.3"
-    id("com.github.ben-manes.versions") version "0.53.0"
+    id("com.github.ben-manes.versions") version "0.54.0"
 }
 
 group = "com.github.D10NGYANG"
@@ -27,18 +23,15 @@ repositories {
 
 kotlin {
     jvmToolchain(8)
-    androidTarget {
-        publishLibraryVariants("release")
+    android {
+        namespace = "com.d10ng.common"
+        compileSdk = 36
+        minSdk = 24
     }
-    jvm {
-        testRuns["test"].executionTask.configure {
-            useJUnit()
-        }
-    }
-    js(IR) {
+    jvm()
+    js {
         outputModuleName = "dl-common-util"
         binaries.library()
-        //binaries.executable()
         nodejs()
         generateTypeScriptDefinitions()
         compilerOptions {
@@ -49,28 +42,25 @@ kotlin {
     iosSimulatorArm64()
     iosX64()
     macosArm64()
-    macosX64()
     linuxX64()
     linuxArm64()
 
     sourceSets {
         all {
-            languageSettings.apply {
-                optIn("kotlin.js.ExperimentalJsExport")
-            }
+            languageSettings.optIn("kotlin.js.ExperimentalJsExport")
         }
         commonMain {
             dependencies {
                 // serialization
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
                 // 协程
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
             }
         }
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
-                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.8.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.9.0")
             }
         }
         jvmTest {
@@ -82,30 +72,24 @@ kotlin {
     }
 }
 
-android {
-    compileSdk = 34
-    namespace = "$group.${rootProject.name}"
-
-    defaultConfig {
-        minSdk = 24
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-}
+val bds100MavenUsername = providers.gradleProperty("bds100MavenUsername")
+    .orElse(providers.environmentVariable("BDS100_MAVEN_USERNAME"))
+val bds100MavenPassword = providers.gradleProperty("bds100MavenPassword")
+    .orElse(providers.environmentVariable("BDS100_MAVEN_PASSWORD"))
+val npmJsToken = providers.gradleProperty("npmJsToken")
+    .orElse(providers.environmentVariable("NPM_JS_TOKEN"))
 
 publishing {
     repositories {
         maven {
+            name = "local"
             url = uri("/Users/d10ng/project/kotlin/maven-repo/repository")
         }
         maven {
+            name = "bds100"
             credentials {
-                username = bds100MavenUsername
-                password = bds100MavenPassword
+                username = bds100MavenUsername.orNull
+                password = bds100MavenPassword.orNull
             }
             setUrl("https://nexus.bds100.com/repository/maven-releases/")
         }

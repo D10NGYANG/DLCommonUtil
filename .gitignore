@@ -1,6 +1,8 @@
 .gradle
 .idea
 build
-kotlin-js-store
+kotlin-js-store/*
+!kotlin-js-store/yarn.lock
 local.properties
 .kotlin
+.DS_Store
