@@ -226,3 +226,39 @@ String res = CharsetUtilsKt.decodeASCIIString("74657374"); // test
 const DLTransform = require('dl-common-util').com.d10ng.common.transform;
 const res = DLTransform.decodeASCIIString('74657374'); // test
 ```
+
+## ⑬ 将字符串转换为GB18030编码的字节数组
+> - @receiver [String] 字符串
+> - @return [ByteArray] GB18030编码的字节数组
+
+》kotlin:
+```kotlin
+val res = "😀".encodeGB18030() // 0x94, 0x39, 0xFC, 0x36
+```
+》java:
+```java
+byte[] res = CharsetUtilsKt.encodeGB18030("😀");
+```
+》js:
+```js
+const DLTransform = require('dl-common-util').com.d10ng.common.transform;
+const res = DLTransform.encodeGB18030('😀'); // 0x94, 0x39, 0xFC, 0x36
+```
+
+## ⑭ 将GB18030编码的字节数组转换为字符串
+> - @receiver [ByteArray] GB18030编码的字节数组
+> - @return [String] 字符串
+
+》kotlin:
+```kotlin
+val res = byteArrayOf(0x94.toByte(), 0x39.toByte(), 0xFC.toByte(), 0x36.toByte()).decodeGB18030() // 😀
+```
+》java:
+```java
+String res = CharsetUtilsKt.decodeGB18030(new byte[]{(byte) 0x94, 0x39, (byte) 0xFC, 0x36});
+```
+》js:
+```js
+const DLTransform = require('dl-common-util').com.d10ng.common.transform;
+const res = DLTransform.decodeGB18030([0x94, 0x39, 0xFC, 0x36]); // 😀
+```

@@ -27,6 +27,22 @@ class CharsetTest {
     }
 
     @Test
+    fun testEncodeGB18030() {
+        val map = mapOf(
+            "" to "",
+            "中文汉字编码测试" to "D6D0CEC4BABAD7D6B1E0C2EBB2E2CAD4",
+            "中文😀𠀀" to "D6D0CEC49439FC3695328236",
+            "€" to "A2E3",
+        )
+        map.forEach { item ->
+            val hex = item.key.encodeGB18030().toHexString()
+            assertEquals(item.value, hex)
+            val str = item.value.toByteArrayFromHex().decodeGB18030()
+            assertEquals(item.key, str)
+        }
+    }
+
+    @Test
     fun testEncodeUTF8() {
         val map = mapOf(
             "" to "",

@@ -57,6 +57,11 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
             }
         }
+        jsMain {
+            dependencies {
+                implementation(npm("iconv-lite", "0.6.3"))
+            }
+        }
         commonTest {
             dependencies {
                 implementation(kotlin("test"))

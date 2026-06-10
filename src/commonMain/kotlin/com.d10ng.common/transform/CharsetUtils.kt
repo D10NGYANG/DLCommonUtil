@@ -19,6 +19,20 @@ expect fun String.encodeGBK(): ByteArray
 expect fun ByteArray.decodeGBK(): String
 
 /**
+ * 将字符串转换成字节数组，编码格式为GB18030
+ * @receiver [String] 字符串
+ * @return [ByteArray] GB18030编码的字节数组
+ */
+expect fun String.encodeGB18030(): ByteArray
+
+/**
+ * 将字节数组转换成字符串，编码格式为GB18030
+ * @receiver [ByteArray] GB18030编码的字节数组
+ * @return [String] 字符串
+ */
+expect fun ByteArray.decodeGB18030(): String
+
+/**
  * 将字符串转换成字节数组，编码格式为UTF8
  * @receiver [String] 字符串
  * @return [ByteArray] UTF8编码的字节数组

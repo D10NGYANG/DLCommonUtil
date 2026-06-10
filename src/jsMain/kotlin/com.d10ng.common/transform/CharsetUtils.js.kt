@@ -1,5 +1,22 @@
 package com.d10ng.common.transform
 
+@JsModule("iconv-lite")
+@JsNonModule
+private external object IconvLite {
+    fun encode(value: String, encoding: String): dynamic
+    fun decode(value: dynamic, encoding: String): String
+}
+
+@JsModule("buffer")
+@JsNonModule
+private external object NodeBufferModule {
+    val Buffer: NodeBufferConstructor
+}
+
+private external interface NodeBufferConstructor {
+    fun from(value: ByteArray): dynamic
+}
+
 /**
  * 将字符串转换成字节数组，编码格式为GBK
  * @receiver [String] 字符串
@@ -7,7 +24,7 @@ package com.d10ng.common.transform
  */
 @JsExport
 actual fun String.encodeGBK(): ByteArray {
-    return GBK.encode(this)
+    return encode("gbk")
 }
 
 /**
@@ -17,5 +34,25 @@ actual fun String.encodeGBK(): ByteArray {
  */
 @JsExport
 actual fun ByteArray.decodeGBK(): String {
-    return GBK.decode(this)
+    return decode("gbk")
 }
+
+@JsExport
+actual fun String.encodeGB18030(): ByteArray {
+    return encode("gb18030")
+}
+
+@JsExport
+actual fun ByteArray.decodeGB18030(): String {
+    return decode("gb18030")
+}
+
+private fun String.encode(encoding: String): ByteArray {
+    val buffer = IconvLite.encode(this, encoding)
+    return ByteArray(buffer.length as Int) { index ->
+        (buffer[index] as Number).toByte()
+    }
+}
+
+private fun ByteArray.decode(encoding: String): String =
+    IconvLite.decode(NodeBufferModule.Buffer.from(this), encoding)
