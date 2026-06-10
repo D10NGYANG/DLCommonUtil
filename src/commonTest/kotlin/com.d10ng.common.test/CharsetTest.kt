@@ -4,6 +4,7 @@ import com.d10ng.common.base.toByteArrayFromHex
 import com.d10ng.common.base.toHexString
 import com.d10ng.common.transform.*
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 class CharsetTest {
@@ -79,6 +80,19 @@ class CharsetTest {
     }
 
     @Test
+    fun testUnicodeBoundaryBehavior() {
+        assertContentEquals(byteArrayOf(0x00, 0x41, 0x4E, 0x2D), "A中".encodeUnicode())
+        assertEquals("\\u0041\\u4e2d", "A中".encodeUnicodeString())
+        assertEquals("00414e2d", "A中".encodeUnicodeString(false))
+        assertEquals("A中", "\\u0041 \\u4e2d".decodeUnicodeString())
+        assertEquals("\u4100", "41".decodeUnicodeString())
+        assertEquals("A", "00000041".decodeUnicodeString())
+        assertEquals("\u4100", byteArrayOf(0x41).decodeUnicode())
+        assertEquals("", "\\U0041".decodeUnicodeString())
+        assertEquals("", " ".decodeUnicodeString())
+    }
+
+    @Test
     fun testEncodeASCII() {
         val map = mapOf(
             "" to "",
@@ -92,5 +106,20 @@ class CharsetTest {
             val str = item.value.toByteArrayFromHex().decodeASCII()
             assertEquals(str, item.key)
         }
+    }
+
+    @Test
+    fun testASCIIBoundaryBehavior() {
+        assertContentEquals(byteArrayOf(0x20, 0x41, 0x7E), " A~".encodeASCII())
+        assertEquals("20417e", " A~".encodeASCIIString())
+        assertContentEquals(byteArrayOf(), "".encodeASCII())
+        assertContentEquals(byteArrayOf(), "A中".encodeASCII())
+        assertEquals("", "".encodeASCIIString())
+        assertEquals("", "A中".encodeASCIIString())
+        assertEquals("A~", "41 7e".decodeASCIIString())
+        assertEquals("@", "4".decodeASCIIString())
+        assertEquals("\u00ff", byteArrayOf(0xFF.toByte()).decodeASCII())
+        assertEquals("", "GG".decodeASCIIString())
+        assertEquals("", " ".decodeASCIIString())
     }
 }
