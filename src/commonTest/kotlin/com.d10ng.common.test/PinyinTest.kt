@@ -8,6 +8,7 @@ class PinyinTest {
 
     @Test
     fun test() {
+        assertEquals("".toPinYin(), "")
         assertEquals("中文拼音测试".toPinYin(), "ZHONGWENPINYINCESHI")
         assertEquals("中文".toPinYin(","), "ZHONG,WEN")
         assertEquals("abc".toPinYin(), "ABC")
@@ -18,5 +19,6 @@ class PinyinTest {
         assertEquals("中123".toPinYin(), "ZHONG123")
         assertEquals("中Ab123".toPinYin(), "ZHONGAB123")
         assertEquals("中Ab123".toPinYin(" "), "ZHONG A B 1 2 3")
+        assertEquals("àαёⅰａ".toPinYin(), "ÀΑЁⅠＡ")
     }
 }
