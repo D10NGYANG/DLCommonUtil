@@ -9,18 +9,18 @@
 
 》kotlin:
 ```kotlin
-val res = "你好".toPinyin() // NIHAO
+val res = "你好".toPinYin() // NIHAO
 // 指定分隔符
-val res = "你好".toPinyin(separator = " ") // NI HAO
+val res = "你好".toPinYin(separator = " ") // NI HAO
 ```
 》java:
 ```java
-String res = PinyinUtilsKt.toPinyin("你好", " "); // NI HAO
+String res = PinyinUtilsKt.toPinYin("你好", " "); // NI HAO
 ```
 》js:
 ```js
 const DLTransform = require('dl-common-util').com.d10ng.common.transform;
-const res = DLTransform.toPinyin('你好'); // NIHAO
+const res = DLTransform.toPinYin('你好'); // NIHAO
 // 指定分隔符
-const res = DLTransform.toPinyin('你好', ' '); // NI HAO
+const res = DLTransform.toPinYin('你好', ' '); // NI HAO
 ```
