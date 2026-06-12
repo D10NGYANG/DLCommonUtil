@@ -1,11 +1,14 @@
 package com.d10ng.common.test
 
 import com.d10ng.common.calculate.getHexColorStringFromRgbValueArray
+import com.d10ng.common.calculate.getMiddleColor
 import com.d10ng.common.calculate.getNextLevelColor
 import com.d10ng.common.calculate.getRgbValueArrayFromHexColorString
 import com.d10ng.common.calculate.isDarkColor
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class ColorTest {
 
@@ -23,8 +26,9 @@ class ColorTest {
             "#FF00FF" to true,
             "#C0C0C0" to false,
         ).forEach { (color, isDark) ->
-            assertEquals(isDarkColor(color), isDark)
+            assertEquals(isDark, isDarkColor(color))
         }
+        assertEquals(true, isDarkColor("invalid"))
     }
 
     @Test
@@ -42,11 +46,38 @@ class ColorTest {
         assertEquals(getNextLevelColor("#1488FC", 0.9), "#e8f3ff")
         assertEquals(getNextLevelColor("#1488FC", -0.2), "#106dca")
         assertEquals(getNextLevelColor("#45216B", 0.5), "#a290b5")
+        assertEquals("#1488fc", getNextLevelColor("#1488FC", 0.0))
+    }
+
+    @Test
+    fun testGetNextLevelColorRejectsInvalidLevel() {
+        listOf(Double.NaN, Double.POSITIVE_INFINITY, -1.01, 1.01).forEach { level ->
+            assertFailsWith<IllegalArgumentException> {
+                getNextLevelColor("#1488FC", level)
+            }
+        }
+    }
+
+    @Test
+    fun testGetMiddleColor() {
+        assertEquals("#000000", getMiddleColor("#000", "#fff", 0.0f))
+        assertEquals("#808080", getMiddleColor("#000", "#fff", 0.5f))
+        assertEquals("#ffffff", getMiddleColor("#000", "#fff", 1.0f))
+        assertEquals("#800080", getMiddleColor("#f00", "#00f", 0.5f))
+        assertEquals("#808080", getMiddleColor("invalid", "#fff", 0.5f))
+    }
+
+    @Test
+    fun testGetMiddleColorRejectsInvalidPresent() {
+        listOf(Float.NaN, Float.POSITIVE_INFINITY, -0.01f, 1.01f).forEach { present ->
+            assertFailsWith<IllegalArgumentException> {
+                getMiddleColor("#000", "#fff", present)
+            }
+        }
     }
 
     @Test
     fun testGetRgbValueArrayFromHexColorString() {
-        val intArrayToString = { array: Array<Int> -> array.joinToString(",") }
         mapOf(
             "" to arrayOf(0, 0, 0),
             "#000000" to arrayOf(0, 0, 0),
@@ -59,8 +90,9 @@ class ColorTest {
             "#00FFFF" to arrayOf(0, 255, 255),
             "#FF00FF" to arrayOf(255, 0, 255),
             "#C0C0C0" to arrayOf(192, 192, 192),
+            "#abc" to arrayOf(170, 187, 204),
         ).forEach { (color, rgb) ->
-            assertEquals(intArrayToString(rgb), intArrayToString(getRgbValueArrayFromHexColorString(color)))
+            assertContentEquals(rgb, getRgbValueArrayFromHexColorString(color))
         }
     }
 
@@ -79,6 +111,21 @@ class ColorTest {
             arrayOf(192, 192, 192) to "#c0c0c0",
         ).forEach { (rgb, color) ->
             assertEquals(color, getHexColorStringFromRgbValueArray(rgb))
+        }
+    }
+
+    @Test
+    fun testGetHexColorStringRejectsInvalidRgb() {
+        listOf<Array<Int>>(
+            emptyArray(),
+            arrayOf(0, 0),
+            arrayOf(0, 0, 0, 0),
+            arrayOf(-1, 0, 0),
+            arrayOf(0, 256, 0),
+        ).forEach { rgb ->
+            assertFailsWith<IllegalArgumentException> {
+                getHexColorStringFromRgbValueArray(rgb)
+            }
         }
     }
 }

@@ -22,8 +22,8 @@ class ChecksumTest {
 
     @Test
     fun testAssertChecksum_EmptyArray() {
-        val byteArray = byteArrayOf()
-        assertFalse(byteArray.assertChecksum())
+        assertFalse(byteArrayOf().assertChecksum())
+        assertFalse(byteArrayOf(0x00).assertChecksum())
     }
 
     @Test
@@ -34,9 +34,9 @@ class ChecksumTest {
     }
 
     @Test
-    fun testGetChecksum_AndType() {
+    fun testGetChecksum_SumType() {
         val byteArray = byteArrayOf(0x01, 0x02, 0x03, 0x04)
-        val checksum = byteArray.getChecksum(ChecksumType.AND)
+        val checksum = byteArray.getChecksum(ChecksumType.SUM)
         assertEquals(0x0A, checksum)
     }
 
@@ -48,6 +48,42 @@ class ChecksumTest {
     }
 
     @Test
+    fun testGetChecksum_SubRange() {
+        val byteArray = byteArrayOf(0x7F, 0x01, 0x02, 0x03, 0x04, 0x7F)
+        assertEquals(0x04, byteArray.getChecksum(start = 1, length = 4))
+        assertEquals(0x00, byteArray.getChecksum(start = byteArray.size, length = 0))
+    }
+
+    @Test
+    fun testGetChecksum_UsesUnsignedByteBits() {
+        val byteArray = byteArrayOf(0x80.toByte(), 0x01)
+        assertEquals(0x81.toByte(), byteArray.getChecksum(ChecksumType.OR))
+        assertEquals(0x81.toByte(), byteArray.getChecksum(ChecksumType.XOR))
+        assertEquals(0x81.toByte(), byteArray.getChecksum(ChecksumType.SUM))
+    }
+
+    @Test
+    fun testGetChecksum_SumWrapsToByte() {
+        assertEquals(0x00, byteArrayOf(0xFF.toByte(), 0x01).getChecksum(ChecksumType.SUM))
+    }
+
+    @Test
+    fun testGetChecksumRejectsInvalidRange() {
+        val byteArray = byteArrayOf(0x01, 0x02, 0x03)
+        listOf(
+            -1 to 1,
+            4 to 0,
+            0 to -1,
+            1 to 3,
+            Int.MAX_VALUE to Int.MAX_VALUE,
+        ).forEach { (start, length) ->
+            assertFailsWith<IllegalArgumentException> {
+                byteArray.getChecksum(start = start, length = length)
+            }
+        }
+    }
+
+    @Test
     fun testAddChecksum_DefaultType() {
         val byteArray = byteArrayOf(0x01, 0x02, 0x03, 0x04)
         val result = byteArray.addChecksum()
@@ -55,9 +91,9 @@ class ChecksumTest {
     }
 
     @Test
-    fun testAddChecksum_AndType() {
+    fun testAddChecksum_SumType() {
         val byteArray = byteArrayOf(0x01, 0x02, 0x03, 0x04)
-        val result = byteArray.addChecksum(ChecksumType.AND)
+        val result = byteArray.addChecksum(ChecksumType.SUM)
         assertContentEquals(byteArrayOf(0x01, 0x02, 0x03, 0x04, 0x0A), result)
     }
 
@@ -66,5 +102,15 @@ class ChecksumTest {
         val byteArray = byteArrayOf(0x01, 0x02, 0x03, 0x04)
         val result = byteArray.addChecksum(ChecksumType.OR)
         assertContentEquals(byteArrayOf(0x01, 0x02, 0x03, 0x04, 0x07), result)
+    }
+
+    @Suppress("DEPRECATION")
+    @Test
+    fun testLegacyAndTypeUsesSumForCompatibility() {
+        val byteArray = byteArrayOf(0x01, 0x02, 0x03, 0x04)
+        assertEquals(
+            byteArray.getChecksum(ChecksumType.SUM),
+            byteArray.getChecksum(ChecksumType.AND),
+        )
     }
 }

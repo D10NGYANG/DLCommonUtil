@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.github.D10NGYANG"
-version = "0.8.1"
+version = "1.0.0"
 
 repositories {
     google {

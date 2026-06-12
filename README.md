@@ -1,7 +1,7 @@
 # DLCommonUtil
 基于kotlin多平台的常用数据类型转换工具类库，目前支持`Android`、`JVM`、`IOS`、`MacOS`、`JS`、`Linux`；
 
-*最新版本：`0.8.1`*
+*最新版本：`1.0.0`*
 
 > `0.7.0`开始，需要使用`kotlin 2.1.10`以上版本。
 
@@ -13,6 +13,7 @@
 - [字节 Byte](doc/Byte.md)
 - [字节数组 ByteArray](doc/ByteArray.md)
 - [字节缓存区 ByteBuffer](doc/ByteBuffer.md)
+- [位写入器 BitWriter](doc/BitWriter.md)
 - [双精度浮点型 Double](doc/Double.md)
 - [单精度浮点型 Float](doc/Float.md)
 - [整型 Int](doc/Int.md)
