@@ -3,6 +3,7 @@ package com.d10ng.common.test
 import com.d10ng.common.base.toByteArray
 import com.d10ng.common.base.toFloat
 import com.d10ng.common.base.toStringWithMaxDecimal
+import com.d10ng.common.base.keep
 import kotlin.test.*
 
 class FloatTest {
@@ -21,6 +22,9 @@ class FloatTest {
 
         // 边界情况
         assertEquals("0", value.toStringWithMaxDecimal(0))
+        assertEquals("1.23E20", "1.2345678E20".keep(2))
+        assertEquals("1E20", "1.2345678E20".keep(0))
+        assertEquals("-1.2e-20", "-1.234e-20".keep(1))
 
         // 异常情况
         assertFails { value.toStringWithMaxDecimal(-1) }

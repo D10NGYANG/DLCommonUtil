@@ -1,8 +1,12 @@
+@file:Suppress("DEPRECATION")
+
 package com.d10ng.common.test
 
 import com.d10ng.common.base.*
 import kotlin.test.Test
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class StringTest {
 
@@ -32,6 +36,9 @@ class StringTest {
         assertEquals(0x00.toByte(), "".toByteFromBin())
         // 非法字符串
         assertEquals(0x00.toByte(), "非法字符串".toByteFromBin())
+        assertFailsWith<IllegalArgumentException> {
+            "1 0000 0000".toByteFromBin()
+        }
     }
 
     @Test
@@ -60,6 +67,7 @@ class StringTest {
         assertEquals(byteArrayOf().toHexString(), "".toByteArrayFromBin().toHexString())
         // 非法字符串
         assertEquals(byteArrayOf().toHexString(), "非法字符串".toByteArrayFromBin().toHexString())
+        assertContentEquals(byteArrayOf(0x01, 0x23), "1 0010 0011".toByteArrayFromBin())
     }
 
     @Test
@@ -78,6 +86,8 @@ class StringTest {
         assertEquals(0x00.toByte(), "".toByteFromHex())
         // 非法字符串
         assertEquals(0x00.toByte(), "非法字符串".toByteFromHex())
+        assertEquals(0x0f.toByte(), "f".toByteFromHex())
+        assertFailsWith<IllegalArgumentException> { "123".toByteFromHex() }
     }
 
     @Test
@@ -106,6 +116,7 @@ class StringTest {
         assertEquals(byteArrayOf().toHexString(), "".toByteArrayFromHex().toHexString())
         // 非法字符串
         assertEquals(byteArrayOf().toHexString(), "非法字符串".toByteArrayFromHex().toHexString())
+        assertContentEquals(byteArrayOf(0x0a, 0xbc.toByte()), "a-bc".toByteArrayFromHex())
     }
 
     @Test

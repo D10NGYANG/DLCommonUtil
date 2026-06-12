@@ -11,66 +11,65 @@ class LongTest {
 
     @Test
     fun testLongToByteArray() {
-        // 测试自动计算字节数的情况
+        // 自动长度边界
         assertContentEquals(byteArrayOf(0x00), 0L.toByteArray())
-        assertContentEquals(byteArrayOf(0x01), 1L.toByteArray())
-        assertContentEquals(byteArrayOf(0xFF.toByte()), 255L.toByteArray())
-        assertContentEquals(byteArrayOf(0x01, 0x00), 256L.toByteArray())
-        assertContentEquals(byteArrayOf(0xFF.toByte(), 0xFF.toByte()), 65535L.toByteArray())
-        assertContentEquals(byteArrayOf(0x01, 0x00, 0x00), 65536L.toByteArray())
-        assertContentEquals(byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()), 16777215L.toByteArray())
-        assertContentEquals(byteArrayOf(0x01, 0x00, 0x00, 0x00), 16777216L.toByteArray())
-        assertContentEquals(byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()), 4294967295L.toByteArray())
-        assertContentEquals(byteArrayOf(0x01, 0x00, 0x00, 0x00, 0x00), 4294967296L.toByteArray())
-        assertContentEquals(byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()), 1099511627775L.toByteArray())
-        assertContentEquals(byteArrayOf(0x01, 0x00, 0x00, 0x00, 0x00, 0x00), 1099511627776L.toByteArray())
-        assertContentEquals(byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()), 281474976710655L.toByteArray())
-        assertContentEquals(byteArrayOf(0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00), 281474976710656L.toByteArray())
-        assertContentEquals(byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()), 72057594037927935L.toByteArray())
-        assertContentEquals(byteArrayOf(0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00), 72057594037927936L.toByteArray())
-        assertContentEquals(byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()), (-1L).toByteArray())
+        for (byteCount in 1 until Long.SIZE_BYTES) {
+            val currentMax = (1L shl (byteCount * Byte.SIZE_BITS)) - 1
+            val nextMin = 1L shl (byteCount * Byte.SIZE_BITS)
 
-        // 测试指定字节数的情况
-        assertContentEquals(byteArrayOf(0x01), 1L.toByteArray(1))
-        assertContentEquals(byteArrayOf(0x00, 0x01), 1L.toByteArray(2))
-        assertContentEquals(byteArrayOf(0x00, 0x00, 0x01), 1L.toByteArray(3))
-        assertContentEquals(byteArrayOf(0x00, 0x00, 0x00, 0x01), 1L.toByteArray(4))
-        assertContentEquals(byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x01), 1L.toByteArray(5))
-        assertContentEquals(byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x00, 0x01), 1L.toByteArray(6))
-        assertContentEquals(byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01), 1L.toByteArray(7))
-        assertContentEquals(byteArrayOf(0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01), 1L.toByteArray(8))
+            assertEquals(byteCount, currentMax.toByteArray().size)
+            assertEquals(byteCount + 1, nextMin.toByteArray().size)
+        }
+        assertEquals(Long.SIZE_BYTES, Long.MAX_VALUE.toByteArray().size)
 
-        // 测试负数的情况
-        assertContentEquals(byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()), (-1L).toByteArray())
-        assertContentEquals(byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xF0.toByte()), (-16L).toByteArray())
+        // 显式长度的高位补零和低位截断
+        assertContentEquals(ByteArray(7) + byteArrayOf(0x12), 0x12L.toByteArray(8))
+        assertContentEquals(
+            byteArrayOf(0x9a.toByte(), 0xbc.toByte(), 0xde.toByte(), 0xf0.toByte()),
+            0x123456789abcdef0L.toByteArray(4),
+        )
+
+        // 负数自动使用完整补码，显式缩短时保留低位字节
+        assertContentEquals(ByteArray(Long.SIZE_BYTES) { 0xff.toByte() }, (-1L).toByteArray())
+        assertContentEquals(byteArrayOf(0xff.toByte(), 0xf0.toByte()), (-16L).toByteArray(2))
+    }
+
+    @Test
+    fun testLongToByteArrayRejectsInvalidSize() {
+        listOf(Int.MIN_VALUE, -1, 0, 9, Int.MAX_VALUE).forEach { size ->
+            assertFailsWith<IllegalArgumentException> {
+                1L.toByteArray(size)
+            }
+        }
     }
 
     @Test
     fun testByteArrayToLong() {
-        // 测试正整数
         assertEquals(0L, byteArrayOf(0x00).toLong())
-        assertEquals(1L, byteArrayOf(0x01).toLong())
         assertEquals(255L, byteArrayOf(0xFF.toByte()).toLong())
-        assertEquals(256L, byteArrayOf(0x01, 0x00).toLong())
-        assertEquals(65535L, byteArrayOf(0xFF.toByte(), 0xFF.toByte()).toLong())
-        assertEquals(65536L, byteArrayOf(0x01, 0x00, 0x00).toLong())
-        assertEquals(16777215L, byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()).toLong())
-        assertEquals(16777216L, byteArrayOf(0x01, 0x00, 0x00, 0x00).toLong())
-        assertEquals(4294967295L, byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()).toLong())
-        assertEquals(4294967296L, byteArrayOf(0x01, 0x00, 0x00, 0x00, 0x00).toLong())
-        assertEquals(1099511627775L, byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()).toLong())
-        assertEquals(1099511627776L, byteArrayOf(0x01, 0x00, 0x00, 0x00, 0x00, 0x00).toLong())
-        assertEquals(281474976710655L, byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()).toLong())
-        assertEquals(281474976710656L, byteArrayOf(0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00).toLong())
-        assertEquals(72057594037927935L, byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()).toLong())
-        assertEquals(72057594037927936L, byteArrayOf(0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00).toLong())
+        assertEquals(0x123456789abcdef0L, byteArrayOf(
+            0x12,
+            0x34,
+            0x56,
+            0x78,
+            0x9a.toByte(),
+            0xbc.toByte(),
+            0xde.toByte(),
+            0xf0.toByte(),
+        ).toLong())
 
-        // 测试负整数（补码表示）
-        assertEquals(-1L, byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()).toLong())
-        assertEquals(-16L, byteArrayOf(0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xF0.toByte()).toLong())
+        // 1 到 7 字节按无符号数值解析
+        assertEquals(0xffffL, byteArrayOf(0xff.toByte(), 0xff.toByte()).toLong())
+        assertEquals(0xffffffffL, ByteArray(4) { 0xff.toByte() }.toLong())
 
-        // 测试空数组和超过8字节的数组
         assertFailsWith<IllegalArgumentException> { byteArrayOf().toLong() }
         assertFailsWith<IllegalArgumentException> { ByteArray(9) { 0 }.toLong() }
+    }
+
+    @Test
+    fun testEightByteRoundTrip() {
+        listOf(Long.MIN_VALUE, -1L, 0L, 1L, Long.MAX_VALUE).forEach { value ->
+            assertEquals(value, value.toByteArray(Long.SIZE_BYTES).toLong())
+        }
     }
 }

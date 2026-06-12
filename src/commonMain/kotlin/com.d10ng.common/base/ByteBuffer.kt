@@ -5,23 +5,33 @@ import kotlin.js.JsExport
 import kotlin.js.JsName
 
 /**
- * 字节数据处理
+ * 字节序。
  */
 enum class ByteOrder {
+    /** 高位字节在前。 */
     BIG_ENDIAN,
+
+    /** 低位字节在前。 */
     LITTLE_ENDIAN;
 
     companion object {
-        fun nativeOrder(): ByteOrder {
-            return LITTLE_ENDIAN
-        }
+        /**
+         * 返回本库支持目标的约定本地字节序。
+         *
+         * 当前 Kotlin/Native 与 JavaScript 支持目标均按小端序处理。
+         *
+         * @return [LITTLE_ENDIAN]
+         */
+        fun nativeOrder(): ByteOrder = LITTLE_ENDIAN
     }
 }
 
 /**
- * ByteBuffer 类,用于进行字节缓冲区操作。
+ * 提供带位置、限制和字节序的跨平台字节缓冲区。
  *
- * @param capacity 缓冲区容量,必须为非负数。
+ * 实例不是线程安全的。相对读写会推进 [position]，绝对索引读写不会改变位置。
+ *
+ * @param capacity 缓冲区容量，必须为非负数
  */
 class ByteBuffer private constructor(private val capacity: Int) {
     // 缓冲区的限制位置,表示缓冲区中可用数据的末尾位置。
@@ -32,16 +42,13 @@ class ByteBuffer private constructor(private val capacity: Int) {
     private val array: ByteArray = ByteArray(capacity)
     // 字节序标志,true 表示大端字节序,false 表示小端字节序。
     private var bigEndian: Boolean = true
-    // 本地字节序标志,true 表示使用平台的本地字节序。
-    private var nativeByteOrder: Boolean = true
-
     companion object {
         /**
          * 创建一个指定容量的 ByteBuffer 实例。
          *
-         * @param capacity [Int] 缓冲区容量,必须为非负数。
-         * @return 创建的 [ByteBuffer] 实例。
-         * @throws IllegalArgumentException 如果容量为负数。
+         * @param capacity 缓冲区容量，必须为非负数
+         * @return 新的空缓冲区
+         * @throws IllegalArgumentException 当 [capacity] 为负数时
          */
         fun allocate(capacity: Int): ByteBuffer {
             if (capacity < 0) {
@@ -53,8 +60,10 @@ class ByteBuffer private constructor(private val capacity: Int) {
         /**
          * 将一个字节数组包装为 ByteBuffer 实例。
          *
-         * @param array [ByteArray] 要包装的字节数组。
-         * @return [ByteBuffer] 包装后的 ByteBuffer 实例,缓冲区位置被设置为 0,限制位置被设置为数组的长度。
+         * 该实现会复制 [array]，后续修改不会相互影响。
+         *
+         * @param array 要复制到缓冲区的字节数组
+         * @return 位置为 `0`、限制为数组长度的新缓冲区
          */
         fun wrap(array: ByteArray): ByteBuffer {
             return ByteBuffer(array.size).apply {
@@ -73,8 +82,6 @@ class ByteBuffer private constructor(private val capacity: Int) {
     fun order(byteOrder: ByteOrder): ByteBuffer {
         // 根据传入的字节序设置 bigEndian 标志
         bigEndian = (byteOrder == ByteOrder.BIG_ENDIAN)
-        // 判断设置的字节序是否与平台的本地字节序一致,并设置 nativeByteOrder 标志
-        nativeByteOrder = (bigEndian == (ByteOrder.nativeOrder() == ByteOrder.BIG_ENDIAN))
         return this
     }
 
@@ -187,7 +194,12 @@ class ByteBuffer private constructor(private val capacity: Int) {
         return this
     }
 
-    @Deprecated("Use rewind() instead", ReplaceWith("rewind()"))
+    /**
+     * 将位置重置为 `0`。
+     *
+     * @deprecated 使用 [rewind]。
+     */
+    @Deprecated("Use rewind() instead.", ReplaceWith("rewind()"))
     fun reset() {
         rewind()
     }
@@ -207,7 +219,12 @@ class ByteBuffer private constructor(private val capacity: Int) {
         return array[position++]
     }
 
-    @Deprecated("Use get() instead", ReplaceWith("get()"))
+    /**
+     * 从当前位置读取一个字节。
+     *
+     * @deprecated 使用 [get]。
+     */
+    @Deprecated("Use get() instead.", ReplaceWith("get()"))
     fun getByte(): Byte = get()
 
     /**
@@ -232,22 +249,23 @@ class ByteBuffer private constructor(private val capacity: Int) {
      *
      * @param dst [ByteArray] 目标字节数组。
      * @param offset [Int] 目标字节数组的起始偏移量,默认为 0。
-     * @param length [Int] 要读取的字节数,默认为目标字节数组的长度。
+     * @param length 要读取的字节数，默认覆盖 [offset] 到数组末尾
      * @return [ByteBuffer] 返回当前 ByteBuffer 实例,以支持方法链式调用。
      * @throws BufferUnderflowException 如果 ByteBuffer 中没有足够的可读字节。
+     * @throws IndexOutOfBoundsException 当 [offset] 和 [length] 不构成目标数组的有效范围时
      */
     @JsName("getBytesByIndex")
-    operator fun get(dst: ByteArray, offset: Int = 0, length: Int = dst.size): ByteBuffer {
-        // 检查是否有足够的可读字节
+    operator fun get(
+        dst: ByteArray,
+        offset: Int = 0,
+        length: Int = dst.size - offset,
+    ): ByteBuffer {
+        checkArrayRange(dst.size, offset, length)
         if (remaining() < length) {
             throw BufferUnderflowException()
         }
-        // 遍历目标字节数组,将 ByteBuffer 中的字节读取到目标字节数组的指定范围内
-        dst.forEachIndexed { index, _ ->
-            if (index >= offset && index < offset + length) {
-                dst[index] = get()
-            }
-        }
+        array.copyInto(dst, destinationOffset = offset, startIndex = position, endIndex = position + length)
+        position += length
         return this
     }
 
@@ -257,18 +275,14 @@ class ByteBuffer private constructor(private val capacity: Int) {
      * @param size [Int] 要读取的字节数。
      * @return [ByteArray] 包含读取的字节的新字节数组。
      * @throws BufferUnderflowException 如果 ByteBuffer 中没有足够的可读字节。
+     * @throws IllegalArgumentException 当 [size] 为负数时
      */
     fun getBytes(size: Int): ByteArray {
-        // 检查是否有足够的可读字节
+        require(size >= 0) { "size must be non-negative, but was $size" }
         if (remaining() < size) {
             throw BufferUnderflowException()
         }
-        // 创建一个指定大小的新字节数组
-        val bytes = ByteArray(size)
-        // 将 ByteBuffer 中的字节读取到新字节数组中
-        get(bytes)
-        // 返回新字节数组
-        return bytes
+        return ByteArray(size).also { get(it) }
     }
 
     /**
@@ -288,7 +302,12 @@ class ByteBuffer private constructor(private val capacity: Int) {
         return this
     }
 
-    @Deprecated("Use put() instead", ReplaceWith("put(b)"))
+    /**
+     * 在当前位置写入一个字节。
+     *
+     * @deprecated 使用 [put]。
+     */
+    @Deprecated("Use put() instead.", ReplaceWith("put(b)"))
     fun setByte(b: Byte) = put(b)
 
     /**
@@ -325,26 +344,32 @@ class ByteBuffer private constructor(private val capacity: Int) {
      *
      * @param src [ByteArray] 源字节数组。
      * @param offset [Int] 源字节数组的起始偏移量,默认为 0。
-     * @param length [Int] 要写入的字节数,默认为源字节数组的长度。
+     * @param length 要写入的字节数，默认覆盖 [offset] 到数组末尾
      * @return [ByteBuffer] 返回当前 ByteBuffer 实例,以支持方法链式调用。
      * @throws BufferOverflowException 如果 ByteBuffer 中没有足够的空间写入字节。
+     * @throws IndexOutOfBoundsException 当 [offset] 和 [length] 不构成源数组的有效范围时
      */
     @JsName("putBytesByIndex")
-    fun put(src: ByteArray, offset: Int = 0, length: Int = src.size): ByteBuffer {
-        // 检查是否有足够的空间写入字节
+    fun put(
+        src: ByteArray,
+        offset: Int = 0,
+        length: Int = src.size - offset,
+    ): ByteBuffer {
+        checkArrayRange(src.size, offset, length)
         if (remaining() < length) {
             throw BufferOverflowException()
         }
-        // 遍历源字节数组,将指定范围内的字节写入 ByteBuffer
-        src.forEachIndexed { index, b ->
-            if (index >= offset && index < offset + length) {
-                put(b)
-            }
-        }
+        src.copyInto(array, destinationOffset = position, startIndex = offset, endIndex = offset + length)
+        position += length
         return this
     }
 
-    @Deprecated("Use put(value) instead", ReplaceWith("put(value)"))
+    /**
+     * 在当前位置写入整个字节数组。
+     *
+     * @deprecated 使用 [put]。
+     */
+    @Deprecated("Use put(value) instead.", ReplaceWith("put(value)"))
     fun setBytes(value: ByteArray) {
         put(value)
     }
@@ -363,14 +388,8 @@ class ByteBuffer private constructor(private val capacity: Int) {
      * @throws BufferUnderflowException 如果 ByteBuffer 中没有足够的可读字节。
      */
     fun getInt(): Int {
-        // 检查是否有足够的可读字节
-        if (remaining() < 4) {
-            throw BufferUnderflowException()
-        }
-        // 将 ByteBuffer 中的 4 个字节读取到字节数组中
-        val bytes = getBytes(4)
-        // 根据字节序将字节数组转换为整数值
-        return if (bigEndian) bytes.toInt() else bytes.let { it.reverse(); it.toInt() }
+        ensureReadable(Int.SIZE_BYTES)
+        return readLong(position, Int.SIZE_BYTES).also { position += Int.SIZE_BYTES }.toInt()
     }
 
     /**
@@ -381,15 +400,9 @@ class ByteBuffer private constructor(private val capacity: Int) {
      * @throws BufferOverflowException 如果 ByteBuffer 中没有足够的空间写入整数值。
      */
     fun putInt(value: Int): ByteBuffer {
-        // 检查是否有足够的空间写入整数值
-        if (remaining() < 4) {
-            throw BufferOverflowException()
-        }
-        val bytes = value.toByteArray(4)
-        // 根据字节序将整数值转换为字节数组
-        if (bigEndian.not()) bytes.reverse()
-        // 将字节数组写入 ByteBuffer
-        put(bytes)
+        ensureWritable(Int.SIZE_BYTES)
+        writeLong(position, value.toLong(), Int.SIZE_BYTES)
+        position += Int.SIZE_BYTES
         return this
     }
 
@@ -402,19 +415,8 @@ class ByteBuffer private constructor(private val capacity: Int) {
      */
     @JsName("getIntByIndex")
     fun getInt(index: Int): Int {
-        // 检查索引是否在有效范围内
-        if (index !in 0 .. limit - 4) {
-            throw IndexOutOfBoundsException()
-        }
-        // 保存当前位置
-        val originalPosition = position
-        // 将位置设置为指定索引
-        position = index
-        // 读取整数值
-        val value = getInt()
-        // 恢复原始位置
-        position = originalPosition
-        return value
+        checkAbsoluteRange(index, Int.SIZE_BYTES)
+        return readLong(index, Int.SIZE_BYTES).toInt()
     }
 
     /**
@@ -427,18 +429,8 @@ class ByteBuffer private constructor(private val capacity: Int) {
      */
     @JsName("putIntByIndex")
     fun putInt(index: Int, value: Int): ByteBuffer {
-        // 检查索引是否在有效范围内
-        if (index !in 0 .. limit - 4) {
-            throw IndexOutOfBoundsException()
-        }
-        // 保存当前位置
-        val originalPosition = position
-        // 将位置设置为指定索引
-        position = index
-        // 写入整数值
-        putInt(value)
-        // 恢复原始位置
-        position = originalPosition
+        checkAbsoluteRange(index, Int.SIZE_BYTES)
+        writeLong(index, value.toLong(), Int.SIZE_BYTES)
         return this
     }
 
@@ -449,20 +441,10 @@ class ByteBuffer private constructor(private val capacity: Int) {
      * @throws BufferUnderflowException 如果 ByteBuffer 中没有足够的可读字节。
      */
     fun getShort(): Short {
-        // 检查是否有足够的可读字节
-        if (remaining() < 2) {
-            throw BufferUnderflowException()
-        }
-        // 读取 2 个字节
-        val bytes = getBytes(2)
-        // 根据字节序将字节转换为短整数值
-        return if (bigEndian) {
-            // 大端字节序
-            bytes.toShort()
-        } else {
-            // 小端字节序,需要反转字节数组
-            bytes.let { it.reverse(); it.toShort() }
-        }
+        ensureReadable(Short.SIZE_BYTES)
+        return readLong(position, Short.SIZE_BYTES)
+            .also { position += Short.SIZE_BYTES }
+            .toShort()
     }
 
     /**
@@ -473,19 +455,9 @@ class ByteBuffer private constructor(private val capacity: Int) {
      * @throws BufferOverflowException 如果 ByteBuffer 中没有足够的空间写入短整数值。
      */
     fun putShort(value: Short): ByteBuffer {
-        // 检查是否有足够的空间写入短整数值
-        if (remaining() < 2) {
-            throw BufferOverflowException()
-        }
-        // 将短整数值转换为字节数组
-        val bytes = value.toByteArray(2)
-        // 根据字节序调整字节数组
-        if (bigEndian.not()) {
-            // 小端字节序,需要反转字节数组
-            bytes.reverse()
-        }
-        // 将字节数组写入 ByteBuffer
-        put(bytes)
+        ensureWritable(Short.SIZE_BYTES)
+        writeLong(position, value.toLong(), Short.SIZE_BYTES)
+        position += Short.SIZE_BYTES
         return this
     }
 
@@ -498,19 +470,8 @@ class ByteBuffer private constructor(private val capacity: Int) {
      */
     @JsName("getShortByIndex")
     fun getShort(index: Int): Short {
-        // 检查索引是否在有效范围内
-        if (index !in 0 .. limit - 2) {
-            throw IndexOutOfBoundsException()
-        }
-        // 保存当前位置
-        val originalPosition = position
-        // 将位置设置为指定索引
-        position = index
-        // 读取短整数值
-        val value = getShort()
-        // 恢复原始位置
-        position = originalPosition
-        return value
+        checkAbsoluteRange(index, Short.SIZE_BYTES)
+        return readLong(index, Short.SIZE_BYTES).toShort()
     }
 
     /**
@@ -523,18 +484,8 @@ class ByteBuffer private constructor(private val capacity: Int) {
      */
     @JsName("putShortByIndex")
     fun putShort(index: Int, value: Short): ByteBuffer {
-        // 检查索引是否在有效范围内
-        if (index !in 0 .. limit - 2) {
-            throw IndexOutOfBoundsException()
-        }
-        // 保存当前位置
-        val originalPosition = position
-        // 将位置设置为指定索引
-        position = index
-        // 写入短整数值
-        putShort(value)
-        // 恢复原始位置
-        position = originalPosition
+        checkAbsoluteRange(index, Short.SIZE_BYTES)
+        writeLong(index, value.toLong(), Short.SIZE_BYTES)
         return this
     }
 
@@ -545,20 +496,7 @@ class ByteBuffer private constructor(private val capacity: Int) {
      * @throws BufferUnderflowException 如果 ByteBuffer 中没有足够的可读字节。
      */
     fun getFloat(): Float {
-        // 检查是否有足够的可读字节
-        if (remaining() < 4) {
-            throw BufferUnderflowException()
-        }
-        // 读取 4 个字节
-        val bytes = getBytes(4)
-        // 根据字节序将字节转换为浮点数值
-        return if (bigEndian) {
-            // 大端字节序
-            bytes.toFloat()
-        } else {
-            // 小端字节序,需要反转字节数组
-            bytes.let { it.reverse(); it.toFloat() }
-        }
+        return Float.fromBits(getInt())
     }
 
     /**
@@ -569,20 +507,7 @@ class ByteBuffer private constructor(private val capacity: Int) {
      * @throws BufferOverflowException 如果 ByteBuffer 中没有足够的空间写入浮点数值。
      */
     fun putFloat(value: Float): ByteBuffer {
-        // 检查是否有足够的空间写入浮点数值
-        if (remaining() < 4) {
-            throw BufferOverflowException()
-        }
-        // 将浮点数值转换为字节数组
-        val bytes = value.toByteArray()
-        // 根据字节序调整字节数组
-        if (bigEndian.not()) {
-            // 小端字节序,需要反转字节数组
-            bytes.reverse()
-        }
-        // 将字节数组写入 ByteBuffer
-        put(bytes)
-        return this
+        return putInt(value.toBits())
     }
 
     /**
@@ -594,19 +519,7 @@ class ByteBuffer private constructor(private val capacity: Int) {
      */
     @JsName("getFloatByIndex")
     fun getFloat(index: Int): Float {
-        // 检查索引是否在有效范围内
-        if (index !in 0 .. limit - 4) {
-            throw IndexOutOfBoundsException()
-        }
-        // 保存当前位置
-        val originalPosition = position
-        // 将位置设置为指定索引
-        position = index
-        // 读取浮点数值
-        val value = getFloat()
-        // 恢复原始位置
-        position = originalPosition
-        return value
+        return Float.fromBits(getInt(index))
     }
 
     /**
@@ -619,19 +532,7 @@ class ByteBuffer private constructor(private val capacity: Int) {
      */
     @JsName("putFloatByIndex")
     fun putFloat(index: Int, value: Float): ByteBuffer {
-        // 检查索引是否在有效范围内
-        if (index !in 0 .. limit - 4) {
-            throw IndexOutOfBoundsException()
-        }
-        // 保存当前位置
-        val originalPosition = position
-        // 将位置设置为指定索引
-        position = index
-        // 写入浮点数值
-        putFloat(value)
-        // 恢复原始位置
-        position = originalPosition
-        return this
+        return putInt(index, value.toBits())
     }
 
     /**
@@ -641,20 +542,10 @@ class ByteBuffer private constructor(private val capacity: Int) {
      * @throws BufferUnderflowException 如果 ByteBuffer 中没有足够的可读字节。
      */
     fun getDouble(): Double {
-        // 检查是否有足够的可读字节
-        if (remaining() < 8) {
-            throw BufferUnderflowException()
-        }
-        // 读取 8 个字节
-        val bytes = getBytes(8)
-        // 根据字节序将字节转换为双精度浮点数值
-        return if (bigEndian) {
-            // 大端字节序
-            bytes.toDouble()
-        } else {
-            // 小端字节序,需要反转字节数组
-            bytes.let { it.reverse(); it.toDouble() }
-        }
+        ensureReadable(Long.SIZE_BYTES)
+        return Double.fromBits(
+            readLong(position, Long.SIZE_BYTES).also { position += Long.SIZE_BYTES },
+        )
     }
 
     /**
@@ -665,19 +556,9 @@ class ByteBuffer private constructor(private val capacity: Int) {
      * @throws BufferOverflowException 如果 ByteBuffer 中没有足够的空间写入双精度浮点数值。
      */
     fun putDouble(value: Double): ByteBuffer {
-        // 检查是否有足够的空间写入双精度浮点数值
-        if (remaining() < 8) {
-            throw BufferOverflowException()
-        }
-        // 将双精度浮点数值转换为字节数组
-        val bytes = value.toByteArray()
-        // 根据字节序调整字节数组
-        if (bigEndian.not()) {
-            // 小端字节序,需要反转字节数组
-            bytes.reverse()
-        }
-        // 将字节数组写入 ByteBuffer
-        put(bytes)
+        ensureWritable(Long.SIZE_BYTES)
+        writeLong(position, value.toBits(), Long.SIZE_BYTES)
+        position += Long.SIZE_BYTES
         return this
     }
 
@@ -690,19 +571,8 @@ class ByteBuffer private constructor(private val capacity: Int) {
      */
     @JsName("getDoubleByIndex")
     fun getDouble(index: Int): Double {
-        // 检查索引是否在有效范围内
-        if (index !in 0 .. limit - 8) {
-            throw IndexOutOfBoundsException()
-        }
-        // 保存当前位置
-        val originalPosition = position
-        // 将位置设置为指定索引
-        position = index
-        // 读取双精度浮点数值
-        val value = getDouble()
-        // 恢复原始位置
-        position = originalPosition
-        return value
+        checkAbsoluteRange(index, Long.SIZE_BYTES)
+        return Double.fromBits(readLong(index, Long.SIZE_BYTES))
     }
 
     /**
@@ -715,18 +585,8 @@ class ByteBuffer private constructor(private val capacity: Int) {
      */
     @JsName("putDoubleByIndex")
     fun putDouble(index: Int, value: Double): ByteBuffer {
-        // 检查索引是否在有效范围内
-        if (index !in 0 .. limit - 8) {
-            throw IndexOutOfBoundsException()
-        }
-        // 保存当前位置
-        val originalPosition = position
-        // 将位置设置为指定索引
-        position = index
-        // 写入双精度浮点数值
-        putDouble(value)
-        // 恢复原始位置
-        position = originalPosition
+        checkAbsoluteRange(index, Long.SIZE_BYTES)
+        writeLong(index, value.toBits(), Long.SIZE_BYTES)
         return this
     }
 
@@ -763,7 +623,58 @@ class ByteBuffer private constructor(private val capacity: Int) {
         position = limit
         return data
     }
+
+    private fun checkArrayRange(arraySize: Int, offset: Int, length: Int) {
+        if (offset < 0 || length < 0 || offset > arraySize - length) {
+            throw IndexOutOfBoundsException(
+                "offset=$offset, length=$length, arraySize=$arraySize",
+            )
+        }
+    }
+
+    private fun ensureReadable(byteCount: Int) {
+        if (remaining() < byteCount) throw BufferUnderflowException()
+    }
+
+    private fun ensureWritable(byteCount: Int) {
+        if (remaining() < byteCount) throw BufferOverflowException()
+    }
+
+    private fun checkAbsoluteRange(index: Int, byteCount: Int) {
+        if (index < 0 || index > limit - byteCount) {
+            throw IndexOutOfBoundsException(
+                "index=$index, byteCount=$byteCount, limit=$limit",
+            )
+        }
+    }
+
+    private fun readLong(index: Int, byteCount: Int): Long {
+        var result = 0L
+        for (offset in 0 until byteCount) {
+            val sourceIndex = if (bigEndian) index + offset else index + byteCount - 1 - offset
+            result = (result shl Byte.SIZE_BITS) or (array[sourceIndex].toLong() and 0xffL)
+        }
+        return result
+    }
+
+    private fun writeLong(index: Int, value: Long, byteCount: Int) {
+        for (offset in 0 until byteCount) {
+            val shift = if (bigEndian) {
+                (byteCount - 1 - offset) * Byte.SIZE_BITS
+            } else {
+                offset * Byte.SIZE_BITS
+            }
+            array[index + offset] = (value ushr shift).toByte()
+        }
+    }
 }
 
+/**
+ * 表示相对写入超过缓冲区限制。
+ */
 class BufferOverflowException : Exception("ByteBuffer overflow")
+
+/**
+ * 表示相对读取超过缓冲区限制。
+ */
 class BufferUnderflowException : Exception("ByteBuffer underflow")

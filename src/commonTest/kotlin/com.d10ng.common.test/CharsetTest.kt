@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.d10ng.common.test
 
 import com.d10ng.common.base.toByteArrayFromHex

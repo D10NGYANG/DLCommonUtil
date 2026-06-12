@@ -1,72 +1,105 @@
 @file:JsExport
 package com.d10ng.common.base
 
-import com.d10ng.common.calculate.keepByRegexStr
 import kotlin.js.JsExport
 import kotlin.js.JsName
-import kotlin.math.ceil
 
 /**
- * 将 8位 二进制字符串 "00110011" 转为 Byte
- * @receiver [String] 二进制字符串，可以包含空格，如 "0011 0011"或"00110011"
- * @return [Byte] 转换后的 Byte，如果转换失败则返回 0x00
+ * 从字符串中提取二进制数字并转换为字节。
+ *
+ * 非 `0`、`1` 字符会被忽略；有效位不足 8 位时在高位补 `0`。
+ *
+ * @receiver 待解析的字符串
+ * @return 解析后的字节；没有有效二进制数字时返回 `0`
+ * @throws IllegalArgumentException 当有效二进制数字超过 8 位时
  */
 @JsName("binStringToByte")
 fun String.toByteFromBin(): Byte {
-    val value = this.keepByRegexStr("[01]+")
+    val value = filter { it == '0' || it == '1' }
+    require(value.length <= Byte.SIZE_BITS) {
+        "Binary value must contain at most ${Byte.SIZE_BITS} bits, but was ${value.length}"
+    }
     val str = value.padStart(8, '0')
     return str.toInt(2).toByte()
 }
 
 /**
- * 将 8*N 二进制字符串 "00110011" 转为 ByteArray
- * @receiver [String] 二进制字符串，可以包含空格，如 "0011 0011"或"00110011"
- * @return [ByteArray] 转换后的 ByteArray，如果转换失败则返回 byteArrayOf()
+ * 从字符串中提取二进制数字并转换为字节数组。
+ *
+ * 非 `0`、`1` 字符会被忽略；总位数不是 8 的倍数时在整个数据高位补 `0`。
+ *
+ * @receiver 待解析的字符串
+ * @return 大端序字节数组；没有有效二进制数字时返回空数组
  */
 @JsName("binStringToByteArray")
 fun String.toByteArrayFromBin(): ByteArray {
-    var value = this.keepByRegexStr("[01]+")
+    val value = filter { it == '0' || it == '1' }
     if (value.isEmpty()) return byteArrayOf()
-    val length = ceil(value.length / 8.0).toInt()
-    value = value.padStart(length * 8, '0')
-    val result = ByteArray(length)
-    for (i in 0 until length) {
-        result[i] = value.substring(i * 8, i * 8 + 8).toByteFromBin()
+    val byteCount = value.length / Byte.SIZE_BITS +
+        if (value.length % Byte.SIZE_BITS == 0) 0 else 1
+    val padding = (Byte.SIZE_BITS - value.length % Byte.SIZE_BITS) % Byte.SIZE_BITS
+    return ByteArray(byteCount) { byteIndex ->
+        var byteValue = 0
+        repeat(Byte.SIZE_BITS) { bitOffset ->
+            val sourceIndex = byteIndex * Byte.SIZE_BITS + bitOffset - padding
+            val bit = if (sourceIndex >= 0) value[sourceIndex] - '0' else 0
+            byteValue = (byteValue shl 1) or bit
+        }
+        byteValue.toByte()
     }
-    return result
 }
 
 /**
- * 将 2位 16进制字符串 "fc" 转为 Byte
- * @receiver [String] 16进制字符串，如 "fc"
- * @return [Byte] 转换后的 Byte，如果转换失败则返回 0x00
+ * 从字符串中提取十六进制数字并转换为字节。
+ *
+ * 该兼容接口会忽略非十六进制字符，并在有效数字不足 2 位时高位补 `0`。
+ * Kotlin 标准库替代项采用严格解析，不会忽略非法字符。
+ *
+ * @receiver 待解析的字符串
+ * @return 解析后的字节；没有有效十六进制数字时返回 `0`
+ * @throws IllegalArgumentException 当有效十六进制数字超过 2 位时
  */
-@OptIn(ExperimentalStdlibApi::class)
+@Deprecated(
+    message = "Use Kotlin's hexToByte() for strict hexadecimal parsing.",
+    replaceWith = ReplaceWith("this.hexToByte()"),
+)
 @JsName("hexStringToByte")
 fun String.toByteFromHex(): Byte {
-    val value = this.keepByRegexStr("[A-Fa-f0-9]+")
+    val value = filter(Char::isHexDigit)
     val str = value.padStart(2, '0')
     return str.hexToByte()
 }
 
 /**
- * 将 2*N 16进制字符串 "fcfc" 转为 ByteArray
- * @receiver [String] 16进制字符串，可以包含空格，如 "fc fc"或"fcfc"
- * @return [ByteArray] 转换后的 ByteArray，如果转换失败则返回 byteArrayOf()
+ * 从字符串中提取十六进制数字并转换为字节数组。
+ *
+ * 该兼容接口会忽略非十六进制字符，并在有效数字为奇数时高位补 `0`。
+ * Kotlin 标准库替代项采用严格解析，不会忽略非法字符或接受奇数位输入。
+ *
+ * @receiver 待解析的字符串
+ * @return 解析后的大端序字节数组；没有有效十六进制数字时返回空数组
  */
+@Deprecated(
+    message = "Use Kotlin's hexToByteArray() for strict hexadecimal parsing.",
+    replaceWith = ReplaceWith("this.hexToByteArray()"),
+)
 @OptIn(ExperimentalStdlibApi::class)
 @JsName("hexStringToByteArray")
 fun String.toByteArrayFromHex(): ByteArray {
-    var value = this.keepByRegexStr("[A-Fa-f0-9]+")
+    var value = filter(Char::isHexDigit)
     if (value.isEmpty()) return byteArrayOf()
-    val length = ceil(value.length / 2.0).toInt()
-    value = value.padStart(length * 2, '0')
+    if (value.length % 2 != 0) value = "0$value"
     return value.hexToByteArray()
 }
 
 /**
- * 以字节单位获得字符串的长度，其中全角字符算两个字节，半角字符算一个字节
- * @return [Int] 长度
+ * 按兼容规则计算字符串宽度。
+ *
+ * Unicode 码元值不超过 `255` 时计为 1，其余计为 2。该结果不是任何具体字符编码的
+ * 实际字节数，并且代理项会分别计数。
+ *
+ * @receiver 待计算的字符串
+ * @return 按上述规则累计的宽度
  */
 @JsName("getStringByteLength")
 fun String.getByteLength(): Int {
@@ -80,9 +113,10 @@ fun String.getByteLength(): Int {
 }
 
 /**
- * 获取字符串的第一个字并转换成大写的
- * @receiver [String] 字符串
- * @return [String] 第一个字的大写
+ * 获取首个 UTF-16 码元的大写形式。
+ *
+ * @receiver 原始字符串
+ * @return 首个码元的大写字符串；接收者为空时返回空字符串
  */
 @JsName("getStringFirstUpperCase")
 fun String.getFirstUpperCase(): String {
@@ -91,13 +125,16 @@ fun String.getFirstUpperCase(): String {
 }
 
 /**
- * 将字符串中的半角字符转换成全角字符
- * @receiver [String] 字符串
- * @return [String] 转换后的字符串
+ * 将 ASCII 空格和可打印字符转换为对应全角字符。
+ *
+ * ASCII `!` 到 `~` 使用 Unicode 全角区映射，普通空格转换为全角空格，其他字符保持不变。
+ *
+ * @receiver 原始字符串
+ * @return 转换后的字符串
  */
 @JsName("stringToFullWidthString")
 fun String.toFullWidthString(): String {
-    val sb = StringBuilder()
+    val sb = StringBuilder(length)
     for (c in this) {
         when (c.code) {
             in 33..126 -> sb.append((c.code + 65248).toChar())
@@ -107,3 +144,6 @@ fun String.toFullWidthString(): String {
     }
     return sb.toString()
 }
+
+private fun Char.isHexDigit(): Boolean =
+    this in '0'..'9' || this in 'a'..'f' || this in 'A'..'F'

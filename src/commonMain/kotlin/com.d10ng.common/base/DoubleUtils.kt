@@ -4,20 +4,22 @@ import kotlin.js.JsExport
 import kotlin.js.JsName
 
 /**
- * 将 Double 类型转字符串并最大保留指定位数的小数
- * > 该方法不会对字符串进行四舍五入，只是简单的截取；
- * > 如果字符串中没有小数点，则直接返回原字符串；
- * > 如果字符串中小数位数小于指定位数，则直接返回原字符串；
- * @receiver [Double] 浮点数，如 1.2345
- * @param maxDecimalCount [Int] 最大保留小数位数，不能小于0
- * @return [String] 字符串，如 "1.23"
+ * 将双精度浮点数转换为字符串并截断到最多指定小数位数。
+ *
+ * 该函数不进行四舍五入，并保留科学计数法中的指数部分。
+ *
+ * @receiver 要格式化的双精度浮点数
+ * @param maxDecimalCount 最大小数位数
+ * @return 截断后的字符串
+ * @throws IllegalArgumentException 当 [maxDecimalCount] 为负数时
  */
 fun Double.toStringWithMaxDecimal(maxDecimalCount: Int) = toString().keep(maxDecimalCount)
 
 /**
- * 将 Double 类型转为 字节数组
- * @receiver [Double] 双精度浮点数
- * @return [ByteArray] 长度为8的字节数组
+ * 将双精度浮点数的 IEEE 754 位表示转换为大端序字节数组。
+ *
+ * @receiver 要转换的双精度浮点数
+ * @return 长度为 8 的字节数组
  */
 @JsExport
 @JsName("doubleToByteArray")
@@ -26,13 +28,17 @@ fun Double.toByteArray(): ByteArray {
 }
 
 /**
- * 将 字节数组 转为 Double
- * @receiver [ByteArray] 长度为8的字节数组
- * @return [Double] 双精度浮点数
+ * 将大端序 IEEE 754 位表示转换为双精度浮点数。
+ *
+ * @receiver 长度必须为 8 的字节数组
+ * @return 解码后的双精度浮点数
+ * @throws IllegalArgumentException 当数组长度不为 8 时
  */
 @JsExport
 @JsName("byteArrayToDouble")
 fun ByteArray.toDouble(): Double {
-    if (size != 8) throw IllegalArgumentException("ByteArray must be 8 bytes")
+    require(size == Double.SIZE_BYTES) {
+        "ByteArray size must be ${Double.SIZE_BYTES}, but was $size"
+    }
     return Double.fromBits(toLong())
 }

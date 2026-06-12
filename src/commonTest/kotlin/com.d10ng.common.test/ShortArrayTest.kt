@@ -4,7 +4,7 @@ import com.d10ng.common.base.toByteArray
 import com.d10ng.common.base.toShortArray
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
-import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 
 class ShortArrayTest {
 
@@ -24,5 +24,21 @@ class ShortArrayTest {
         val expectedByteArray = byteArrayOf(0x12, 0x34, 0x56, 0x78, 0x9A.toByte(), 0xBC.toByte())
         // 执行测试
         assertContentEquals(expectedByteArray, shortArray.toByteArray())
+    }
+
+    @Test
+    fun testByteArrayToShortArrayRejectsIncompletePair() {
+        assertFailsWith<IllegalArgumentException> {
+            byteArrayOf(0x01).toShortArray()
+        }
+        assertFailsWith<IllegalArgumentException> {
+            byteArrayOf(0x01, 0x02, 0x03).toShortArray()
+        }
+    }
+
+    @Test
+    fun testEmptyArrayRoundTrip() {
+        assertContentEquals(shortArrayOf(), byteArrayOf().toShortArray())
+        assertContentEquals(byteArrayOf(), shortArrayOf().toByteArray())
     }
 }

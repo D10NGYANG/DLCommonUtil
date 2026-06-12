@@ -5,36 +5,41 @@ import kotlin.js.JsExport
 import kotlin.js.JsName
 
 /**
- * 将字节数组转换为short数组
- * @receiver [ByteArray]
- * @return [ShortArray]
+ * 将小端序字节对转换为短整型数组。
+ *
+ * @receiver 字节数必须为偶数的原始数组
+ * @return 转换后的短整型数组
+ * @throws IllegalArgumentException 当数组包含不完整的末尾字节对时
  */
 @JsName("byteArrayToShortArray")
 fun ByteArray.toShortArray(): ShortArray {
-    val shorts = ShortArray(this.size / 2)
-    for (i in this.indices step 2) {
-        val byte1 = this[i].toInt() and 0xFF
-        val byte2 = this[i + 1].toInt() and 0xFF
-        val short = (byte2 shl 8) or byte1
-        shorts[i / 2] = short.toShort()
+    require(size % Short.SIZE_BYTES == 0) {
+        "ByteArray size must be even, but was $size"
     }
-    return shorts
+    return ShortArray(size / Short.SIZE_BYTES) { index ->
+        val byteIndex = index * Short.SIZE_BYTES
+        val low = this[byteIndex].toInt() and 0xff
+        val high = this[byteIndex + 1].toInt() and 0xff
+        ((high shl Byte.SIZE_BITS) or low).toShort()
+    }
 }
 
 /**
- * 将short数组转换为字节数组
- * @receiver [ShortArray]
- * @return [ByteArray]
+ * 将短整型数组转换为小端序字节对。
+ *
+ * @receiver 原始短整型数组
+ * @return 长度为接收者两倍的字节数组
  */
 @JsName("shortArrayToByteArray")
 fun ShortArray.toByteArray(): ByteArray {
-    val bytes = ByteArray(this.size * 2)
-    for (i in this.indices) {
-        val short = this[i]
-        val byte1 = short.toInt() and 0xFF
-        val byte2 = (short.toInt() shr 8) and 0xFF
-        bytes[i * 2] = byte1.toByte()
-        bytes[i * 2 + 1] = byte2.toByte()
+    require(size <= Int.MAX_VALUE / Short.SIZE_BYTES) {
+        "ShortArray is too large to convert to ByteArray"
+    }
+    val bytes = ByteArray(size * Short.SIZE_BYTES)
+    forEachIndexed { index, value ->
+        val byteIndex = index * Short.SIZE_BYTES
+        bytes[byteIndex] = value.toByte()
+        bytes[byteIndex + 1] = (value.toInt() ushr Byte.SIZE_BITS).toByte()
     }
     return bytes
 }

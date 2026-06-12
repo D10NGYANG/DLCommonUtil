@@ -14,5 +14,4 @@ fun Number.toByteArray(size: Int? = null): ByteArray = when (this) {
 }
 
 @JsExport
-@Suppress("NON_EXPORTABLE_TYPE")
 fun Number.asLong() = this.toLong()

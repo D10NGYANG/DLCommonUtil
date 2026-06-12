@@ -165,20 +165,27 @@ const bytes = DLBase.byteArrayPadEnd([0x01, 0x8B, 0x0E, 0x7D, 0x65, 0xC8], 10);
 > - @receiver [ByteArray] 原始字节数组
 > - @param start [Int] 开始比特位置
 > - @param length [Int] 比特位长度
+> - @param paddingHigh [Boolean] 是否向高位补 0，默认为 true；false 表示向低位补 0
 > - @return [ByteArray] 新的字节数组
 
 》kotlin:
 ```kotlin
 // 从 0x53 中获取 3..6 位，返回 0x09
 val bytes = byteArrayOf(0x53.toByte()).getBitRange(3, 4)
+// 相同范围向低位补 0，返回 0x90
+val lowPaddedBytes = byteArrayOf(0x53.toByte()).getBitRange(3, 4, paddingHigh = false)
 ```
 》java:
 ```java
 // 从 0x53 中获取 3..6 位，返回 0x09
 byte[] bytes = ByteArrayUtilsKt.getBitRange(new byte[]{(byte) 0x53}, 3, 4);
+// 相同范围向低位补 0，返回 0x90
+byte[] lowPaddedBytes = ByteArrayUtilsKt.getBitRange(
+    new byte[]{(byte) 0x53}, 3, 4, false
+);
 ```
 》js:
 ```js
 const DLBase = require('dl-common-util').com.d10ng.common.base;
-const bytes = DLBase.byteArrayGetBitRange([0x53], 3, 4);
+const bytes = DLBase.byteArrayGetBitRange([0x53], 3, 4, true);
 ```
