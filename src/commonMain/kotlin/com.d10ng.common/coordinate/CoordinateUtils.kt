@@ -10,16 +10,42 @@ import com.d10ng.common.coordinate.CoordinateConvert.transformWGS84ToGCJ02
 import kotlin.js.JsExport
 import kotlin.js.JsName
 import kotlin.math.pow
-import kotlin.math.roundToInt
+import kotlin.math.roundToLong
+
+private const val DEFAULT_COORDINATE_PATTERN = "CHFd°m′S.ss″"
+
+private fun Double.requireLongitudeValue(name: String = "longitude") {
+    require(isFinite() && this in -180.0..360.0) {
+        "$name must be finite and in -180.0..360.0, but was $this"
+    }
+}
+
+private fun Double.requireLatitudeValue(name: String = "latitude") {
+    require(isFinite() && this in -90.0..180.0) {
+        "$name must be finite and in -90.0..180.0, but was $this"
+    }
+}
+
+private fun Coordinate.requireConvertible() {
+    require(lat.isFinite() && lat in -90.0..90.0) {
+        "lat must be finite and in -90.0..90.0, but was $lat"
+    }
+    require(lng.isFinite() && lng in -180.0..180.0) {
+        "lng must be finite and in -180.0..180.0, but was $lng"
+    }
+}
 
 /**
- * 坐标系转换
- * @receiver [Coordinate] 源坐标
- * @param from [CoordinateSystemType] 源坐标系
- * @param to [CoordinateSystemType] 目标坐标系
- * @return [Coordinate] 转换后坐标
+ * 在支持的地理坐标系之间转换坐标。
+ *
+ * @receiver 源坐标，纬度必须在 `-90.0..90.0`，经度必须在 `-180.0..180.0`。
+ * @param from 源坐标系。
+ * @param to 目标坐标系。
+ * @return 转换后的新坐标；坐标系相同时返回当前坐标的副本。
+ * @throws IllegalArgumentException 当坐标不是有限值或超出经纬度范围时。
  */
 fun Coordinate.convert(from: CoordinateSystemType, to: CoordinateSystemType): Coordinate {
+    requireConvertible()
     return when(from) {
         CoordinateSystemType.WGS84 -> {
             when(to) {
@@ -46,53 +72,62 @@ fun Coordinate.convert(from: CoordinateSystemType, to: CoordinateSystemType): Co
 }
 
 /**
- * 判断经度数据是否为东经
- * @receiver [Double] 经度数据
- * @return [Boolean] true: 东经；false: 西经
+ * 判断当前经度表示是否属于东经。
+ *
+ * @receiver 经度；支持 `[-180, 180]` 和 `[0, 360]` 两种表示。
+ * @return 位于 `0.0..180.0` 时返回 `true`，其他值返回 `false`。
  */
-fun Double.isEastLongitude() = this in 0.0..180.0
+fun Double.isEastLongitude(): Boolean = this in 0.0..180.0
 
 /**
- * 判断纬度数据是否为北纬
- * @receiver [Double]
- * @return [Boolean] true: 北纬；false: 南纬
+ * 判断当前纬度表示是否属于北纬。
+ *
+ * @receiver 纬度；支持 `[-90, 90]` 和 `[0, 180]` 两种表示。
+ * @return 位于 `0.0..90.0` 时返回 `true`，其他值返回 `false`。
  */
-fun Double.isNorthLatitude() = this in 0.0 .. 90.0
+fun Double.isNorthLatitude(): Boolean = this in 0.0..90.0
 
 /**
- * 将经度转换成不带前缀的数据
- * > 当数据大于180度或者小于0度表示西经
- * @receiver [Double]
- * @return [Double] 返回去除"-"或小于180的数值；eg：输入181.1，返回1.1; 输入-1.1返回1.1;
+ * 将带方向的经度表示转换为不带方向的绝对度数。
+ *
+ * 负值按西经解释，`(180, 360]` 的值按正数西经表示解释。
+ *
+ * @receiver `[-180, 360]` 范围内的经度。
+ * @return `[0, 180]` 范围内的绝对经度。
+ * @throws IllegalArgumentException 当值不是有限值或超出支持范围时。
  */
 fun Double.toLongitudeNoPre(): Double {
-    // 收到经度数据"113.0312511"，如果这个数小于等于 180 代表东经，大于180度表示西经
+    requireLongitudeValue()
     val base = if (this > 180) 360 else if (this < 0) 0 else return this
     return base - this
 }
 
 /**
- * 将纬度转换成不带前缀的数据
- * > 当数据大于90度或者小于0度表示南纬
- * @receiver [Double]
- * @return [Double] 返回去除"-"或小于90的数值；eg：输入91.1，返回1.1; 输入-1.1返回1.1;
+ * 将带方向的纬度表示转换为不带方向的绝对度数。
+ *
+ * 负值按南纬解释，`(90, 180]` 的值按正数南纬表示解释。
+ *
+ * @receiver `[-90, 180]` 范围内的纬度。
+ * @return `[0, 90]` 范围内的绝对纬度。
+ * @throws IllegalArgumentException 当值不是有限值或超出支持范围时。
  */
 fun Double.toLatitudeNoPre(): Double {
-    // 收到纬度数据"23.1531888",如果这个数小于等于90代表北纬，大于 90 代表南纬
+    requireLatitudeValue()
     val base = if (this > 90) 180 else if (this < 0) 0 else return this
     return base - this
 }
 
 /**
- * 将经度添加东经标记转换成完整数据
- * - eg: 输入经度=110.1，isEast=false，isPositive=false，输出经度=-110.1
- * - eg: 输入经度=110.1，isEast=false，isPositive=true，输出经度=249.9
- * @receiver Double
- * @param isEast [Boolean] 是否为东经
- * @param isPositive [Boolean] 输出数据是否需要为正值，默认true，如果isEast为false表示西经，则输出的值根据此参数决定正负，如果isEast为true表示东经，则此参数无效，输出的值都为正值
- * @return [Double] 输出经度
+ * 根据方向将经度转换为完整表示。
+ *
+ * @receiver `[-180, 360]` 范围内的经度或绝对经度。
+ * @param isEast `true` 表示东经，`false` 表示西经。
+ * @param isPositive 西经是否使用 `(180, 360]` 的正数表示；为 `false` 时使用负数表示。
+ * @return 带方向的经度。
+ * @throws IllegalArgumentException 当接收值无效时。
  */
 fun Double.toFullLongitude(isEast: Boolean, isPositive: Boolean = true): Double {
+    requireLongitudeValue()
     if (!this.isEastLongitude()) {
         // 当前输入的数据，是一个西经完整数据
         if (isPositive) {
@@ -130,15 +165,16 @@ fun Double.toFullLongitude(isEast: Boolean, isPositive: Boolean = true): Double 
 }
 
 /**
- * 将纬度添加北纬标记转换成完整数据
- * - eg: 输入纬度=10.1，isNorth=false，isPositive=false，输出纬度=-10.1
- * - eg: 输入纬度=10.1，isNorth=false，isPositive=true，输出纬度=169.9
- * @receiver Double
- * @param isNorth [Boolean] 是否为北纬
- * @param isPositive [Boolean] 输出数据是否需要为正值，默认true，如果isNorth为false表示南纬，则输出的值根据此参数决定正负，如果isNorth为true表示北纬，则此参数无效，输出的值都为正值
- * @return [Double] 输出纬度
+ * 根据方向将纬度转换为完整表示。
+ *
+ * @receiver `[-90, 180]` 范围内的纬度或绝对纬度。
+ * @param isNorth `true` 表示北纬，`false` 表示南纬。
+ * @param isPositive 南纬是否使用 `(90, 180]` 的正数表示；为 `false` 时使用负数表示。
+ * @return 带方向的纬度。
+ * @throws IllegalArgumentException 当接收值无效时。
  */
 fun Double.toFullLatitude(isNorth: Boolean, isPositive: Boolean = true): Double {
+    requireLatitudeValue()
     if (!this.isNorthLatitude()) {
         // 当前输入的数据，是一个南纬完整数据
         if (isPositive) {
@@ -176,267 +212,335 @@ fun Double.toFullLatitude(isNorth: Boolean, isPositive: Boolean = true): Double 
 }
 
 /**
- * 将经纬度数据转换成度分秒值
- * @receiver [Double] 经纬度数据
- * @param isLongitude [Boolean] 是否为经度数据，true为经度，false为纬度
- * @return [DMS] 度分秒值
+ * 将经纬度转换为保留两位小数秒的度分秒值。
+ *
+ * 四舍五入导致秒达到 60 时会自动向分、度进位。
+ *
+ * @receiver 经度或纬度。
+ * @param isLongitude `true` 表示经度，`false` 表示纬度。
+ * @return 不带方向的度分秒值。
+ * @throws IllegalArgumentException 当接收值无效时。
  */
 fun Double.toDMS(isLongitude: Boolean): DMS {
     val value = if (isLongitude) toLongitudeNoPre() else toLatitudeNoPre()
-    val dValue = value.toInt()
-    val m = (value - dValue) * 60.0
-    val mValue = m.toInt()
-    val s = ((m - mValue) * 6000.0).roundToInt() / 100.0
-    return DMS(dValue, mValue, s.toFloat())
+    val totalCentiseconds = (value * 360_000.0).roundToLong()
+    val degrees = (totalCentiseconds / 360_000L).toInt()
+    val remainder = totalCentiseconds % 360_000L
+    val minutes = (remainder / 6_000L).toInt()
+    val seconds = (remainder % 6_000L) / 100.0f
+    return DMS(degrees, minutes, seconds)
 }
 
 /**
- * 将度分秒值转换成经纬度数据
- * @receiver [DMS] 度分秒值
- * @return [Double] 经纬度数据
+ * 将度分秒值转换为十进制度。
+ *
+ * @receiver 度分秒值。
+ * @return 十进制度。
+ * @throws IllegalArgumentException 当分或秒不是有效范围时。
  */
-fun DMS.toLatLng() = (seconds / 60 + minutes) / 60.0 + degrees
+fun DMS.toLatLng(): Double {
+    require(minutes in 0..59) { "minutes must be in 0..59, but was $minutes" }
+    require(seconds.isFinite() && seconds >= 0.0f && seconds < 60.0f) {
+        "seconds must be finite and in [0, 60), but was $seconds"
+    }
+    val sign = if (degrees < 0) -1.0 else 1.0
+    return sign * (kotlin.math.abs(degrees.toDouble()) + minutes / 60.0 + seconds / 3600.0)
+}
+
+private fun String.maxFractionDigits(): Int {
+    var maxDigits = 0
+    var index = 0
+    while (index < length) {
+        if (this[index] != 's') {
+            index++
+            continue
+        }
+        val start = index
+        while (index < length && this[index] == 's') index++
+        maxDigits = maxOf(maxDigits, index - start)
+    }
+    return maxDigits
+}
 
 /**
- * 将经纬度转经纬度字符串
- * - d: 度
- * - m: 分
- * - S: 秒的整数部分
- * - s: 秒的小数部分
- * - F: 英文方向，E、W、N、S
- * - CH: 中文方向，东经、西经、北纬、南纬
- * @receiver [Double] eg: 103.5863933
- * @param isLongitude [Boolean] 是否为经度
- * @param pattern [String] eg: "CH Fd°m′S.ss″"
- * @return [String] eg: 东经 E103°35′11.02″
+ * 将经纬度格式化为方向和度分秒文本。
+ *
+ * 模板标记：`d` 为度、`m` 为分、`S` 为整数秒、`s` 为小数秒、`F` 为英文方向，
+ * `CH` 为中文方向。重复的数值标记表示最小输出宽度。
+ *
+ * @receiver 经度或纬度。
+ * @param isLongitude `true` 表示经度，`false` 表示纬度。
+ * @param pattern 输出模板。
+ * @return 格式化文本。
+ * @throws IllegalArgumentException 当接收值无效、模板为空或小数秒精度过大时。
  */
-fun Double.toLatLngString(isLongitude: Boolean, pattern: String = "CHFd°m′S.ss″"): String {
+fun Double.toLatLngString(
+    isLongitude: Boolean,
+    pattern: String = DEFAULT_COORDINATE_PATTERN
+): String {
+    require(pattern.isNotEmpty()) { "pattern must not be empty" }
     val value = if (isLongitude) toLongitudeNoPre() else toLatitudeNoPre()
-    var string = pattern
-    var reg = "CH".toRegex().findAll(string).toList()
-    var faxiang = if (isLongitude) {
+    val fractionDigits = pattern.maxFractionDigits()
+    require(fractionDigits <= 9) {
+        "pattern supports at most 9 fractional second digits, but requested $fractionDigits"
+    }
+
+    val scale = 10.0.pow(fractionDigits).roundToLong()
+    val totalUnits = (value * 3600.0 * scale).roundToLong()
+    val degrees = totalUnits / (3600L * scale)
+    val afterDegrees = totalUnits % (3600L * scale)
+    val minutes = afterDegrees / (60L * scale)
+    val afterMinutes = afterDegrees % (60L * scale)
+    val seconds = afterMinutes / scale
+    val fraction = afterMinutes % scale
+    val chineseDirection = if (isLongitude) {
         if (isEastLongitude()) "东经" else "西经"
     } else {
         if (isNorthLatitude()) "北纬" else "南纬"
     }
-    for (item in reg) {
-
-        string = string.replaceRange(item.range, faxiang)
-    }
-    reg = "F".toRegex().findAll(string).toList()
-    faxiang = if (isLongitude) {
+    val englishDirection = if (isLongitude) {
         if (isEastLongitude()) "E" else "W"
     } else {
         if (isNorthLatitude()) "N" else "S"
     }
-    for (item in reg) {
-        string = string.replaceRange(item.range, faxiang)
-    }
-    reg = "d+".toRegex().findAll(string).toList()
-    val dValue = value.toInt()
-    for (item in reg) {
-        string = if (item.value.length == 1) {
-            string.replaceRange(item.range, dValue.toString())
-        } else {
-            string.replaceRange(item.range, dValue.toString().padStart(item.value.length, '0'))
+
+    return buildString(pattern.length + 8) {
+        var index = 0
+        while (index < pattern.length) {
+            if (pattern.startsWith("CH", index)) {
+                append(chineseDirection)
+                index += 2
+                continue
+            }
+            val marker = pattern[index]
+            if (marker == 'F') {
+                append(englishDirection)
+                index++
+                continue
+            }
+            if (marker !in "dmSs") {
+                append(marker)
+                index++
+                continue
+            }
+            val start = index
+            while (index < pattern.length && pattern[index] == marker) index++
+            val width = index - start
+            val text = when (marker) {
+                'd' -> degrees.toString()
+                'm' -> minutes.toString()
+                'S' -> seconds.toString()
+                else -> {
+                    if (fractionDigits == 0) ""
+                    else fraction.toString().padStart(fractionDigits, '0').take(width)
+                }
+            }
+            append(if (marker == 's') text.padEnd(width, '0') else text.padStart(width, '0'))
         }
     }
-    reg = "m+".toRegex().findAll(string).toList()
-    val m = (value - dValue) * 60.0
-    val mValue = m.toInt()
-    for (item in reg) {
-        string = if (item.value.length == 1) {
-            string.replaceRange(item.range, mValue.toString())
-        } else {
-            string.replaceRange(item.range, mValue.toString().padStart(item.value.length, '0'))
-        }
-    }
-    reg = "S+".toRegex().findAll(string).toList()
-    val S = (m - mValue) * 60.0
-    val SValue = S.toInt()
-    for (item in reg) {
-        string = if (item.value.length == 1) {
-            string.replaceRange(item.range, SValue.toString())
-        } else {
-            string.replaceRange(item.range, SValue.toString().padStart(item.value.length, '0'))
-        }
-    }
-    reg = "s+".toRegex().findAll(string).toList()
-    for (item in reg) {
-        val sValue = ((S - SValue) * (10.0.pow(item.value.length))).roundToInt()
-        string = string.replaceRange(item.range, sValue.toString().padStart(item.value.length, '0'))
-    }
-    return string
 }
 
 /**
- * 将经度转经度字符串
- * - d: 度
- * - m: 分
- * - S: 秒的整数部分
- * - s: 秒的小数部分
- * - F: 英文方向，E、W
- * - CH: 中文方向，东经、西经
- * @receiver [Double] eg: 103.5863933
- * @param pattern [String] eg: "CH Fd°m′S.ss″"
- * @return [String] eg: 东经 E103°35′11.02″
+ * 将经度格式化为方向和度分秒文本。
+ *
+ * @receiver 经度。
+ * @param pattern 输出模板，标记规则见 [toLatLngString]。
+ * @return 格式化后的经度文本。
+ * @throws IllegalArgumentException 当经度或模板无效时。
  */
-fun Double.toLongitudeString(pattern: String = "CHFd°m′S.ss″"): String = toLatLngString(true, pattern)
+fun Double.toLongitudeString(pattern: String = DEFAULT_COORDINATE_PATTERN): String =
+    toLatLngString(true, pattern)
 
 /**
- * 将纬度转纬度字符串
- * - d: 度
- * - m: 分
- * - S: 秒的整数部分
- * - s: 秒的小数部分
- * - F: 英文方向，N、S
- * - CH: 中文方向，北纬、南纬
- * @receiver [Double] eg: 29.73784595
- * @param pattern [String] eg: "CH Fd°m′S.ss″"
- * @return [String] eg: 北纬 N29°44′16.25″
+ * 将纬度格式化为方向和度分秒文本。
+ *
+ * @receiver 纬度。
+ * @param pattern 输出模板，标记规则见 [toLatLngString]。
+ * @return 格式化后的纬度文本。
+ * @throws IllegalArgumentException 当纬度或模板无效时。
  */
-fun Double.toLatitudeString(pattern: String = "CHFd°m′S.ss″"): String = toLatLngString(false, pattern)
+fun Double.toLatitudeString(pattern: String = DEFAULT_COORDINATE_PATTERN): String =
+    toLatLngString(false, pattern)
+
+private const val AXIS_UNKNOWN = 0
+private const val AXIS_LONGITUDE = 1
+private const val AXIS_LATITUDE = 2
+
+private fun String.parseCoordinate(pattern: String, expectedAxis: Int): Double {
+    require(pattern.isNotEmpty()) { "pattern must not be empty" }
+    val fields = mutableListOf<String>()
+    val expression = buildString(pattern.length * 2 + 2) {
+        append('^')
+        var index = 0
+        while (index < pattern.length) {
+            if (pattern.startsWith("CH", index)) {
+                append("(东经|西经|北纬|南纬)")
+                fields.add("CH")
+                index += 2
+                continue
+            }
+            val marker = pattern[index]
+            if (marker == 'F') {
+                append("([EWNSewns])")
+                fields.add("F")
+                index++
+                continue
+            }
+            if (marker !in "dmSs") {
+                append(Regex.escape(marker.toString()))
+                index++
+                continue
+            }
+            val start = index
+            while (index < pattern.length && pattern[index] == marker) index++
+            val width = index - start
+            val digitCount = when {
+                width > 1 -> "{$width}"
+                marker == 'd' -> "{1,3}"
+                marker == 's' -> "{1}"
+                else -> "{1,2}"
+            }
+            append("([0-9]$digitCount)")
+            fields.add(marker.toString())
+        }
+        append('$')
+    }
+    val match = Regex(expression).matchEntire(this)
+        ?: throw IllegalArgumentException("value '$this' does not match pattern '$pattern'")
+
+    var degrees: Int? = null
+    var minutes = 0
+    var seconds = 0
+    var fraction = 0.0
+    var hasMinutes = false
+    var hasSeconds = false
+    var hasFraction = false
+    var axis = AXIS_UNKNOWN
+    var sign = 1.0
+    fields.forEachIndexed { fieldIndex, field ->
+        val value = match.groupValues[fieldIndex + 1]
+        when (field) {
+            "d" -> {
+                require(degrees == null) { "pattern must contain at most one degree field" }
+                degrees = value.toInt()
+            }
+            "m" -> {
+                require(!hasMinutes) { "pattern must contain at most one minute field" }
+                minutes = value.toInt()
+                hasMinutes = true
+            }
+            "S" -> {
+                require(!hasSeconds) { "pattern must contain at most one integer second field" }
+                seconds = value.toInt()
+                hasSeconds = true
+            }
+            "s" -> {
+                require(!hasFraction) { "pattern must contain at most one fractional second field" }
+                fraction = value.toDouble() / 10.0.pow(value.length)
+                hasFraction = true
+            }
+            "CH", "F" -> {
+                val normalized = value.uppercase()
+                val currentAxis = when (normalized) {
+                    "东经", "西经", "E", "W" -> AXIS_LONGITUDE
+                    else -> AXIS_LATITUDE
+                }
+                val currentSign = when (normalized) {
+                    "西经", "南纬", "W", "S" -> -1.0
+                    else -> 1.0
+                }
+                require(axis == AXIS_UNKNOWN || axis == currentAxis) {
+                    "direction fields in value '$this' use different axes"
+                }
+                require(axis == AXIS_UNKNOWN || sign == currentSign) {
+                    "direction fields in value '$this' conflict"
+                }
+                axis = currentAxis
+                sign = currentSign
+            }
+        }
+    }
+
+    val degreeValue = requireNotNull(degrees) { "pattern must contain a degree field" }
+    require(minutes in 0..59) { "minutes must be in 0..59, but was $minutes" }
+    require(seconds in 0..59) { "seconds must be in 0..59, but was $seconds" }
+    if (expectedAxis != AXIS_UNKNOWN && axis != AXIS_UNKNOWN) {
+        require(axis == expectedAxis) { "direction in value '$this' does not match the expected axis" }
+    }
+    val resolvedAxis = if (axis == AXIS_UNKNOWN) expectedAxis else axis
+    val maximumDegrees = if (resolvedAxis == AXIS_LATITUDE) 90 else 180
+    require(degreeValue <= maximumDegrees) {
+        "degrees must be in 0..$maximumDegrees, but was $degreeValue"
+    }
+    require(degreeValue < maximumDegrees || minutes == 0 && seconds == 0 && fraction == 0.0) {
+        "minutes and seconds must be zero at $maximumDegrees degrees"
+    }
+    return sign * (degreeValue + minutes / 60.0 + (seconds + fraction) / 3600.0)
+}
 
 /**
- * 将经纬度字符串转经纬度
- * - d: 度
- * - m: 分
- * - S: 秒的整数部分
- * - s: 秒的小数部分
- * - F: 英文方向，E、W、N、S
- * - CH: 中文方向，东经、西经、北纬、南纬
- * @receiver [String] eg: 东经 E103°35′11.02″
- * @param pattern [String] eg: "CH Fd°m′S.ss″"
- * @return [Double] eg: 103.5863933
+ * 按模板将方向和度分秒文本解析为十进制度。
+ *
+ * 模板标记规则见 [toLatLngString]。没有方向标记时返回正值。
+ *
+ * @receiver 待解析文本。
+ * @param pattern 输入模板。
+ * @return 带正负方向的十进制度。
+ * @throws IllegalArgumentException 当文本不匹配模板、方向冲突或数值超出范围时。
  */
 @JsName("toLatLngByString")
-fun String.toLatLng(pattern: String): Double {
-    val string = "$this*"
-    var index = 0
-    var tempPattern = "$pattern*"
-    while (index < string.length - 1) {
-        val list = "[^dmSs]+".toRegex().findAll(tempPattern).toList()
-        for (item in list) {
-            if (item.range.first < index) continue
-            if (item.value.contains("CH") || item.value.contains("F")) {
-                index = item.range.last
-                continue
-            }
-            val pos = string.indexOf(item.value)
-            if (pos < item.range.first) {
-                println("ERROR, pos=$pos, range.first=${item.range.first}")
-                return 0.0
-            }
-            if (pos == item.range.first) {
-                index = item.range.last
-                continue
-            } else {
-                val lastStr = tempPattern.substring(item.range.first -1, item.range.first)
-                tempPattern = tempPattern.replaceRange(
-                    item.range.first -1, item.range.first,
-                    lastStr.padStart(pos - item.range.first + 1, lastStr.toCharArray()[0]))
-                index = pos + item.value.length
-                break
-            }
-        }
-    }
-    //println(tempPattern)
-    var reg = "CH".toRegex().findAll(tempPattern).toList()
-    var faxiang = if (reg.isNotEmpty()) string.substring(reg[0].range) else null
-    reg = "F".toRegex().findAll(tempPattern).toList()
-    faxiang = if (reg.isNotEmpty()) string.substring(reg[0].range) else faxiang
-    val isLongitude = when(faxiang) {
-        "东经", "西经", "E", "W" -> true
-        else -> false
-    }
-    reg = "[d]+".toRegex().findAll(tempPattern).toList()
-    var dStr = ""
-    for (item in reg) {
-        dStr += string.substring(item.range)
-    }
-    reg = "[m]+".toRegex().findAll(tempPattern).toList()
-    var mStr = ""
-    for (item in reg) {
-        mStr += string.substring(item.range)
-    }
-    reg = "[S]+".toRegex().findAll(tempPattern).toList()
-    var SStr = ""
-    for (item in reg) {
-        SStr += string.substring(item.range)
-    }
-    if (SStr.isEmpty()) SStr = "0"
-    reg = "[s]+".toRegex().findAll(tempPattern).toList()
-    var sStr = ""
-    for (item in reg) {
-        sStr += string.substring(item.range)
-    }
-    if (sStr.isEmpty()) sStr = "0"
-    val s = "$SStr.$sStr".toDouble() / 60.0
-    val m = (mStr.toInt() + s) / 60.0
-    val d = dStr.toInt() + m
-    return if (isLongitude) {
-        val isEast = when(faxiang) {
-            "东经", "E" -> true
-            else -> false
-        }
-        d.toFullLongitude(isEast, false)
-    } else {
-        val isNorth = when(faxiang) {
-            "北纬", "N" -> true
-            else -> false
-        }
-        d.toFullLatitude(isNorth, false)
-    }
-}
+fun String.toLatLng(pattern: String): Double = parseCoordinate(pattern, AXIS_UNKNOWN)
 
 /**
- * 将经度字符串转经度
- * - d: 度
- * - m: 分
- * - S: 秒的整数部分
- * - s: 秒的小数部分
- * - F: 英文方向，E、W
- * - CH: 中文方向，东经、西经
- * @receiver [String] eg: 东经 E103°35′11.02″
- * @param pattern [String] eg: "CH Fd°m′S.ss″"
- * @return [Double] eg: 103.5863933
+ * 按模板将经度文本解析为十进制度。
+ *
+ * @receiver 待解析文本。
+ * @param pattern 输入模板。
+ * @return 东经为正、西经为负的经度。
+ * @throws IllegalArgumentException 当文本或数值无效时。
  */
-fun String.toLongitude(pattern: String): Double = "E$this".toLatLng("F$pattern")
+fun String.toLongitude(pattern: String): Double = parseCoordinate(pattern, AXIS_LONGITUDE)
 
 /**
- * 将纬度字符串转纬度
- * - d: 度
- * - m: 分
- * - S: 秒的整数部分
- * - s: 秒的小数部分
- * - F: 英文方向，N、S
- * - CH: 中文方向，北纬、南纬
- * @receiver [String] eg: 北纬 N29°44′16.25″
- * @param pattern [String] eg: "CH Fd°m′S.ss″"
- * @return [Double] eg: 29.73784595
+ * 按模板将纬度文本解析为十进制度。
+ *
+ * @receiver 待解析文本。
+ * @param pattern 输入模板。
+ * @return 北纬为正、南纬为负的纬度。
+ * @throws IllegalArgumentException 当文本或数值无效时。
  */
-fun String.toLatitude(pattern: String): Double = "N$this".toLatLng("F$pattern")
+fun String.toLatitude(pattern: String): Double = parseCoordinate(pattern, AXIS_LATITUDE)
 
 /**
- * 将ddmm.mmmm格式的经纬度转换成 真正的经纬度
- * - 北斗2.0协议里专用转换
- * @receiver [Double] eg: 11301.8789
- * @return [Double] eg: 113.03131499999999
+ * 将 `ddmm.mmmm` 格式转换为十进制度。
+ *
+ * 该格式常见于北斗 2.0 和 NMEA 协议。
+ *
+ * @receiver `ddmm.mmmm` 格式的有限数值。
+ * @return 十进制度。
+ * @throws IllegalArgumentException 当数值不是有限值或分钟部分不在 `[0, 60)` 时。
  */
 fun Double.ddmmpmmmm2LatLng(): Double {
-    val temp = this / 100
-    val z = temp.toInt()
-    val end = (temp - z) * 100.0 / 60
-    return z + end
+    require(isFinite()) { "value must be finite, but was $this" }
+    val absoluteValue = kotlin.math.abs(this)
+    val degrees = (absoluteValue / 100.0).toInt()
+    val minutes = absoluteValue % 100.0
+    require(minutes < 60.0) {
+        "minutes must be in [0, 60), but was $minutes"
+    }
+    val sign = if (this < 0.0) -1.0 else 1.0
+    return sign * (degrees + minutes / 60.0)
 }
 
 /**
- * 将真正的经纬度转换成 ddmm.mmmm格式的经纬度
- * - 北斗2.0协议里专用转换
- * @receiver [Double] eg: 113.03131
- * @return [Double] eg: 11301.8789
+ * 将十进制度转换为 `ddmm.mmmm` 格式。
+ *
+ * @receiver 有限的十进制度。
+ * @return `ddmm.mmmm` 格式数值。
+ * @throws IllegalArgumentException 当接收值不是有限值时。
  */
 fun Double.latLng2ddmmpmmmm(): Double {
+    require(isFinite()) { "value must be finite, but was $this" }
     val z = this.toInt()
     val end = (this - z) * 60.0 / 100.0
     return (z + end) * 100

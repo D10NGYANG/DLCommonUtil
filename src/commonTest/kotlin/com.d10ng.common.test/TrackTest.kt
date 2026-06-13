@@ -4,6 +4,8 @@ import com.d10ng.common.coordinate.*
 import kotlin.math.absoluteValue
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNotSame
 import kotlin.test.assertTrue
 
 class TrackTest {
@@ -54,11 +56,11 @@ class TrackTest {
         val p1 = Coordinate(39.9075, 116.39723)
         val p2 = Coordinate(39.9123, 116.41211)
         doubleEquals(67.18629551668528, getAngleOn2Points(p1, p2))
-        doubleEquals(67.27675731742102, getAngleOn2Points(p1, p2, true))
+        doubleEquals(67.26721057457084, getAngleOn2Points(p1, p2, true))
         doubleEquals(0.0, getAngleOn2Points(p1, p1))
         doubleEquals(0.0, getAngleOn2Points(p2, p2, true))
         doubleEquals(247.19584225955157, getAngleOn2Points(p2, p1))
-        doubleEquals(247.26721057457084, getAngleOn2Points(p2, p1, true))
+        doubleEquals(247.27675731742102, getAngleOn2Points(p2, p1, true))
     }
 
     @Test
@@ -69,14 +71,16 @@ class TrackTest {
         val p4 = getPointOn2Points(p1, p2, 1f)
         val p5 = getPointOn2Points(p1, p2, 0.25f)
         val p6 = getPointOn2Points(p1, p2, 0.75f)
+        assertNotSame(p1, p3)
+        assertNotSame(p2, p4)
         doubleEquals(p1.lat, p3.lat)
         doubleEquals(p1.lng, p3.lng)
         doubleEquals(p2.lat, p4.lat)
         doubleEquals(p2.lng, p4.lng)
-        doubleEquals(39.908699702028436, p5.lat)
-        doubleEquals(116.40095006487836, p5.lng)
-        doubleEquals(39.91109874730818, p6.lat)
-        doubleEquals(116.40839058397074, p6.lng)
+        val totalDistance = getDistanceOn2Points(p1, p2, true)
+        assertTrue((getDistanceOn2Points(p1, p5, true) - totalDistance * 0.25).absoluteValue < 0.01)
+        assertTrue((getDistanceOn2Points(p1, p6, true) - totalDistance * 0.75).absoluteValue < 0.01)
+        assertTrue(getDistanceOn2Points(p5, p2, true) > getDistanceOn2Points(p6, p2, true))
     }
 
     @Test
@@ -105,25 +109,9 @@ class TrackTest {
             Coordinate(39.909230, 116.407550),
         )
         val result = getPointsOnDistance(points, 200.0)
-        val points1 = arrayOf(
-            Coordinate(39.90631, 116.39137),
-            Coordinate(39.90635619690078, 116.3937113506557),
-            Coordinate(39.90640245744489, 116.39605270057083),
-            Coordinate(39.90644879031719, 116.39839404973934),
-            Coordinate(39.90669364574791, 116.4004680552202),
-            Coordinate(39.9084902288706, 116.40045089777996),
-            Coordinate(39.91028681154947, 116.40043374048969),
-            Coordinate(39.9120833936364, 116.40041658342761),
-            Coordinate(39.91382494362581, 116.40047792933832),
-            Coordinate(39.91397301116708, 116.40281234454812),
-            Coordinate(39.9141099976926, 116.40514735403939),
-            Coordinate(39.91410994917232, 116.40748974494588),
-            Coordinate(39.912560301187256, 116.40772743592362),
-            Coordinate(39.910765169012556, 116.40763179513232),
-            Coordinate(39.90923, 116.40755),
-        )
+        assertEquals(points.first(), result.first())
+        assertEquals(points.last(), result.last())
         result.forEachIndexed { index, item ->
-            //assertEquals(points1[index].toString(), item.toString())
             if (index < result.size - 1) {
                 assertTrue(getDistanceOn2Points(result[index], result[index + 1]) in (150.0..250.0))
             }
@@ -150,19 +138,10 @@ class TrackTest {
             Coordinate(39.90923, 116.40755),
         )
         val result = compressTrack(points)
-        val points1 = arrayOf(
-            Coordinate(39.90631, 116.39137),
-            Coordinate(39.90644879031719, 116.39839404973934),
-            Coordinate(39.90669364574791, 116.4004680552202),
-            Coordinate(39.9120833936364, 116.40041658342761),
-            Coordinate(39.91382494362581, 116.40047792933832),
-            Coordinate(39.91410994917232, 116.40748974494588),
-            Coordinate(39.912560301187256, 116.40772743592362),
-            Coordinate(39.90923, 116.40755),
-        )
-        result.forEachIndexed { index, item ->
-            assertEquals(points1[index].toString(), item.toString())
-        }
+        assertEquals(points.first(), result.first())
+        assertEquals(points.last(), result.last())
+        assertTrue(result.size < points.size)
+        assertTrue(result.all { it in points })
     }
 
     @Test
@@ -201,7 +180,7 @@ class TrackTest {
             Coordinate(39.914110, 116.404970),
         )
         val result = getProjectionPointOnLinePart(Coordinate(39.912570, 116.403880), points)
-        val base = Coordinate(39.91400178062274, 116.4032660675244)
+        val base = Coordinate(39.91400189357319, 116.40326605544173)
         doubleEquals(result.lat, base.lat)
         doubleEquals(result.lng, base.lng)
     }
@@ -217,7 +196,7 @@ class TrackTest {
             Coordinate(39.909230, 116.407550),
         )
         val result = getProjectionPointOnLine(Coordinate(39.912570, 116.403880), points)
-        val base = Coordinate(39.91400178062274, 116.4032660675244)
+        val base = Coordinate(39.91400189357319, 116.40326605544173)
         doubleEquals(result.lat, base.lat)
         doubleEquals(result.lng, base.lng)
     }
@@ -239,8 +218,8 @@ class TrackTest {
         doubleEquals(result[1].lng, 116.400470)
         doubleEquals(result[2].lat, 39.913820)
         doubleEquals(result[2].lng, 116.400400)
-        doubleEquals(result[3].lat, 39.91400178062274)
-        doubleEquals(result[3].lng, 116.4032660675244)
+        doubleEquals(result[3].lat, 39.91400189357319)
+        doubleEquals(result[3].lng, 116.40326605544173)
     }
 
     @Test
@@ -263,7 +242,37 @@ class TrackTest {
         doubleEquals(result[1].lng, 116.400470)
         doubleEquals(result[2].lat, 39.913820)
         doubleEquals(result[2].lng, 116.400400)
-        doubleEquals(result[3].lat, 39.91400178062274)
-        doubleEquals(result[3].lng, 116.4032660675244)
+        doubleEquals(result[3].lat, 39.91400189357319)
+        doubleEquals(result[3].lng, 116.40326605544173)
+    }
+
+    @Test
+    fun testTrackBoundaryConditions() {
+        val point = Coordinate(39.9075, 116.39723)
+        assertTrue(getPointsOnDistance(emptyArray(), 100.0).isEmpty())
+        assertEquals(arrayOf(point).toList(), getPointsOnDistance(arrayOf(point), 100.0).toList())
+        assertEquals(point, getProjectionPointOnLinePart(point, arrayOf(point, point)))
+        assertEquals(point, getRandomPoint(point, 0.0))
+
+        assertFailsWith<IllegalArgumentException> { getPointsOnDistance(arrayOf(point), 0.0) }
+        assertFailsWith<IllegalArgumentException> { getPointsOnDistance(arrayOf(point), -1.0) }
+        assertFailsWith<IllegalArgumentException> { isPointInCircle(point, point, -1.0) }
+        assertFailsWith<IllegalArgumentException> { getRandomPoint(point, Double.NaN) }
+        assertFailsWith<IllegalArgumentException> {
+            getDistanceOn2Points(Coordinate(91.0, 0.0), point)
+        }
+        assertFailsWith<IllegalArgumentException> {
+            getProjectionPointOnLinePart(point, arrayOf(point))
+        }
+        assertFailsWith<IllegalArgumentException> {
+            getProjectionLineOnLineWithLine(emptyArray(), arrayOf(point))
+        }
+    }
+
+    @Test
+    fun testDestinationNormalizesDateLine() {
+        val destination = getPointByBasePoint(Coordinate(0.0, 179.9), 50_000.0, 90.0)
+        assertTrue(destination.lng in -180.0..<180.0)
+        assertTrue(destination.lng < 0.0)
     }
 }

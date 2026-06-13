@@ -4,6 +4,8 @@ import com.d10ng.common.coordinate.*
 import kotlin.math.absoluteValue
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNotSame
 import kotlin.test.assertTrue
 
 class CoordinateTest {
@@ -13,6 +15,7 @@ class CoordinateTest {
         val doubleEqual:(Double, Double) -> Unit = { a, b -> assertTrue { (a - b).absoluteValue < 0.0000001 } }
         val point = Coordinate(39.908720, 116.397500)
         val wgs84ToWgs84 = point.convert(CoordinateSystemType.WGS84, CoordinateSystemType.WGS84)
+        assertNotSame(point, wgs84ToWgs84)
         doubleEqual(wgs84ToWgs84.lat, point.lat)
         doubleEqual(wgs84ToWgs84.lng, point.lng)
         val wgs84ToGcj02Base = Coordinate(39.91012350021168, 116.40374357520177)
@@ -111,6 +114,7 @@ class CoordinateTest {
         assertEquals(180.0.toDMS(true).toString(), "180°0′0.0″")
         assertEquals(118.234123.toDMS(true).toString(), "118°14′2.84″")
         assertEquals(45.234.toDMS(false).toString(), "45°14′2.4″")
+        assertEquals(DMS(13, 0, 0.0f), 12.9999999.toDMS(true))
     }
 
     @Test
@@ -131,6 +135,9 @@ class CoordinateTest {
         assertEquals(45.234.toLatLngString(false, "Fd°m′S.ss″"), "N45°14′2.40″")
         assertEquals(118.234123.toLatLngString(true, "CHd°m′S.ss″"), "东经118°14′2.84″")
         assertEquals(45.234.toLatLngString(false, "CHd°m′S.ss″"), "北纬45°14′2.40″")
+        assertEquals("东经E013°00′00.00″", 12.9999999.toLatLngString(true, "CHFddd°mm′SS.ss″"))
+        assertEquals("西经W45°0′0.00″", (-45.0).toLongitudeString())
+        assertEquals("南纬S45°0′0.00″", (-45.0).toLatitudeString())
     }
 
     @Test
@@ -149,6 +156,8 @@ class CoordinateTest {
         assertEquals("北纬N45°14′2.40″".toLatLng("CHFd°m′S.ss″"), 45.234)
         assertEquals("东经118°14′2.84″".toLatLng("CHd°m′S.ss″"), 118.23412222222223)
         assertEquals("北纬45°14′2.40″".toLatLng("CHd°m′S.ss″"), 45.234)
+        assertEquals(-118.23412222222223, "西经W118°14′2.84″".toLatLng("CHFd°m′S.ss″"))
+        assertEquals(-45.234, "南纬S45°14′2.40″".toLatLng("CHFd°m′S.ss″"))
     }
 
     @Test
@@ -156,6 +165,7 @@ class CoordinateTest {
         assertEquals("东经E118°14′2.84″".toLongitude("CHFd°m′S.ss″"), 118.23412222222223)
         assertEquals("东经118°14′2.84″".toLongitude("CHd°m′S.ss″"), 118.23412222222223)
         assertEquals("118°14′2.84″".toLongitude("d°m′S.ss″"), 118.23412222222223)
+        assertEquals("西经118°14′2.84″".toLongitude("CHd°m′S.ss″"), -118.23412222222223)
     }
 
     @Test
@@ -163,6 +173,7 @@ class CoordinateTest {
         assertEquals("北纬N45°14′2.40″".toLatitude("CHFd°m′S.ss″"), 45.234)
         assertEquals("北纬45°14′2.40″".toLatitude("CHd°m′S.ss″"), 45.234)
         assertEquals("45°14′2.40″".toLatitude("d°m′S.ss″"), 45.234)
+        assertEquals("南纬45°14′2.40″".toLatitude("CHd°m′S.ss″"), -45.234)
     }
 
     @Test
@@ -173,5 +184,46 @@ class CoordinateTest {
     @Test
     fun testlatLng2ddmmpmmmm() {
         assertEquals(113.03131499999999.latLng2ddmmpmmmm(), 11301.8789)
+    }
+
+    @Test
+    fun testInvalidCoordinateValues() {
+        assertFailsWith<IllegalArgumentException> {
+            Coordinate(Double.NaN, 116.0).convert(CoordinateSystemType.WGS84, CoordinateSystemType.GCJ02)
+        }
+        assertFailsWith<IllegalArgumentException> { Double.POSITIVE_INFINITY.toLongitudeNoPre() }
+        assertFailsWith<IllegalArgumentException> { 361.0.toLongitudeNoPre() }
+        assertFailsWith<IllegalArgumentException> { 181.0.toLatitudeNoPre() }
+        assertFailsWith<IllegalArgumentException> { DMS(1, 60, 0f).toLatLng() }
+        assertFailsWith<IllegalArgumentException> { DMS(1, 0, 60f).toLatLng() }
+        assertFailsWith<IllegalArgumentException> { 11360.0.ddmmpmmmm2LatLng() }
+    }
+
+    @Test
+    fun testInvalidCoordinateText() {
+        assertFailsWith<IllegalArgumentException> {
+            "东经118°99′2.84″".toLongitude("CHd°m′S.ss″")
+        }
+        assertFailsWith<IllegalArgumentException> {
+            "西经E118°14′2.84″".toLongitude("CHFd°m′S.ss″")
+        }
+        assertFailsWith<IllegalArgumentException> {
+            "北纬118°14′2.84″".toLatitude("CHd°m′S.ss″")
+        }
+        assertFailsWith<IllegalArgumentException> {
+            "not-a-coordinate".toLatLng("d°m′S.ss″")
+        }
+    }
+
+    @Test
+    fun testCoordinateTextRoundTrip() {
+        val longitude = -118.234123
+        val latitude = -45.234
+        assertTrue {
+            (longitude.toLongitudeString().toLongitude("CHFd°m′S.ss″") - longitude).absoluteValue < 0.00001
+        }
+        assertTrue {
+            (latitude.toLatitudeString().toLatitude("CHFd°m′S.ss″") - latitude).absoluteValue < 0.00001
+        }
     }
 }
