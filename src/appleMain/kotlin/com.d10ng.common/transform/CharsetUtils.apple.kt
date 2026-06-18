@@ -4,7 +4,6 @@ import kotlinx.cinterop.*
 import platform.CoreFoundation.CFStringConvertEncodingToNSStringEncoding
 import platform.CoreFoundation.CFStringEncodings
 import platform.CoreFoundation.kCFStringEncodingGB_18030_2000
-import platform.CoreFoundation.kCFStringEncodingGBK_95
 import platform.Foundation.NSString
 import platform.Foundation.create
 import platform.Foundation.dataUsingEncoding
@@ -16,11 +15,12 @@ import platform.Foundation.dataUsingEncoding
  */
 @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
 actual fun String.encodeGBK(): ByteArray {
-    return encode(kCFStringEncodingGBK_95)
+    // Foundation rejects the converted GBK_95 NSStringEncoding; GB18030 is byte-compatible for GBK text.
+    return encode(kCFStringEncodingGB_18030_2000)
 }
 
 actual fun ByteArray.decodeGBK(): String {
-    return decode(kCFStringEncodingGBK_95)
+    return decode(kCFStringEncodingGB_18030_2000)
 }
 
 @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
@@ -37,9 +37,11 @@ actual fun ByteArray.decodeGB18030(): String {
 private fun String.encode(encoding: CFStringEncodings): ByteArray {
     val nsEncoding = CFStringConvertEncodingToNSStringEncoding(encoding.convert())
     val str = NSString.create(string = this)
-    val nsData = str.dataUsingEncoding(nsEncoding)
-    if (nsData?.length?.toLong() == 0L) return byteArrayOf()
-    return nsData?.toByteArray() ?: byteArrayOf()
+    val nsData = checkNotNull(str.dataUsingEncoding(nsEncoding)) {
+        "String cannot be encoded with NSStringEncoding $nsEncoding"
+    }
+    if (nsData.length.toLong() == 0L) return byteArrayOf()
+    return nsData.toByteArray()
 }
 
 /**

@@ -2,8 +2,6 @@
 
 package com.d10ng.common.calculate
 
-import kotlin.experimental.or
-import kotlin.experimental.xor
 import kotlin.js.JsExport
 
 /**
