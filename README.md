@@ -26,11 +26,7 @@ implementation("com.github.D10NGYANG:DLCommonUtil:1.1.0")
 // 纯 JVM 项目可使用 com.github.D10NGYANG:DLCommonUtil-jvm:1.1.0
 ```
 
-JavaScript：1.1.0 的 npm registry 发布待完成，可先安装 GitHub Release 附件：
-
-```shell
-npm install https://github.com/D10NGYANG/DLCommonUtil/releases/download/1.1.0/dl-common-util-1.1.0.tgz
-```
+JavaScript：`npm install dl-common-util@1.1.0`。GitHub Release 同时提供 tgz 安装包。
 
 从旧版本升级前请阅读 [1.1.0 升级说明](doc/Upgrade-1.1.0.md)。
 

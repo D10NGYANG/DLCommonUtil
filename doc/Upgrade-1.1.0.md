@@ -10,7 +10,7 @@
 implementation("com.github.D10NGYANG:DLCommonUtil:1.1.0")
 ```
 
-纯 JVM 可用 `com.github.D10NGYANG:DLCommonUtil-jvm:1.1.0`；JS 的 npm registry 发布待完成，可先使用 GitHub Release 的 `dl-common-util-1.1.0.tgz` 附件安装。
+纯 JVM 可用 `com.github.D10NGYANG:DLCommonUtil-jvm:1.1.0`；JS 使用 `npm install dl-common-util@1.1.0`，也可安装 GitHub Release 的 tgz 附件。
 建议下游项目对齐 Kotlin 2.4.21。本项目构建使用 Gradle 9.8.2，JVM 产物仍面向 Java 8，Android minSdk 仍为24。
 
 ## 修复
@@ -46,3 +46,7 @@ implementation("com.github.D10NGYANG:DLCommonUtil:1.1.0")
 JVM 146、JS 142、macOS Arm64 144项测试通过；Android、iOS Arm64/Simulator Arm64/X64、Linux X64/Arm64编译通过。npm包安装和TypeScript严格类型检查通过。GBK/GB18030新旧iconv版本131,080次字符对照一致，Apple兼容测试通过；JS依赖安全公告查询零命中。
 
 Gradle9.8.2超出Kotlin2.4.21官方完全支持矩阵上界9.7.0，以上为本项目实测范围。未运行Android/iOS/Linux目标运行时测试。完整依赖评估见 [依赖升级记录](DependencyReview-2026-11-03.md)。
+
+## 发布渠道
+
+1.1.0 已发布到对外 maven-repo、npm registry（latest）及内部 Nexus。对外 Maven 使用本文所列的 GitHub raw 仓库地址；内部 Nexus 为镜像渠道。GitHub tgz 附件与 npm registry 的安装包一致。

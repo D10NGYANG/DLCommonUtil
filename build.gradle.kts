@@ -1,3 +1,4 @@
+import dev.petuska.npm.publish.task.NpmPackTask
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsSetupTask
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
 import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
@@ -127,6 +128,15 @@ npmPublish {
     packages {
         named("js") {
             packageName.set("dl-common-util")
+        }
+    }
+}
+
+// npm-publish 3.5.3 copies the first temporary file, which may belong to an older version.
+tasks.withType<NpmPackTask>().configureEach {
+    doFirst {
+        temporaryDir.listFiles()?.filter { it.extension == "tgz" }?.forEach {
+            check(it.delete()) { "Cannot remove stale npm archive: $it" }
         }
     }
 }
