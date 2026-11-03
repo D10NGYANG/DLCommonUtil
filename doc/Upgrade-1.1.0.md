@@ -10,7 +10,7 @@
 implementation("com.github.D10NGYANG:DLCommonUtil:1.1.0")
 ```
 
-纯 JVM 可用 `com.github.D10NGYANG:DLCommonUtil-jvm:1.1.0`；JS 使用 `npm install dl-common-util@1.1.0`。
+纯 JVM 可用 `com.github.D10NGYANG:DLCommonUtil-jvm:1.1.0`；JS 的 npm registry 发布待完成，可先使用 GitHub Release 的 `dl-common-util-1.1.0.tgz` 附件安装。
 建议下游项目对齐 Kotlin 2.4.21。本项目构建使用 Gradle 9.8.2，JVM 产物仍面向 Java 8，Android minSdk 仍为24。
 
 ## 修复
