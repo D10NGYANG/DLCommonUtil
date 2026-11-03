@@ -2,6 +2,8 @@
 
 > 短整型数据处理工具
 
+显式字节数必须为1或2；0、负数或大于2会抛出 `IllegalArgumentException`。
+
 ## ① 将Short转换为字节数组
 > 将 短整型 转 N 个字节的 ByteArray
 > > - 字节数设置为null（默认），则根据整型值自动计算字节数；
@@ -12,17 +14,17 @@
 
 》kotlin:
 ```kotlin
-// 默认为0，自动计算字节数，[0xF1, 0xFF]
-val byteArray = 0xF1FF.toByteArray()
-// 设置为3，[0x00, 0xF1, 0xFF]
-val byteArray = 0xF1FF.toByteArray(3)
+// 默认为null，自动计算字节数，[0x12, 0x34]
+val byteArray = 0x1234.toShort().toByteArray()
+// 设置为1，保留低位字节 [0x34]
+val byteArray = 0x1234.toShort().toByteArray(1)
 ```
 》java:
 ```java
-// 默认为0，自动计算字节数，[0xF1, 0xFF]
-byte[] byteArray = ShortUtilsKt.toByteArray(0xF1FF, 0);
-// 设置为3，[0x00, 0xF1, 0xFF]
-byte[] byteArray = ShortUtilsKt.toByteArray(0xF1FF, 3);
+// 默认为null，自动计算字节数，[0x12, 0x34]
+byte[] byteArray = ShortUtilsKt.toByteArray((short) 0x1234, null);
+// 设置为1，保留低位字节 [0x34]
+byte[] byteArray = ShortUtilsKt.toByteArray((short) 0x1234, 1);
 ```
 》js:
 > 请查看 [Number](./Number.md) 中的 `numberToByteArray` 方法

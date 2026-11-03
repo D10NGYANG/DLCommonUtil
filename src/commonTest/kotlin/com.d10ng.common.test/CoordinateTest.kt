@@ -226,4 +226,14 @@ class CoordinateTest {
             (latitude.toLatitudeString().toLatitude("CHFd°m′S.ss″") - latitude).absoluteValue < 0.00001
         }
     }
+
+    @Test
+    fun paddedDegreesRoundTripBeyondMinimumWidth() {
+        for (pattern in listOf("Fd°m′S.ss″", "Fdd°mm′SS.ss″", "Fddd°mm′SS.ss″", "FddmmSS.ss")) {
+            for (value in listOf(9.2, 99.2, 100.2, 118.2, 180.0, -118.2)) {
+                val text = value.toLongitudeString(pattern)
+                assertTrue((text.toLongitude(pattern) - value).absoluteValue < 0.00001, text)
+            }
+        }
+    }
 }

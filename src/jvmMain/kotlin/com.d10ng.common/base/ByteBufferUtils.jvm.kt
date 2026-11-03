@@ -1,7 +1,6 @@
 package com.d10ng.common.base
 
 import java.nio.ByteBuffer
-import com.d10ng.common.base.ByteBuffer as MyByteBuffer
 
 /**
  * 获取指定范围的比特位组成新的字节数组
@@ -17,5 +16,14 @@ fun ByteBuffer.getBitRange(
     length: Int,
     paddingHigh: Boolean = true,
 ): ByteArray {
-    return MyByteBuffer.wrap(this.array()).getBitRange(start, length, paddingHigh)
+    require(start >= 0 && length >= 0) { "start and length must be non-negative" }
+    val bitLimit = limit().toLong() * Byte.SIZE_BITS
+    require(start.toLong() <= bitLimit && length.toLong() <= bitLimit - start) {
+        "Bit range [$start, ${start.toLong() + length}) exceeds $bitLimit bits"
+    }
+    if (length == 0) return byteArrayOf()
+    val firstByte = start / Byte.SIZE_BITS
+    val endByte = ((start.toLong() + length + Byte.SIZE_BITS - 1) / Byte.SIZE_BITS).toInt()
+    return ByteArray(endByte - firstByte) { get(firstByte + it) }
+        .getBitRange(start % Byte.SIZE_BITS, length, paddingHigh)
 }

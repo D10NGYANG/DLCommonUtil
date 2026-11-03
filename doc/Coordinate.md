@@ -17,7 +17,7 @@ val point = Coordinate(39.908860, 116.397390).convert(CoordinateSystemType.WGS84
 》java:
 ```java
 // WGS84 -> GCJ02
-Coordinate point = CoordinateUtils.convert(new Coordinate(39.908860, 116.397390), CoordinateSystemType.WGS84, CoordinateSystemType.GCJ02);
+Coordinate point = CoordinateUtilsKt.convert(new Coordinate(39.908860, 116.397390), CoordinateSystemType.WGS84, CoordinateSystemType.GCJ02);
 ```
 》js:
 ```js
@@ -79,24 +79,24 @@ res = DLCoordinate.isNorthLatitude(130.908860); // false
 ## ④ 将经度转换成不带东西经标记的数据
 > > 当数据大于180度或者小于0度表示西经
 > - @receiver [Double] 经度数据
-> - @return [Double] 返回去除"-"或小于180的数值；eg：输入181.1，返回1.1; 输入-1.1返回1.1;
+> - @return [Double] 返回去除"-"或小于180的数值；eg：输入181.1，返回178.9; 输入-1.1返回1.1;
 
 》kotlin:
 ```kotlin
-var res = 181.1.toLongitudeNoPre() // 1.1
-res = -1.1.toLongitudeNoPre() // 1.1
+var res = 181.1.toLongitudeNoPre() // 178.9
+res = (-1.1).toLongitudeNoPre() // 1.1
 res = 179.1.toLongitudeNoPre() // 179.1
 ```
 》java:
 ```java
-double res = CoordinateUtilsKt.toLongitudeNoPre(181.1); // 1.1
+double res = CoordinateUtilsKt.toLongitudeNoPre(181.1); // 178.9
 res = CoordinateUtilsKt.toLongitudeNoPre(-1.1); // 1.1
 res = CoordinateUtilsKt.toLongitudeNoPre(179.1); // 179.1
 ```
 》js:
 ```js
 const DLCoordinate = require('dl-common-util').com.d10ng.common.coordinate;
-let res = DLCoordinate.toLongitudeNoPre(181.1); // 1.1
+let res = DLCoordinate.toLongitudeNoPre(181.1); // 178.9
 res = DLCoordinate.toLongitudeNoPre(-1.1); // 1.1
 res = DLCoordinate.toLongitudeNoPre(179.1); // 179.1
 ```
@@ -104,24 +104,24 @@ res = DLCoordinate.toLongitudeNoPre(179.1); // 179.1
 ## ⑤ 将纬度转换成不带南北纬标记的数据
 > > 当数据大于90度或者小于0度表示南纬
 > - @receiver [Double] 纬度数据
-> - @return [Double] 返回去除"-"或小于90的数值；eg：输入91.1，返回1.1; 输入-1.1返回1.1;
+> - @return [Double] 返回去除"-"或小于90的数值；eg：输入91.1，返回88.9; 输入-1.1返回1.1;
 
 》kotlin:
 ```kotlin
-var res = 91.1.toLatitudeNoPre() // 1.1
-res = -1.1.toLatitudeNoPre() // 1.1
+var res = 91.1.toLatitudeNoPre() // 88.9
+res = (-1.1).toLatitudeNoPre() // 1.1
 res = 89.1.toLatitudeNoPre() // 89.1
 ```
 》java:
 ```java
-double res = CoordinateUtilsKt.toLatitudeNoPre(91.1); // 1.1
+double res = CoordinateUtilsKt.toLatitudeNoPre(91.1); // 88.9
 res = CoordinateUtilsKt.toLatitudeNoPre(-1.1); // 1.1
 res = CoordinateUtilsKt.toLatitudeNoPre(89.1); // 89.1
 ```
 》js:
 ```js
 const DLCoordinate = require('dl-common-util').com.d10ng.common.coordinate;
-let res = DLCoordinate.toLatitudeNoPre(91.1); // 1.1
+let res = DLCoordinate.toLatitudeNoPre(91.1); // 88.9
 res = DLCoordinate.toLatitudeNoPre(-1.1); // 1.1
 res = DLCoordinate.toLatitudeNoPre(89.1); // 89.1
 ```
@@ -156,7 +156,7 @@ res = DLCoordinate.toFullLongitude(110.1, false, true); // 249.9
 
 ## ⑦ 将纬度转换成带南北纬标记的数据
 > > eg: 输入纬度=10.1，isNorth=false，isPositive=false，输出纬度=-10.1 \
-> > eg: 输入纬度=10.1，isNorth=false，isPositive=true，输出纬度=79.9
+> > eg: 输入纬度=10.1，isNorth=false，isPositive=true，输出纬度=169.9
 > - @receiver Double
 > - @param isNorth [Boolean] 是否为北纬
 > - @param isPositive [Boolean] 输出数据是否需要为正值，默认true，如果isNorth为false表示南纬，则输出的值根据此参数决定正负，如果isNorth为true表示北纬，则此参数无效，输出的值都为正值
@@ -166,20 +166,20 @@ res = DLCoordinate.toFullLongitude(110.1, false, true); // 249.9
 ```kotlin
 var res = 10.1.toFullLatitude(true) // 10.1
 res = 10.1.toFullLatitude(false, false) // -10.1
-res = 10.1.toFullLatitude(false, true) // 79.9
+res = 10.1.toFullLatitude(false, true) // 169.9
 ```
 》java:
 ```java
 double res = CoordinateUtilsKt.toFullLatitude(10.1, true, true); // 10.1
 res = CoordinateUtilsKt.toFullLatitude(10.1, false, false); // -10.1
-res = CoordinateUtilsKt.toFullLatitude(10.1, false, true); // 79.9
+res = CoordinateUtilsKt.toFullLatitude(10.1, false, true); // 169.9
 ```
 》js:
 ```js
 const DLCoordinate = require('dl-common-util').com.d10ng.common.coordinate;
 let res = DLCoordinate.toFullLatitude(10.1, true); // 10.1
 res = DLCoordinate.toFullLatitude(10.1, false, false); // -10.1
-res = DLCoordinate.toFullLatitude(10.1, false, true); // 79.9
+res = DLCoordinate.toFullLatitude(10.1, false, true); // 169.9
 ```
 
 ## ⑧ 将经纬度数据转换成度分秒值
@@ -222,6 +222,7 @@ const res = DLCoordinate.toLatLng(new DMS(45, 14, 2.4)); // 45.234
 ```
 
 ## ⑩ 将经纬度转经纬度字符串
+> 重复整数标记表示最少位数，例如 `dd` 可输出 `09` 或 `118`；小数秒标记 `ss` 表示两位小数。连续数字字段建议使用 `dddmmSS.ss`，避免变宽字段的歧义。
 > - d: 度
 > - m: 分
 > - S: 秒的整数部分

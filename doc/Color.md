@@ -28,16 +28,16 @@ const isDark = DLCalculate.isDarkColor("#45216B"); // true
 
 》kotlin:
 ```kotlin
-val color = getNextColor("#45216B", 0.5) // #a290b5
+val color = getNextLevelColor("#45216B", 0.5) // #a290b5
 ```
 》java:
 ```java
-String color = ColorUtilsKt.getNextColor("#45216B", 0.5); // #a290b5
+String color = ColorUtilsKt.getNextLevelColor("#45216B", 0.5); // #a290b5
 ```
 》js:
 ```js
 const DLCalculate = require('dl-common-util').com.d10ng.common.calculate;
-const color = DLCalculate.getNextColor("#45216B", 0.5); // #a290b5
+const color = DLCalculate.getNextLevelColor("#45216B", 0.5); // #a290b5
 ```
 
 ## ③ 从两个颜色间根据比例获得中间颜色
@@ -48,11 +48,11 @@ const color = DLCalculate.getNextColor("#45216B", 0.5); // #a290b5
 
 》kotlin:
 ```kotlin
-val color = getMiddleColor("#45216B", "#FFFFFF", 0.5) // #a290b5
+val color = getMiddleColor("#45216B", "#FFFFFF", 0.5f) // #a290b5
 ```
 》java:
 ```java
-String color = ColorUtilsKt.getMiddleColor("#45216B", "#FFFFFF", 0.5); // #a290b5
+String color = ColorUtilsKt.getMiddleColor("#45216B", "#FFFFFF", 0.5f); // #a290b5
 ```
 》js:
 ```js
@@ -71,7 +71,7 @@ val rgb = getRgbValueArrayFromHexColorString("#45216B") // [69, 33, 107]
 ```
 》java:
 ```java
-int[] rgb = ColorUtilsKt.getRgbValueArrayFromHexColorString("#45216B"); // [69, 33, 107]
+Integer[] rgb = ColorUtilsKt.getRgbValueArrayFromHexColorString("#45216B"); // [69, 33, 107]
 ```
 》js:
 ```js
@@ -90,7 +90,7 @@ val color = getHexColorStringFromRgbValueArray(arrayOf(69, 33, 107)) // #45216B
 ```
 》java:
 ```java
-String color = ColorUtilsKt.getHexColorStringFromRgbValueArray(new int[]{69, 33, 107}); // #45216B
+String color = ColorUtilsKt.getHexColorStringFromRgbValueArray(new Integer[]{69, 33, 107}); // #45216B
 ```
 》js:
 ```js

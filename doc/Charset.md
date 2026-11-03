@@ -1,6 +1,12 @@
 # Charset
 > 字符串格式化工具
 
+Apple 平台的 `encodeGBK` / `decodeGBK` 保留历史 GB18030 超集行为，支持 emoji 和扩展汉字的四字节编码，不会收紧为严格 GBK。需要跨平台使用四字节字符时请明确调用 `encodeGB18030` / `decodeGB18030`；严格 GBK 接收端仍需由调用方限制字符集。
+
+Apple 平台遇到非法或截断的 GBK/GB18030 字节序列时抛出 `IllegalArgumentException`，不再返回字面量 `"null"`；JVM/Android/JS/Linux 沿用各自替换非法字符的行为。
+
+Java 示例中的 `CharsetUtils_jvmKt` 用于 JVM；Android 对应 `CharsetUtils_androidKt`。
+
 ## ① 将字符串转换为GBK编码的字节数组
 > - @receiver [String] 字符串
 > - @return [ByteArray] GBK编码的字节数组
@@ -11,7 +17,7 @@ val res = "测试".encodeGBK() // 0xB2, 0xE2, 0xCA, 0xD4
 ```
 》java:
 ```java
-byte[] res = CharsetUtilsKt.encodeGBK("测试");
+byte[] res = CharsetUtils_jvmKt.encodeGBK("测试");
 ```
 》js:
 ```js
@@ -29,7 +35,7 @@ val res = byteArrayOf(0xB2.toByte(), 0xE2.toByte(), 0xCA.toByte(), 0xD4.toByte()
 ```
 》java:
 ```java
-String res = CharsetUtilsKt.decodeGBK(new byte[]{0xB2, 0xE2, 0xCA, 0xD4});
+String res = CharsetUtils_jvmKt.decodeGBK(new byte[]{(byte) 0xB2, (byte) 0xE2, (byte) 0xCA, (byte) 0xD4});
 ```
 》js:
 ```js
@@ -65,7 +71,7 @@ val res = byteArrayOf(0xE6.toByte(), 0xB5.toByte(), 0x8B.toByte(), 0xE8.toByte()
 ```
 》java:
 ```java
-String res = CharsetUtilsKt.decodeUTF8(new byte[]{0xE6, 0xB5, 0x8B, 0xE8, 0xAF, 0x95});
+String res = CharsetUtilsKt.decodeUTF8(new byte[]{(byte) 0xE6, (byte) 0xB5, (byte) 0x8B, (byte) 0xE8, (byte) 0xAF, (byte) 0x95});
 ```
 》js:
 ```js
@@ -126,7 +132,7 @@ val res = byteArrayOf(0x6D.toByte(), 0x4B.toByte(), 0x8B.toByte(), 0xD5.toByte()
 ```
 》java:
 ```java
-String res = CharsetUtilsKt.decodeUnicode(new byte[]{0x6D, 0x4B, 0x8B, 0xD5});
+String res = CharsetUtilsKt.decodeUnicode(new byte[]{0x6D, 0x4B, (byte) 0x8B, (byte) 0xD5});
 ```
 》js:
 ```js

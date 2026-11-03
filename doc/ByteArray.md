@@ -42,7 +42,7 @@ val hexString = byteArrayOf(0xfc.toByte(), 0x13).toHexString(false, false)
 ```
 》java:
 ```java
-String hexString = ByteArrayUtilsKt.toHexString(new byte[]{0xfc, 0x13}, false, true);
+String hexString = ByteArrayUtilsKt.toHexString(new byte[]{(byte) 0xfc, 0x13}, false, true);
 ```
 》js:
 ```js
@@ -52,7 +52,7 @@ const hexString = DLBase.byteArrayToHexString([0xfc, 0x13]);
 
 ## ③ 转换为无符号整数
 > > 将 ByteArray 0xF1FF 转为 无符号整数 61951。\
-> > Int 的最大值为 0x7FFFFFFF，超过这个值会返回-1。
+> > Int 的最大值为 0x7FFFFFFF，超过这个值按补码位模式返回负数（并非统一返回-1）。
 > - @receiver [ByteArray] 原始字节数组
 > - @return [Int] 合并后的整型
 
@@ -72,7 +72,7 @@ const unsignedInt = DLBase.byteArrayToUnsignedInt([0xF1, 0xFF]);
 
 ## ④ 转换为无符号长整数
 > > 将 ByteArray 0x018B0E7D65C8 转为 无符号长整数 1696755181000。 \
-> > Long 的最大值为 0x7FFFFFFFFFFFFFFF，超过这个值会返回-1
+> > Long 的最大值为 0x7FFFFFFFFFFFFFFF，超过这个值按补码位模式返回负数（并非统一返回-1）
 > - @receiver [ByteArray] 原始字节数组
 > - @return [Long] 合并后的长整型
 

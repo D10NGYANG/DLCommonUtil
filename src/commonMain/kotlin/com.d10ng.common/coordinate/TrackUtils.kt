@@ -106,8 +106,8 @@ fun getDistanceAndBearing(point1: Coordinate, point2: Coordinate): DistanceAndBe
     val B = uSq / 1024 * (256 + uSq * (-128 + uSq * (74 - 47 * uSq)))
     val deltaFq = B * sinFq * (cos2Fqm + B / 4 * (cosFq * (-1 + 2 * cos2Fqm * cos2Fqm) - B / 6 * cos2Fqm * (-3 + 4 * sinFq * sinFq) * (-3 + 4 * cos2Fqm * cos2Fqm)))
     val s = EARTH_RADIUS_SHORT * A * (fq - deltaFq)
-    val alpha1 = if (abs(sinSFqFa) < 1e-12) 0.0 else atan2(cosU2 * sinF9, cosU1 * sinU2 - sinU1 * cosU2 * cosF9)
-    val alpha2 = if (abs(sinSFqFa) < 1e-12) PI else atan2(cosU1 * sinF9, -sinU1 * cosU2 + cosU1 * sinU2 * cosF9)
+    val alpha1 = if (abs(sinSFqFa) < 1e-24) 0.0 else atan2(cosU2 * sinF9, cosU1 * sinU2 - sinU1 * cosU2 * cosF9)
+    val alpha2 = if (abs(sinSFqFa) < 1e-24) PI else atan2(cosU1 * sinF9, -sinU1 * cosU2 + cosU1 * sinU2 * cosF9)
     return DistanceAndBearing(s, toDegrees(alpha1), toDegrees(alpha2))
 }
 
@@ -388,7 +388,7 @@ fun getRandomPoint(point: Coordinate, radius: Double): Coordinate {
 /**
  * 获取轨迹上最接近指定坐标的线段索引。
  *
- * 使用点到线段两个端点的距离和作为排序指标，最多返回三个候选线段。
+ * 按球面上点到有限大圆弧段的最短距离排序，最多返回三个候选线段。
  *
  * @param point 待匹配坐标。
  * @param line 至少包含两个点的轨迹。
@@ -406,11 +406,9 @@ fun getNearPartsOnLine(point: Coordinate, line: Array<Coordinate>, offset: Float
 
     val candidates = ArrayList<Pair<Int, Double>>(3)
     var bestDistance = Double.POSITIVE_INFINITY
-    var previousDistance = getHaversineDistance(point, line[0])
     for (index in 0 until line.lastIndex) {
-        val currentDistance = getHaversineDistance(point, line[index + 1])
-        val distance = previousDistance + currentDistance
-        previousDistance = currentDistance
+        val projection = projectOnSegment(point, line[index], line[index + 1])
+        val distance = getHaversineDistance(point, projection)
 
         if (distance < bestDistance) {
             bestDistance = distance
@@ -427,7 +425,8 @@ fun getNearPartsOnLine(point: Coordinate, line: Array<Coordinate>, offset: Float
 }
 
 /**
- * 获取指定坐标在线段上的近似投影点。
+ * 获取指定坐标在球面有限大圆弧段上的最近点。
+ * 对跖端点没有唯一弧段，此时返回较近端点。
  *
  * @param point 待投影坐标。
  * @param part 恰好包含起点和终点的线段。
@@ -441,14 +440,33 @@ fun getProjectionPointOnLinePart(point: Coordinate, part: Array<Coordinate>): Co
     point.requireValid("point")
     start.requireValid("part[0]")
     end.requireValid("part[1]")
-    if (start == end) return start.copy()
+    return projectOnSegment(point, start, end)
+}
 
-    val p2s = getDistanceOn2Points(point, start)
-    val p2e = getDistanceOn2Points(point, end)
-    val s2e = getDistanceOn2Points(start, end)
-    return if ((p2s - p2e) > s2e) end.copy()
-    else if ((p2e - p2s) > s2e) start.copy()
-    else getPointOn2Points(start, end, (p2s / (p2s + p2e)).toFloat())
+private fun projectOnSegment(point: Coordinate, start: Coordinate, end: Coordinate): Coordinate {
+    val startDistance = getHaversineDistance(point, start)
+    val endDistance = getHaversineDistance(point, end)
+    val nearestEnd = if (startDistance <= endDistance) start else end
+    val arc = getHaversineDistance(start, end) / EARTH_RADIUS_LONG
+    if (arc < 1e-12 || PI - arc < 1e-12) return nearestEnd.copy()
+
+    val bearing = toRadians(getAngleOn2Points(start, end))
+    val pointBearing = toRadians(getAngleOn2Points(start, point))
+    val pointArc = startDistance / EARTH_RADIUS_LONG
+    val alongArc = atan2(sin(pointArc) * cos(pointBearing - bearing), cos(pointArc))
+    if (alongArc <= 0.0 || alongArc >= arc) return nearestEnd.copy()
+
+    // Interpolate unit vectors so longitude remains stable when an endpoint is a pole.
+    val startWeight = sin(arc - alongArc) / sin(arc)
+    val endWeight = sin(alongArc) / sin(arc)
+    val startLat = toRadians(start.lat)
+    val startLng = toRadians(start.lng)
+    val endLat = toRadians(end.lat)
+    val endLng = toRadians(end.lng)
+    val x = startWeight * cos(startLat) * cos(startLng) + endWeight * cos(endLat) * cos(endLng)
+    val y = startWeight * cos(startLat) * sin(startLng) + endWeight * cos(endLat) * sin(endLng)
+    val z = startWeight * sin(startLat) + endWeight * sin(endLat)
+    return Coordinate(toDegrees(atan2(z, hypot(x, y))), toDegrees(atan2(y, x)))
 }
 
 /**

@@ -12,8 +12,12 @@ fun ByteArray.toNSData(): NSData = memScoped {
 }
 
 @OptIn(ExperimentalForeignApi::class)
-fun NSData.toByteArray(): ByteArray = ByteArray(this@toByteArray.length.toInt()).apply {
-    usePinned {
-        memcpy(it.addressOf(0), this@toByteArray.bytes, this@toByteArray.length)
+fun NSData.toByteArray(): ByteArray {
+    require(length <= Int.MAX_VALUE.toULong()) { "NSData is too large for a ByteArray" }
+    if (length == 0uL) return byteArrayOf()
+    return ByteArray(length.toInt()).apply {
+        usePinned {
+            memcpy(it.addressOf(0), this@toByteArray.bytes, this@toByteArray.length)
+        }
     }
 }

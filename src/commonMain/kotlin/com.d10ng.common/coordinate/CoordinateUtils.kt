@@ -395,10 +395,9 @@ private fun String.parseCoordinate(pattern: String, expectedAxis: Int): Double {
             while (index < pattern.length && pattern[index] == marker) index++
             val width = index - start
             val digitCount = when {
-                width > 1 -> "{$width}"
-                marker == 'd' -> "{1,3}"
-                marker == 's' -> "{1}"
-                else -> "{1,2}"
+                marker == 's' -> "{$width}"
+                marker == 'd' -> "{$width,${maxOf(width, 3)}}"
+                else -> "{$width,${maxOf(width, 2)}}"
             }
             append("([0-9]$digitCount)")
             fields.add(marker.toString())

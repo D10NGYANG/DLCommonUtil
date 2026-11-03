@@ -1,14 +1,18 @@
+import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsSetupTask
+import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnPlugin
+import org.jetbrains.kotlin.gradle.targets.js.yarn.YarnRootExtension
+
 plugins {
-    kotlin("multiplatform") version "2.3.21"
-    kotlin("plugin.serialization") version "2.3.21"
+    kotlin("multiplatform") version "2.4.21"
+    kotlin("plugin.serialization") version "2.4.21"
     id("com.android.kotlin.multiplatform.library") version "9.0.1"
     id("maven-publish")
     id("dev.petuska.npm.publish") version "3.5.3"
-    id("com.github.ben-manes.versions") version "0.54.0"
+    id("io.github.ben-manes.versions") version "0.67.0"
 }
 
 group = "com.github.D10NGYANG"
-version = "1.0.2"
+version = "1.1.0"
 
 repositories {
     google {
@@ -52,20 +56,19 @@ kotlin {
         commonMain {
             dependencies {
                 // serialization
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.12.0")
                 // 协程
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
             }
         }
         jsMain {
             dependencies {
-                implementation(npm("iconv-lite", "0.6.3"))
+                implementation(npm("iconv-lite", "0.7.3"))
             }
         }
         commonTest {
             dependencies {
                 implementation(kotlin("test"))
-                implementation("org.jetbrains.kotlinx:kotlinx-io-core:0.9.0")
             }
         }
         jvmTest {
@@ -74,6 +77,16 @@ kotlin {
                 implementation("io.github.biezhi:TinyPinyin:2.0.3.RELEASE")
             }
         }
+    }
+}
+
+plugins.withType<YarnPlugin> {
+    extensions.configure<YarnRootExtension> {
+        // Kotlin's reporter requires Mocha 11; remove these overrides when its ranges include the security fixes.
+        resolution("diff", "9.0.0")
+        resolution("glob", "14.0.3")
+        resolution("minimatch", "11.0.4")
+        resolution("serialize-javascript", "7.1.4")
     }
 }
 
@@ -102,6 +115,9 @@ publishing {
 }
 
 npmPublish {
+    // npm-publish 3.5.3 uses a removed KGP getter; bind the current Node setup output instead.
+    nodeHome.set(layout.dir(tasks.named<NodeJsSetupTask>("kotlinNodeJsSetup")
+        .flatMap { it.destinationProvider }.map { it.asFile }))
     registries {
         register("npmjs") {
             uri.set("https://registry.npmjs.org")

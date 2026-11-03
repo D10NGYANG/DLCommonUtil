@@ -13,12 +13,12 @@
 》kotlin:
 ```kotlin
 // 保留2位小数，"3.14"
-val str = 3.1415926.toString(2)
+val str = 3.1415926.toStringWithMaxDecimal(2)
 ```
 》java:
 ```java
 // 保留2位小数，"3.14"
-String str = DoubleUtilsKt.toString(3.1415926, 2);
+String str = DoubleUtilsKt.toStringWithMaxDecimal(3.1415926, 2);
 ```
 》js:
 > 请查看 [Number](./Number.md) 中的 `numberToString` 方法

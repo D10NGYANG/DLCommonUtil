@@ -2,27 +2,29 @@
 
 > 长整型数据处理工具
 
+显式字节数必须为1到8，0或负数会抛出 `IllegalArgumentException`。
+
 ## ① 将Long转换为字节数组
-> 将 无符号长整型 转 N 个字节的 ByteArray；
-> > 字节数设置为小于等于0，则根据整型值自动计算字节数（默认设置为0）; \
+> 将 长整型 转 N 个字节的 ByteArray；
+> > 字节数省略或设置为null，则根据整型值自动计算字节数; \
 > > 字节数设置为大于0，则根据设置的字节数进行转换，如果字节数不足，则在前面补0，如果字节数过多，则截取前面的字节；
 > - @receiver [Long] 长整型
-> - @param size [Int] 字节数，默认为0
+> - @param size [Int] 字节数，默认为null
 > - @return [ByteArray] 字节数组
 
 》kotlin:
 ```kotlin
-// 默认为0，自动计算字节数，[0xF1, 0xFF]
+// 默认为null，自动计算字节数，[0xF1, 0xFF]
 val byteArray = 0xF1FFL.toByteArray()
 // 设置为3，[0x00, 0xF1, 0xFF]
 val byteArray = 0xF1FFL.toByteArray(3)
 ```
 》java:
 ```java
-// 默认为0，自动计算字节数，[0xF1, 0xFF]
-byte[] byteArray = LongUtilsKt.toByteArray(0xF1FF, 0);
+// 默认为null，自动计算字节数，[0xF1, 0xFF]
+byte[] byteArray = LongUtilsKt.toByteArray(0xF1FFL, null);
 // 设置为3，[0x00, 0xF1, 0xFF]
-byte[] byteArray = LongUtilsKt.toByteArray(0xF1FF, 3);
+byte[] byteArray = LongUtilsKt.toByteArray(0xF1FFL, 3);
 ```
 》js:
 > 请查看 [Number](./Number.md) 中的 `numberToByteArray` 方法
@@ -38,7 +40,7 @@ val value = bytes.toLong()
 ```
 》java:
 ```java
-long value = ByteArrayUtilsKt.toLong(bytes);
+long value = LongUtilsKt.toLong(bytes);
 ```
 》js:
 ```js

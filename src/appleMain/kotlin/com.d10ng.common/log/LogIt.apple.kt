@@ -36,7 +36,7 @@ internal actual object PlatformLogIt {
             if (l == LogLevel.ASSERT) {
                 assert(false) { fullMessage }
             } else {
-                NSLog(fullMessage)
+                NSLog("%s", fullMessage)
                 //println(fullMessage)
             }
         }

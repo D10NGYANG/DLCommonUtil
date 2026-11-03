@@ -14,7 +14,7 @@ val res = getDistanceAndBearing(Coordinate(39.9075, 116.39723), Coordinate(39.91
 ```
 》java:
 ```java
-DistanceAndBearing res = TrackUtils.getDistanceAndBearing(new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211));
+DistanceAndBearing res = TrackUtilsKt.getDistanceAndBearing(new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211));
 // DistanceAndBearing(distance=1379.4438755465214, initialBearing=67.26721057457084, finalBearing=67.27675731742102)
 ```
 》js:
@@ -40,9 +40,9 @@ res = getDistanceOn2Points(Coordinate(39.9075, 116.39723), Coordinate(39.9123, 1
 ```
 》java:
 ```java
-double res = TrackUtils.getDistanceOn2Points(new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211), false);
+double res = TrackUtilsKt.getDistanceOn2Points(new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211), false);
 // 使用高精度计算
-res = TrackUtils.getDistanceOn2Points(new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211), true);
+res = TrackUtilsKt.getDistanceOn2Points(new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211), true);
 ```
 》js:
 ```js
@@ -65,7 +65,7 @@ val res = isPointInCircle(Coordinate(39.9075, 116.39723), Coordinate(39.9123, 11
 ```
 》java:
 ```java
-boolean res = TrackUtils.isPointInCircle(new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211), 1000.0);
+boolean res = TrackUtilsKt.isPointInCircle(new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211), 1000.0);
 ```
 》js:
 ```js
@@ -88,9 +88,9 @@ res = getAngleOn2Points(Coordinate(39.9075, 116.39723), Coordinate(39.9123, 116.
 ```
 》java:
 ```java
-double res = TrackUtils.getAngleOn2Points(new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211), false);
+double res = TrackUtilsKt.getAngleOn2Points(new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211), false);
 // 使用高精度计算
-res = TrackUtils.getAngleOn2Points(new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211), true);
+res = TrackUtilsKt.getAngleOn2Points(new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211), true);
 ```
 》js:
 ```js
@@ -113,7 +113,7 @@ val res = getPointOn2Points(Coordinate(39.9075, 116.39723), Coordinate(39.9123, 
 ```
 》java:
 ```java
-Coordinate res = TrackUtils.getPointOn2Points(new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211), 0.5f);
+Coordinate res = TrackUtilsKt.getPointOn2Points(new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211), 0.5f);
 ```
 》js:
 ```js
@@ -128,17 +128,17 @@ const res = DLCoordinate.getPointOn2Points(new Coordinate(39.9075, 116.39723), n
 
 》kotlin:
 ```kotlin
-val res = getDistanceOnTrack(arrayOf(Coordinate(39.9075, 116.39723), Coordinate(39.9123, 116.41211)))
+val res = getTotalDistance(arrayOf(Coordinate(39.9075, 116.39723), Coordinate(39.9123, 116.41211)))
 ```
 》java:
 ```java
-double res = TrackUtils.getDistanceOnTrack(new Coordinate[]{new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211)});
+double res = TrackUtilsKt.getTotalDistance(new Coordinate[]{new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211)});
 ```
 》js:
 ```js
 const DLCoordinate = require('dl-common-util').com.d10ng.common.coordinate;
 const Coordinate = DLCoordinate.Coordinate;
-const res = DLCoordinate.getDistanceOnTrack([new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211)]);
+const res = DLCoordinate.getTotalDistance([new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211)]);
 ```
 
 ## ⑦ 从一段轨迹中获取间隔指定距离的坐标点重新组成的轨迹
@@ -152,7 +152,7 @@ val res = getPointsOnDistance(arrayOf(Coordinate(39.9075, 116.39723), Coordinate
 ```
 》java:
 ```java
-Coordinate[] res = TrackUtils.getPointsOnDistance(new Coordinate[]{new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211)}, 100.0);
+Coordinate[] res = TrackUtilsKt.getPointsOnDistance(new Coordinate[]{new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211)}, 100.0);
 ```
 》js:
 ```js
@@ -172,7 +172,7 @@ val res = compressTrack(arrayOf(Coordinate(39.9075, 116.39723), Coordinate(39.91
 ```
 》java:
 ```java
-Coordinate[] res = TrackUtils.compressTrack(new Coordinate[]{new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211)});
+Coordinate[] res = TrackUtilsKt.compressTrack(new Coordinate[]{new Coordinate(39.9075, 116.39723), new Coordinate(39.9123, 116.41211)});
 ```
 》js:
 ```js
@@ -185,7 +185,7 @@ const res = DLCoordinate.compressTrack([new Coordinate(39.9075, 116.39723), new 
 > > 使用Vincenty direct算法，参考：http://www.movable-type.co.uk/scripts/latlong-vincenty.html
 > - @param point [Coordinate] 基准点
 > - @param distance [Double] 距离，单位为米
-> - @param angle [Double] 角度，单位为弧度
+> - @param angle [Double] 角度，单位为度
 > - @return [Coordinate] 新的坐标点
 
 》kotlin:
@@ -194,7 +194,7 @@ val res = getPointByBasePoint(Coordinate(39.9075, 116.39723), 100.0, 45.0)
 ```
 》java:
 ```java
-Coordinate res = TrackUtils.getPointByBasePoint(new Coordinate(39.9075, 116.39723), 100.0, 45.0);
+Coordinate res = TrackUtilsKt.getPointByBasePoint(new Coordinate(39.9075, 116.39723), 100.0, 45.0);
 ```
 》js:
 ```js
@@ -214,7 +214,7 @@ val res = getRandomPoint(Coordinate(39.9075, 116.39723), 100.0)
 ```
 》java:
 ```java
-Coordinate res = TrackUtils.getRandomPoint(new Coordinate(39.9075, 116.39723), 100.0);
+Coordinate res = TrackUtilsKt.getRandomPoint(new Coordinate(39.9075, 116.39723), 100.0);
 ```
 》js:
 ```js
@@ -226,7 +226,7 @@ const res = DLCoordinate.getRandomPoint(new Coordinate(39.9075, 116.39723), 100.
 ## ⑪ 获取一个位置点在一条轨迹上最靠近的几个线段
 > > 获取一个位置点在一条轨迹上最靠近的几个线段，即这个位置点最有可能吸附到的几个线段，最少会有一个线段，最多会有三个线段
 > - @param point [Coordinate] 位置点
-> - @param line [Array<Coordinate>] 轨迹，至少两个点，最好是换算成相同间隔的轨迹（如间隔100米一个点），可以使用函数getPointsOnDistance进行换算
+> - @param line [Array<Coordinate>] 轨迹，至少两个点；按球面点到有限大圆弧段的最短距离排序，不要求等间隔
 > - @param offset [Float] 误差范围，单位为米，即返回的最靠近的线段列表中第一个线段的距离和最后一个线段的距离之差不能超过这个值
 > - @return [Array<Int>] 最靠近的线段的索引列表，索引从0开始，假设返回的是[0, 1, 2]，则表示最靠近的线段是line[0]～line[1]，次靠近的线段是line[1]～line[2]，然后线段是line[2]～line[3]
 
@@ -252,7 +252,7 @@ Coordinate[] points = new Coordinate[]{
     new Coordinate(39.914110, 116.407810),
     new Coordinate(39.909230, 116.407550),
 };
-int[] result = TrackUtils.getNearPartsOnLine(new Coordinate(39.912570, 116.403880), points, 1000f);
+Integer[] result = TrackUtilsKt.getNearPartsOnLine(new Coordinate(39.912570, 116.403880), points, 1000f);
 ```
 》js:
 ```js
@@ -270,6 +270,7 @@ const result = DLCoordinate.getNearPartsOnLine(new Coordinate(39.912570, 116.403
 ```
 
 ## ⑫ 获取一个位置点在一条线段上的投影点
+> 使用与普通距离计算一致的球面模型，求有限大圆弧段上的最近点；越界时返回最近端点。对跖端点没有唯一弧段，返回较近端点。
 > - @param point [Coordinate] 位置点
 > - @param part [Array<Coordinate>] 线段，必须是两个点
 > - @return [Coordinate] 投影点
@@ -288,7 +289,7 @@ Coordinate[] points = new Coordinate[]{
     new Coordinate(39.913820, 116.400400),
     new Coordinate(39.914110, 116.404970),
 };
-Coordinate result = TrackUtils.getProjectionPointOnLinePart(new Coordinate(39.912570, 116.403880), points);
+Coordinate result = TrackUtilsKt.getProjectionPointOnLinePart(new Coordinate(39.912570, 116.403880), points);
 ```
 》js:
 ```js
@@ -303,7 +304,7 @@ const result = DLCoordinate.getProjectionPointOnLinePart(new Coordinate(39.91257
 
 ## ⑬ 获取一个位置点在一条轨迹上的投影点
 > - @param point [Coordinate] 位置点
-> - @param line [Array<Coordinate>] 轨迹，至少两个点，最好是换算成相同间隔的轨迹（如间隔100米一个点），可以使用函数getPointsOnDistance进行换算
+> - @param line [Array<Coordinate>] 轨迹，至少两个点；按球面点到有限大圆弧段的最短距离排序，不要求等间隔
 > - @return [Coordinate] 投影点
 
 》kotlin:
@@ -328,7 +329,7 @@ Coordinate[] points = new Coordinate[]{
     new Coordinate(39.914110, 116.407810),
     new Coordinate(39.909230, 116.407550),
 };
-Coordinate result = TrackUtils.getProjectionPointOnLine(new Coordinate(39.912570, 116.403880), points);
+Coordinate result = TrackUtilsKt.getProjectionPointOnLine(new Coordinate(39.912570, 116.403880), points);
 ```
 》js:
 ```js
@@ -348,7 +349,7 @@ const result = DLCoordinate.getProjectionPointOnLine(new Coordinate(39.912570, 1
 ## ⑭ 获取一个位置点在一条轨迹上的投影线，从起点开始算
 > > 目前适用于马拉松比赛中的收尾车的轨迹拟合到活动线路来
 > - @param point [Coordinate] 位置点
-> - @param targetLine [Array<Coordinate>] 目标线路，最好是换算成相同间隔的轨迹（如间隔100米一个点），可以使用函数getPointsOnDistance进行换算
+> - @param targetLine [Array<Coordinate>] 目标线路，至少两个点，不要求等间隔
 > - @return [Array<Coordinate>] 投影线
 
 》kotlin:
@@ -373,7 +374,7 @@ Coordinate[] points = new Coordinate[]{
     new Coordinate(39.914110, 116.407810),
     new Coordinate(39.909230, 116.407550),
 };
-Coordinate[] result = TrackUtils.getProjectionLineOnLineWithPoint(new Coordinate(39.912570, 116.403880), points);
+Coordinate[] result = TrackUtilsKt.getProjectionLineOnLineWithPoint(new Coordinate(39.912570, 116.403880), points);
 ```
 》js:
 ```js
@@ -393,7 +394,7 @@ const result = DLCoordinate.getProjectionLineOnLineWithPoint(new Coordinate(39.9
 ## ⑮ 获取线路在另一条线路上的投影线，从起点开始算
 > > 目前适用于马拉松比赛中的收尾车的轨迹拟合到活动线路来
 > - @param line [Array<Coordinate>] 线路
-> - @param targetLine [Array<Coordinate>] 目标线路，起码有两个点，最好是换算成相同间隔的轨迹（如间隔100米一个点），可以使用函数getPointsOnDistance进行换算
+> - @param targetLine [Array<Coordinate>] 目标线路，至少两个点，不要求等间隔
 > - @param offset [Float] 误差范围，单位为米，计算的最靠近的线段列表中第一个线段的距离和最后一个线段的距离之差不能超过这个值
 > - @return [Array<Coordinate>] 投影线
 
@@ -425,7 +426,7 @@ Coordinate[] points = new Coordinate[]{
 Coordinate[] line = new Coordinate[]{
     new Coordinate(39.912570, 116.403880),
 };
-Coordinate[] result = TrackUtils.getProjectionLineOnLineWithLine(line, points);
+Coordinate[] result = TrackUtilsKt.getProjectionLineOnLineWithLine(line, points, 10f);
 ```
 》js:
 ```js

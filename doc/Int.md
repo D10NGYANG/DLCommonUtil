@@ -2,6 +2,8 @@
 
 > 整型数据处理工具
 
+显式字节数必须为1到4，0或负数会抛出 `IllegalArgumentException`。
+
 ## ① 将整型转换为字节数组
 > 将 整型 转 N 个字节的 ByteArray
 > > 字节数设置为null（默认），则根据整型值自动计算字节数；
@@ -12,15 +14,15 @@
 
 》kotlin:
 ```kotlin
-// 默认为0，自动计算字节数，[0xF1, 0xFF]
+// 默认为null，自动计算字节数，[0xF1, 0xFF]
 val byteArray = 0xF1FF.toByteArray()
 // 设置为3，[0x00, 0xF1, 0xFF]
 val byteArray = 0xF1FF.toByteArray(3)
 ```
 》java:
 ```java
-// 默认为0，自动计算字节数，[0xF1, 0xFF]
-byte[] byteArray = IntUtilsKt.toByteArray(0xF1FF, 0);
+// 默认为null，自动计算字节数，[0xF1, 0xFF]
+byte[] byteArray = IntUtilsKt.toByteArray(0xF1FF, null);
 // 设置为3，[0x00, 0xF1, 0xFF]
 byte[] byteArray = IntUtilsKt.toByteArray(0xF1FF, 3);
 ```

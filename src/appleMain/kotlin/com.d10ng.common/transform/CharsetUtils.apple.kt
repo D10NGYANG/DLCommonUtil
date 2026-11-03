@@ -15,7 +15,7 @@ import platform.Foundation.dataUsingEncoding
  */
 @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
 actual fun String.encodeGBK(): ByteArray {
-    // Foundation rejects the converted GBK_95 NSStringEncoding; GB18030 is byte-compatible for GBK text.
+    // Keep the historical GB18030 superset for existing Apple callers, including four-byte characters.
     return encode(kCFStringEncodingGB_18030_2000)
 }
 
@@ -54,6 +54,8 @@ private fun ByteArray.decode(encoding: CFStringEncodings): String {
     if (this.isEmpty()) return ""
     val nsEncoding = CFStringConvertEncodingToNSStringEncoding(encoding.convert())
     return this.usePinned {
-        NSString.create(bytes = it.addressOf(0), length = this.size.convert(), encoding = nsEncoding).toString()
+        requireNotNull(
+            NSString.create(bytes = it.addressOf(0), length = this.size.convert(), encoding = nsEncoding),
+        ) { "Invalid byte sequence for NSStringEncoding $nsEncoding" }.toString()
     }
 }

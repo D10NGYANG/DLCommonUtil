@@ -1,12 +1,34 @@
 # DLCommonUtil
 基于kotlin多平台的常用数据类型转换工具类库，目前支持`Android`、`JVM`、`IOS`、`MacOS`、`JS`、`Linux`；
 
-*最新版本：`1.0.2`*
+*最新版本：`1.1.0`*
 
 > `0.7.0`开始，需要使用`kotlin 2.1.10`以上版本。
 
+当前源码使用 Kotlin `2.4.21`、Gradle `9.8.2`，构建需要 JDK 17 或更新版本；JVM 产物仍面向 Java 8。
+使用当前源码构建产物的下游项目建议对齐 Kotlin `2.4.21`，历史版本的最低 Kotlin 要求不适用于本次依赖升级。
+升级版本、兼容性处理与验证结果见 [依赖升级记录](doc/DependencyReview-2026-11-03.md)。
+
 ## ① 安装
-> 请查看`WIKI`文档。
+对外 Maven 制品由 [maven-repo](https://github.com/D10NGYANG/maven-repo) 提供：
+
+```kotlin
+repositories {
+    maven("https://raw.githubusercontent.com/D10NGYANG/maven-repo/main/repository") {
+        mavenContent { includeGroupAndSubgroups("com.github.D10NGYANG") }
+    }
+    google()
+    mavenCentral()
+}
+
+// KMP commonMain；Gradle 自动选择目标平台变体
+implementation("com.github.D10NGYANG:DLCommonUtil:1.1.0")
+// 纯 JVM 项目可使用 com.github.D10NGYANG:DLCommonUtil-jvm:1.1.0
+```
+
+JavaScript：`npm install dl-common-util@1.1.0`。
+
+从旧版本升级前请阅读 [1.1.0 升级说明](doc/Upgrade-1.1.0.md)。
 
 ## ② 使用
 ### 1. 基础类型

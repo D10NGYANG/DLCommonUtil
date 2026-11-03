@@ -170,7 +170,7 @@ class TrackTest {
             Coordinate(39.909230, 116.407550),
         )
         val result = getNearPartsOnLine(Coordinate(39.912570, 116.403880), points, 1000f)
-        assertEquals("2,3,4", result.joinToString(","))
+        assertEquals("2,3,1", result.joinToString(","))
     }
 
     @Test
@@ -180,7 +180,7 @@ class TrackTest {
             Coordinate(39.914110, 116.404970),
         )
         val result = getProjectionPointOnLinePart(Coordinate(39.912570, 116.403880), points)
-        val base = Coordinate(39.91400189357319, 116.40326605544173)
+        val base = Coordinate(39.914030851869235, 116.4037224505048)
         doubleEquals(result.lat, base.lat)
         doubleEquals(result.lng, base.lng)
     }
@@ -196,7 +196,7 @@ class TrackTest {
             Coordinate(39.909230, 116.407550),
         )
         val result = getProjectionPointOnLine(Coordinate(39.912570, 116.403880), points)
-        val base = Coordinate(39.91400189357319, 116.40326605544173)
+        val base = Coordinate(39.914030851869235, 116.4037224505048)
         doubleEquals(result.lat, base.lat)
         doubleEquals(result.lng, base.lng)
     }
@@ -218,8 +218,8 @@ class TrackTest {
         doubleEquals(result[1].lng, 116.400470)
         doubleEquals(result[2].lat, 39.913820)
         doubleEquals(result[2].lng, 116.400400)
-        doubleEquals(result[3].lat, 39.91400189357319)
-        doubleEquals(result[3].lng, 116.40326605544173)
+        doubleEquals(result[3].lat, 39.914030851869235)
+        doubleEquals(result[3].lng, 116.4037224505048)
     }
 
     @Test
@@ -242,8 +242,8 @@ class TrackTest {
         doubleEquals(result[1].lng, 116.400470)
         doubleEquals(result[2].lat, 39.913820)
         doubleEquals(result[2].lng, 116.400400)
-        doubleEquals(result[3].lat, 39.91400189357319)
-        doubleEquals(result[3].lng, 116.40326605544173)
+        doubleEquals(result[3].lat, 39.914030851869235)
+        doubleEquals(result[3].lng, 116.4037224505048)
     }
 
     @Test
@@ -274,5 +274,81 @@ class TrackTest {
         val destination = getPointByBasePoint(Coordinate(0.0, 179.9), 50_000.0, 90.0)
         assertTrue(destination.lng in -180.0..<180.0)
         assertTrue(destination.lng < 0.0)
+    }
+
+    @Test
+    fun shortSegmentsKeepTheirBearingAndMidpoint() {
+        val start = Coordinate(0.0, 0.0)
+        for (distance in listOf(0.1, 1.0, 5.0, 10.0)) {
+            for (bearing in listOf(0.0, 90.0, 180.0, 270.0)) {
+                val end = getPointByBasePoint(start, distance, bearing)
+                val actualBearing = getAngleOn2Points(start, end, true)
+                val difference = (actualBearing - bearing + 540.0) % 360.0 - 180.0
+                assertTrue(difference.absoluteValue < 0.001)
+                val midpoint = getPointOn2Points(start, end, 0.5f)
+                assertTrue((getDistanceOn2Points(start, midpoint, true) - distance / 2).absoluteValue < 0.001)
+                assertTrue((getDistanceOn2Points(midpoint, end, true) - distance / 2).absoluteValue < 0.001)
+            }
+        }
+        val sampled = getPointsOnDistance(arrayOf(start, Coordinate(0.0, 0.0001)), 1.0)
+        assertTrue(sampled.size in 12..13)
+        assertTrue(sampled.all { it.lat.absoluteValue < 1e-9 })
+    }
+
+    @Test
+    fun projectionFindsPerpendicularAndClampsEndpoints() {
+        val start = Coordinate(0.0, 0.0)
+        val end = Coordinate(0.0, 0.001)
+        val segment = arrayOf(start, end)
+        assertEquals(start, getProjectionPointOnLinePart(Coordinate(0.0, -0.001), segment))
+        assertEquals(end, getProjectionPointOnLinePart(Coordinate(0.0, 0.002), segment))
+        val projection = getProjectionPointOnLinePart(Coordinate(0.001, 0.0002), segment)
+        doubleEquals(0.0, projection.lat)
+        doubleEquals(0.0002, projection.lng)
+        val reversed = getProjectionPointOnLinePart(Coordinate(0.001, 0.0002), segment.reversedArray())
+        doubleEquals(projection.lat, reversed.lat)
+        doubleEquals(projection.lng, reversed.lng)
+        assertEquals(start, getProjectionPointOnLinePart(start, arrayOf(start, start)))
+    }
+
+    @Test
+    fun projectionCrossesDateLineAndHandlesAntipodalEndpoints() {
+        val projection = getProjectionPointOnLinePart(
+            Coordinate(1.0, 180.0), arrayOf(Coordinate(0.0, 179.0), Coordinate(0.0, -179.0)),
+        )
+        doubleEquals(0.0, projection.lat)
+        doubleEquals(180.0, projection.lng.absoluteValue)
+        assertEquals(Coordinate(0.0, 0.0), getProjectionPointOnLinePart(
+            Coordinate(1.0, 0.0), arrayOf(Coordinate(0.0, 0.0), Coordinate(0.0, 180.0)),
+        ))
+    }
+
+    @Test
+    fun nearestSegmentDoesNotDependOnSegmentLength() {
+        val point = Coordinate(0.0, 0.0)
+        val line = arrayOf(
+            Coordinate(0.0, -0.01), Coordinate(0.0, 0.01),
+            Coordinate(0.001, 0.01), Coordinate(0.001, 0.0),
+        )
+        assertEquals(listOf(0), getNearPartsOnLine(point, line, 10f).toList())
+        val projection = getProjectionPointOnLine(point, line)
+        assertTrue(getDistanceOn2Points(point, projection) < 0.001)
+        val prefix = getProjectionLineOnLineWithPoint(point, line)
+        assertEquals(2, prefix.size)
+        assertEquals(line.first(), prefix.first())
+        assertTrue(getDistanceOn2Points(point, prefix.last()) < 0.001)
+        val directed = getProjectionLineOnLineWithLine(arrayOf(Coordinate(0.0, -0.001), point), line)
+        assertEquals(2, directed.size)
+        assertTrue(getDistanceOn2Points(point, directed.last()) < 0.001)
+    }
+
+    @Test
+    fun projectionHandlesPolarEndpoints() {
+        val point = Coordinate(85.0, 45.0)
+        val segment = arrayOf(Coordinate(90.0, 0.0), Coordinate(80.0, 45.0))
+        for (part in listOf(segment, segment.reversedArray())) {
+            val projection = getProjectionPointOnLinePart(point, part)
+            assertTrue(getDistanceOn2Points(point, projection) < 0.001)
+        }
     }
 }
