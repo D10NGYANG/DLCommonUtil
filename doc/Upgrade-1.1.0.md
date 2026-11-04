@@ -4,7 +4,7 @@
 
 ## 安装与升级
 
-对外 Maven 仓库为：https://raw.githubusercontent.com/D10NGYANG/maven-repo/main/repository
+Maven 仓库地址：https://raw.githubusercontent.com/D10NGYANG/maven-repo/main/repository
 
 ```kotlin
 implementation("com.github.D10NGYANG:DLCommonUtil:1.1.0")
@@ -49,4 +49,4 @@ Gradle9.8.2超出Kotlin2.4.21官方完全支持矩阵上界9.7.0，以上为本�
 
 ## 发布渠道
 
-1.1.0 已发布到对外 maven-repo、npm registry（latest）及内部 Nexus。对外 Maven 使用本文所列的 GitHub raw 仓库地址；内部 Nexus 为镜像渠道。GitHub tgz 附件与 npm registry 的安装包一致。
+1.1.0 可通过 Maven 仓库和 npm registry（latest）安装。Maven 使用本文所列的 GitHub raw 仓库地址。GitHub tgz 附件与 npm registry 的安装包一致。

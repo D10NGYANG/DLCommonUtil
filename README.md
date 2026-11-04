@@ -10,7 +10,7 @@
 升级版本、兼容性处理与验证结果见 [依赖升级记录](doc/DependencyReview-2026-11-03.md)。
 
 ## ① 安装
-对外 Maven 制品由 [maven-repo](https://github.com/D10NGYANG/maven-repo) 提供：
+Maven 制品由 [maven-repo](https://github.com/D10NGYANG/maven-repo) 提供：
 
 ```kotlin
 repositories {
